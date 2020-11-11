@@ -102,7 +102,7 @@
         <ILINK_TranslatedLibraryPath>$(BDSLIB)\$(PLATFORM)\debug\$(LANGDIR);$(ILINK_TranslatedLibraryPath)</ILINK_TranslatedLibraryPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
-        <ILINK_LibraryPath>C:\Program Files (x86)\DevExpress VCL\Library\RS21\;$(BDS)\lib\win32\release\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
+        <ILINK_LibraryPath>C:\Users\Public\Documents\Embarcadero\Studio\15.0\DCP\;C:\Program Files (x86)\DevExpress VCL\Library\RS21\;$(BDS)\lib\win32\release\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
         <LinkPackageImports>rtl.bpi;vcl.bpi;cxLibraryRS21.bpi;dxGDIPlusRS21.bpi;dxCoreRS21.bpi;dxThemeRS21.bpi;vclx.bpi;dxBarRS21.bpi;dxComnRS21.bpi;dxRibbonRS21.bpi;cxEditorsRS21.bpi;cxDataRS21.bpi;dbrtl.bpi;vclimg.bpi;vcldb.bpi;dxSkinsCoreRS21.bpi;dxSkinBlackRS21.bpi;dxSkinBlueprintRS21.bpi;dxSkinBlueRS21.bpi;dxSkinCaramelRS21.bpi;dxSkinCoffeeRS21.bpi;dxSkinDarkRoomRS21.bpi;dxSkinDarkSideRS21.bpi;dxSkinDevExpressDarkStyleRS21.bpi;dxSkinDevExpressStyleRS21.bpi;dxSkinFoggyRS21.bpi;dxSkinGlassOceansRS21.bpi;dxSkinHighContrastRS21.bpi;dxSkiniMaginaryRS21.bpi;dxSkinLilianRS21.bpi;dxSkinLiquidSkyRS21.bpi;dxSkinLondonLiquidSkyRS21.bpi;dxSkinMcSkinRS21.bpi;dxSkinMetropolisDarkRS21.bpi;dxSkinMetropolisRS21.bpi;dxSkinMoneyTwinsRS21.bpi;dxSkinOffice2007BlackRS21.bpi;dxSkinOffice2007BlueRS21.bpi;dxSkinOffice2007GreenRS21.bpi;dxSkinOffice2007PinkRS21.bpi;dxSkinOffice2007SilverRS21.bpi;dxSkinOffice2010BlackRS21.bpi;dxSkinOffice2010BlueRS21.bpi;dxSkinOffice2010SilverRS21.bpi;dxSkinOffice2013DarkGrayRS21.bpi;dxSkinOffice2013LightGrayRS21.bpi;dxSkinOffice2013WhiteRS21.bpi;dxSkinPumpkinRS21.bpi;dxSkinSevenClassicRS21.bpi;dxSkinSevenRS21.bpi;dxSkinSharpPlusRS21.bpi;dxSkinSharpRS21.bpi;dxSkinSilverRS21.bpi;dxSkinSpringTimeRS21.bpi;dxSkinStardustRS21.bpi;dxSkinSummer2008RS21.bpi;dxSkinTheAsphaltWorldRS21.bpi;dxSkinValentineRS21.bpi;dxSkinVisualStudio2013BlueRS21.bpi;dxSkinVisualStudio2013DarkRS21.bpi;dxSkinVisualStudio2013LightRS21.bpi;dxSkinVS2010RS21.bpi;dxSkinWhiteprintRS21.bpi;dxSkinXmas2008BlueRS21.bpi;dxRibbonCustomizationFormRS21.bpi;cxTreeListRS21.bpi;cxPageControlRS21.bpi;cxExportRS21.bpi;dxSpreadSheetRS21.bpi;dxLayoutControlRS21.bpi;xmlrtl.bpi;cxBarEditItemRS21.bpi;dxSkinsdxBarPainterRS21.bpi;dxSkinsdxRibbonPainterRS21.bpi;tmsexdXE7.bpi;DbxCommonDriver.bpi;dsnap.bpi;soaprtl.bpi;inet.bpi;tmsdXE7.bpi;adortl.bpi;vclactnband.bpi;VclSmp.bpi</LinkPackageImports>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
@@ -113,6 +113,10 @@
         <BCC_PCHName_Clang>Tetris_Server_PCH1.h</BCC_PCHName_Clang>
     </PropertyGroup>
     <ItemGroup>
+        <CppCompile Include="Define.cpp">
+            <DependentOn>Define.h</DependentOn>
+            <BuildOrder>3</BuildOrder>
+        </CppCompile>
         <CppCompile Include="Main.cpp">
             <Form>FormMain</Form>
             <FormType>dfm</FormType>

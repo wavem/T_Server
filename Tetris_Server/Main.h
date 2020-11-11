@@ -71,7 +71,12 @@
 #include "dxSkinWhiteprint.hpp"
 #include "dxSkinXmas2008Blue.hpp"
 #include "AdvSmoothButton.hpp"
+#include "AdvMemo.hpp"
 //---------------------------------------------------------------------------
+
+#include "Define.h"
+//---------------------------------------------------------------------------
+class CTCPListenThread;
 class TFormMain : public TForm
 {
 __published:	// IDE-managed Components
@@ -90,18 +95,37 @@ __published:	// IDE-managed Components
 	TdxBarLargeButton *MenuBtn_Version;
 	TPanel *_pnBase_02_Setting;
 	TAdvSmoothButton *btn_Hide;
+	TAdvMemo *memo;
+	TAdvSmoothButton *btn_Test;
+	TAdvSmoothButton *btn_Listen;
+	TAdvSmoothButton *btn_Stop;
+	TAdvSmoothButton *btn_Terminate;
+	TAdvSmoothButton *btn_Resume;
+	TAdvSmoothButton *btn_GetRunningTime;
 	void __fastcall Exit1Click(TObject *Sender);
 	void __fastcall TrayIconDblClick(TObject *Sender);
 	void __fastcall MenuBtn_StatusClick(TObject *Sender);
 	void __fastcall MenuBtn_SettingClick(TObject *Sender);
 	void __fastcall btn_HideClick(TObject *Sender);
+	void __fastcall btn_TestClick(TObject *Sender);
+	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
+	void __fastcall btn_ListenClick(TObject *Sender);
+	void __fastcall btn_StopClick(TObject *Sender);
+	void __fastcall btn_TerminateClick(TObject *Sender);
+	void __fastcall btn_ResumeClick(TObject *Sender);
+	void __fastcall btn_GetRunningTimeClick(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TFormMain(TComponent* Owner);
 
 
-public: // START
+public: // Member
+	CTCPListenThread *m_TCPListenThread;
+
+public: // Routine
 	void __fastcall InitProgram();
+	void __fastcall ExitProgram();
+	void __fastcall PrintMsg(UnicodeString _str);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFormMain *FormMain;
