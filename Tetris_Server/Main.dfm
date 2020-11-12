@@ -553,6 +553,8 @@ object FormMain: TFormMain
         Top = 0
         HelpContext = 1
         Caption = 'Setting'
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object _pnBase_02_Setting: TPanel
           Left = 0
           Top = 0

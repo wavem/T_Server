@@ -10,8 +10,53 @@ __fastcall CTCPListenThread::CTCPListenThread() {
 	Priority = tpTimeCritical;
 	m_StartTime = Now();
 	m_CurrentTime = m_StartTime;
+	m_msg = L"";
 
-	//m_socket_TCP
+	// Socket Create
+	if(Create() == false) {
+		DoTerminate();
+	} else {
+		m_eThreadWork = THREAD_RUNNING;
+	}
+}
+//---------------------------------------------------------------------------
+
+__fastcall CTCPListenThread::~CTCPListenThread() {
+	if(m_socket_TCP != INVALID_SOCKET) {
+		closesocket(m_socket_TCP);
+		m_socket_TCP = NULL;
+		m_msg = L"Socket delete success";
+	}
+}
+//---------------------------------------------------------------------------
+
+bool __fastcall CTCPListenThread::Create() {
+	// Create Listen Socket
+	m_socket_TCP = socket(AF_INET, SOCK_STREAM, 0);
+	if(m_socket_TCP == INVALID_SOCKET) {
+		m_msg = L"Socket create fail";
+		return false;
+	}
+
+	memset(&m_sockaddr_in, 0, sizeof(m_sockaddr_in));
+	m_sockaddr_in.sin_family = AF_INET;
+	m_sockaddr_in.sin_addr.s_addr = htonl(INADDR_ANY);
+	m_sockaddr_in.sin_port = htons(TCP_SERVER_PORT);
+
+	int t_SockOpt = 1;
+	setsockopt(m_socket_TCP, SOL_SOCKET, SO_REUSEADDR, (char*)&t_SockOpt, sizeof(t_SockOpt));
+	if(bind(m_socket_TCP, (struct sockaddr*)&m_sockaddr_in, sizeof(m_sockaddr_in)) < 0) {
+		m_msg = L"Socket bind fail";
+		return false;
+	}
+
+	if(listen(m_socket_TCP, MAX_TCP_CLIENT_LISTENING_COUNT) < 0) {
+		m_msg = L"Socket Listen Fail";
+		return false;
+	}
+
+	m_msg = L"Socket is ready";
+	return true;
 }
 //---------------------------------------------------------------------------
 
@@ -21,7 +66,6 @@ void __fastcall CTCPListenThread::Execute() {
 	UnicodeString t_Str = L"";
 	int t_Cnt = 0;
 
-	m_eThreadWork = THREAD_RUNNING;
 	while(!Terminated) {
 		if(m_eThreadWork != THREAD_RUNNING) {
 			if(m_eThreadWork == THREAD_TERMINATED) break;
@@ -49,6 +93,11 @@ void __fastcall CTCPListenThread::Resume() {
 
 void __fastcall CTCPListenThread::DoTerminate() {
 	m_eThreadWork = THREAD_TERMINATED;
+	if(m_socket_TCP != INVALID_SOCKET) {
+		closesocket(m_socket_TCP);
+		m_socket_TCP = NULL;
+		m_msg = L"Socket delete success";
+	}
 }
 //---------------------------------------------------------------------------
 

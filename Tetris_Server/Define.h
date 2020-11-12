@@ -9,6 +9,10 @@
 //#include <System.Classes.hpp>
 //#include <winsock2.h>
 
+#define TCP_SERVER_PORT		14759
+#define MAX_TCP_CLIENT_LISTENING_COUNT	10
+#define MAX_TCP_CLIENT_USER_COUNT		60
+
 enum ThreadWorkingType
 {
 	THREAD_STOP = 0,
@@ -20,16 +24,18 @@ enum ThreadWorkingType
 class CTCPListenThread : public TThread {
 private:
 	ThreadWorkingType	m_eThreadWork;
-	SOCKET	m_sock_TCP;
+	SOCKET	m_socket_TCP;
 	struct sockaddr_in	m_sockaddr_in;
 	TTime m_StartTime;
 	TTime m_CurrentTime;
+	int m_bindrst;
 
 protected:
 public:
-	//FormMain->
-	//extern PACKAGE TFormMain *FormMain;
+	UnicodeString m_msg;
 	__fastcall CTCPListenThread();
+	__fastcall ~CTCPListenThread();
+	bool __fastcall Create();
 	void __fastcall Execute();
 	void __fastcall Stop();
 	void __fastcall Resume();

@@ -149,7 +149,17 @@ void __fastcall TFormMain::btn_ListenClick(TObject *Sender)
 		return;
 	}
 	m_TCPListenThread = new CTCPListenThread;
+	PrintMsg(m_TCPListenThread->m_msg);
+	if(m_TCPListenThread->GetThreadStatus() == THREAD_TERMINATED) {
+		PrintMsg(L"TCP Listen Thread Fail...");
 
+		// Delete Thread
+		m_TCPListenThread->Terminate();
+		delete m_TCPListenThread;
+		m_TCPListenThread = NULL;
+		PrintMsg(L"TCP Listen Thread Terminated");
+		return;
+	}
 	PrintMsg(L"TCP Listen Thread Start...");
 }
 //---------------------------------------------------------------------------
@@ -183,6 +193,7 @@ void __fastcall TFormMain::btn_TerminateClick(TObject *Sender)
 		return;
 	}
 	m_TCPListenThread->DoTerminate();
+	PrintMsg(m_TCPListenThread->m_msg);
 	if(m_TCPListenThread->GetThreadStatus() == THREAD_TERMINATED) {
 		m_TCPListenThread->Terminate();
 		delete m_TCPListenThread;
@@ -203,8 +214,8 @@ void __fastcall TFormMain::btn_GetRunningTimeClick(TObject *Sender)
 	TTime t_StartTime, t_CurrentTime;
 	t_StartTime = m_TCPListenThread->GetStartTime();
 	t_CurrentTime = m_TCPListenThread->GetCurrentTime();
-	PrintMsg(L"Start : " + t_StartTime.TimeString());
-	PrintMsg(L"Current : " + t_CurrentTime.TimeString());
+	PrintMsg(L"Start : " + t_StartTime.TimeString() + L" ");
+	PrintMsg(L"Current : " + t_CurrentTime.TimeString() + L" ");
 }
 //---------------------------------------------------------------------------
 
