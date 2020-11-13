@@ -75,6 +75,7 @@
 //---------------------------------------------------------------------------
 
 #include "Define.h"
+#define MYMSG	40000
 //---------------------------------------------------------------------------
 class CTCPListenThread;
 class TFormMain : public TForm
@@ -126,6 +127,14 @@ public: // Routine
 	void __fastcall InitProgram();
 	void __fastcall ExitProgram();
 	void __fastcall PrintMsg(UnicodeString _str);
+
+
+	void __fastcall DoMsg(TMessage &_msg);
+
+
+BEGIN_MESSAGE_MAP
+	MESSAGE_HANDLER(MYMSG, TMessage, DoMsg)
+END_MESSAGE_MAP(TForm)
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TFormMain *FormMain;

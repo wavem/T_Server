@@ -259,3 +259,16 @@ void __fastcall TFormMain::btn_HideClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TFormMain::DoMsg(TMessage &_msg) {
+	unsigned int t_wParam = _msg.WParam;
+	int t_lParam = _msg.LParam;
+
+	UnicodeString tempStr = L"";
+	UnicodeString *p = NULL;
+	p = (UnicodeString*)t_wParam;
+	tempStr = *p;
+	//tempStr.sprintf(L"W : %08x, L : %08x", t_wParam, t_lParam);
+	int t_Idx = memo->Lines->Add(tempStr);
+	memo->SetCursor(0, t_Idx);
+}
+//---------------------------------------------------------------------------

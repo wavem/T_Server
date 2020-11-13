@@ -64,7 +64,6 @@ void __fastcall CTCPListenThread::Execute() {
 
 	// Common
 	UnicodeString t_Str = L"";
-	int t_Cnt = 0;
 
 	while(!Terminated) {
 		if(m_eThreadWork != THREAD_RUNNING) {
@@ -73,8 +72,9 @@ void __fastcall CTCPListenThread::Execute() {
 			continue;
 		}
 		m_CurrentTime = IncSecond(m_CurrentTime, 1);
-		//t_Str.sprintf(L"Thread Running Count : %d", t_Cnt++);
-		//FormMain->PrintMsg(t_Str);
+		t_Str = m_CurrentTime.TimeString() + L" ";
+		SendMessage(FormMain->Handle, MYMSG, (unsigned int)&t_Str, 0x10);
+
 		WaitForSingleObject((void*)this->Handle, 1000);
 	}
 	m_eThreadWork = THREAD_TERMINATED;

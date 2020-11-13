@@ -13,6 +13,9 @@
 #define MAX_TCP_CLIENT_LISTENING_COUNT	10
 #define MAX_TCP_CLIENT_USER_COUNT		60
 
+// Message Define
+
+
 enum ThreadWorkingType
 {
 	THREAD_STOP = 0,
