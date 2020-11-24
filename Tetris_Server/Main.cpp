@@ -237,7 +237,18 @@ void __fastcall TFormMain::Exit1Click(TObject *Sender)
 
 void __fastcall TFormMain::TrayIconDblClick(TObject *Sender)
 {
-	FormMain->Show();
+	UnicodeString t_strPW = L"";
+	TFormPassword *dlg = new TFormPassword(NULL, &t_strPW);
+	dlg->ShowModal();
+	delete dlg;
+
+	if(t_strPW == L"1212") {
+		FormMain->Show();
+	} else if(t_strPW == L"") {
+		// Do Nothing
+	} else {
+		ShowMessage(L"PASSWORD INCORRECT");
+	}
 }
 //---------------------------------------------------------------------------
 

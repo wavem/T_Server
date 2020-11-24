@@ -75,6 +75,7 @@
 //---------------------------------------------------------------------------
 
 #include "Define.h"
+#include "Password.h"
 #define MYMSG	40000
 //---------------------------------------------------------------------------
 class CTCPListenThread;
@@ -103,6 +104,7 @@ __published:	// IDE-managed Components
 	TAdvSmoothButton *btn_Terminate;
 	TAdvSmoothButton *btn_Resume;
 	TAdvSmoothButton *btn_GetRunningTime;
+	TdxBarLargeButton *MenuBtn_Lock;
 	void __fastcall Exit1Click(TObject *Sender);
 	void __fastcall TrayIconDblClick(TObject *Sender);
 	void __fastcall MenuBtn_StatusClick(TObject *Sender);
