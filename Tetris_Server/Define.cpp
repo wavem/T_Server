@@ -64,6 +64,11 @@ void __fastcall CTCPListenThread::Execute() {
 
 	// Common
 	UnicodeString t_Str = L"";
+	SOCKET t_Socket = INVALID_SOCKET;
+	struct sockaddr_in	t_client_sockaddr_in;
+	memset(&t_client_sockaddr_in, 0, sizeof(t_client_sockaddr_in));
+	int t_len = sizeof(t_client_sockaddr_in);
+
 
 	while(!Terminated) {
 		if(m_eThreadWork != THREAD_RUNNING) {
@@ -74,6 +79,14 @@ void __fastcall CTCPListenThread::Execute() {
 		m_CurrentTime = IncSecond(m_CurrentTime, 1);
 		t_Str = m_CurrentTime.TimeString() + L" ";
 		SendMessage(FormMain->Handle, MYMSG, (unsigned int)&t_Str, 0x10);
+
+		t_Socket = accept(m_socket_TCP, (struct sockaddr*)&t_client_sockaddr_in, &t_len);
+
+		if(t_Socket != INVALID_SOCKET) {
+			t_Str = L"WELCOME ";
+			SendMessage(FormMain->Handle, MYMSG, (unsigned int)&t_Str, 0x10);
+		}
+
 
 		WaitForSingleObject((void*)this->Handle, 1000);
 	}
