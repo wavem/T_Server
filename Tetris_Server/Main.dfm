@@ -2,8 +2,8 @@ object FormMain: TFormMain
   Left = 0
   Top = 0
   Caption = 'T_Server'
-  ClientHeight = 689
-  ClientWidth = 1111
+  ClientHeight = 858
+  ClientWidth = 1318
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -152,39 +152,43 @@ object FormMain: TFormMain
   object __pnBase: TPanel
     Left = 0
     Top = 124
-    Width = 1111
-    Height = 565
+    Width = 1318
+    Height = 734
     Align = alClient
     BevelOuter = bvNone
     Color = clBlack
     ParentBackground = False
     TabOrder = 0
+    ExplicitWidth = 1347
     object Notebook_Main: TNotebook
       Left = 0
       Top = 0
-      Width = 1111
-      Height = 565
+      Width = 1318
+      Height = 734
       Align = alClient
       TabOrder = 0
+      ExplicitWidth = 1347
       object TPage
         Left = 0
         Top = 0
         Caption = 'Status'
+        ExplicitWidth = 1347
         object _pnBase_01_Status: TPanel
           Left = 0
           Top = 0
-          Width = 1111
-          Height = 565
+          Width = 1318
+          Height = 734
           Align = alClient
           BevelOuter = bvNone
           Color = clBlack
           ParentBackground = False
           TabOrder = 0
+          ExplicitWidth = 1347
           object memo: TAdvMemo
-            Left = 664
-            Top = 32
-            Width = 417
-            Height = 497
+            Left = 1000
+            Top = 33
+            Width = 305
+            Height = 360
             Cursor = crIBeam
             ActiveLineSettings.ShowActiveLine = False
             ActiveLineSettings.ShowActiveLineIndicator = False
@@ -295,8 +299,8 @@ object FormMain: TFormMain
             WordWrap = wwNone
           end
           object btn_Test: TAdvSmoothButton
-            Left = 520
-            Top = 40
+            Left = 1104
+            Top = 408
             Width = 120
             Height = 35
             Cursor = crHandPoint
@@ -337,8 +341,8 @@ object FormMain: TFormMain
             TMSStyle = 0
           end
           object btn_Listen: TAdvSmoothButton
-            Left = 520
-            Top = 81
+            Left = 1104
+            Top = 449
             Width = 120
             Height = 35
             Cursor = crHandPoint
@@ -379,8 +383,8 @@ object FormMain: TFormMain
             TMSStyle = 0
           end
           object btn_Stop: TAdvSmoothButton
-            Left = 520
-            Top = 122
+            Left = 1104
+            Top = 490
             Width = 120
             Height = 35
             Cursor = crHandPoint
@@ -421,8 +425,8 @@ object FormMain: TFormMain
             TMSStyle = 0
           end
           object btn_Terminate: TAdvSmoothButton
-            Left = 520
-            Top = 204
+            Left = 1104
+            Top = 572
             Width = 120
             Height = 35
             Cursor = crHandPoint
@@ -463,8 +467,8 @@ object FormMain: TFormMain
             TMSStyle = 0
           end
           object btn_Resume: TAdvSmoothButton
-            Left = 520
-            Top = 163
+            Left = 1104
+            Top = 531
             Width = 120
             Height = 35
             Cursor = crHandPoint
@@ -505,8 +509,8 @@ object FormMain: TFormMain
             TMSStyle = 0
           end
           object btn_GetRunningTime: TAdvSmoothButton
-            Left = 520
-            Top = 245
+            Left = 1104
+            Top = 613
             Width = 120
             Height = 35
             Cursor = crHandPoint
@@ -546,6 +550,158 @@ object FormMain: TFormMain
             OnClick = btn_GetRunningTimeClick
             TMSStyle = 0
           end
+          object grid: TAdvStringGrid
+            Left = 29
+            Top = 33
+            Width = 940
+            Height = 564
+            Cursor = crDefault
+            TabStop = False
+            ColCount = 10
+            Ctl3D = True
+            DefaultRowHeight = 28
+            DoubleBuffered = True
+            DrawingStyle = gdsClassic
+            FixedCols = 0
+            RowCount = 61
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -13
+            Font.Name = 'Tahoma'
+            Font.Style = [fsBold]
+            Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowSelect]
+            ParentCtl3D = False
+            ParentDoubleBuffered = False
+            ParentFont = False
+            ScrollBars = ssVertical
+            TabOrder = 7
+            HoverRowCells = [hcNormal, hcSelected]
+            ActiveCellFont.Charset = DEFAULT_CHARSET
+            ActiveCellFont.Color = clWindowText
+            ActiveCellFont.Height = -11
+            ActiveCellFont.Name = 'Tahoma'
+            ActiveCellFont.Style = [fsBold]
+            BorderColor = cl3DDkShadow
+            ColumnHeaders.Strings = (
+              'Idx'
+              'State'
+              'ID'
+              'IP'
+              'Port'
+              'Status'
+              'View'
+              'Last Msg'
+              'Connection Time'
+              'Disconnection Time')
+            ControlLook.FixedGradientHoverFrom = clGray
+            ControlLook.FixedGradientHoverTo = clWhite
+            ControlLook.FixedGradientDownFrom = clGray
+            ControlLook.FixedGradientDownTo = clSilver
+            ControlLook.DropDownHeader.Font.Charset = DEFAULT_CHARSET
+            ControlLook.DropDownHeader.Font.Color = clWindowText
+            ControlLook.DropDownHeader.Font.Height = -11
+            ControlLook.DropDownHeader.Font.Name = 'Tahoma'
+            ControlLook.DropDownHeader.Font.Style = []
+            ControlLook.DropDownHeader.Visible = True
+            ControlLook.DropDownHeader.Buttons = <>
+            ControlLook.DropDownFooter.Font.Charset = DEFAULT_CHARSET
+            ControlLook.DropDownFooter.Font.Color = clWindowText
+            ControlLook.DropDownFooter.Font.Height = -11
+            ControlLook.DropDownFooter.Font.Name = 'Tahoma'
+            ControlLook.DropDownFooter.Font.Style = []
+            ControlLook.DropDownFooter.Visible = True
+            ControlLook.DropDownFooter.Buttons = <>
+            DefaultAlignment = taCenter
+            EnableHTML = False
+            Filter = <>
+            FilterDropDown.Font.Charset = DEFAULT_CHARSET
+            FilterDropDown.Font.Color = clWindowText
+            FilterDropDown.Font.Height = -11
+            FilterDropDown.Font.Name = 'Tahoma'
+            FilterDropDown.Font.Style = []
+            FilterDropDown.TextChecked = 'Checked'
+            FilterDropDown.TextUnChecked = 'Unchecked'
+            FilterDropDownClear = '(All)'
+            FilterEdit.TypeNames.Strings = (
+              'Starts with'
+              'Ends with'
+              'Contains'
+              'Not contains'
+              'Equal'
+              'Not equal'
+              'Larger than'
+              'Smaller than'
+              'Clear')
+            FixedColWidth = 30
+            FixedRowHeight = 28
+            FixedFont.Charset = DEFAULT_CHARSET
+            FixedFont.Color = clWindowText
+            FixedFont.Height = -11
+            FixedFont.Name = 'Tahoma'
+            FixedFont.Style = [fsBold]
+            FloatFormat = '%.2f'
+            GridImages = ImgList
+            HoverButtons.Buttons = <>
+            HoverButtons.Position = hbLeftFromColumnLeft
+            HTMLSettings.ImageFolder = 'images'
+            HTMLSettings.ImageBaseName = 'img'
+            IntelliPan = ipNone
+            IntelliZoom = False
+            MouseActions.AutoSizeColOnDblClick = False
+            MouseActions.WheelIncrement = 1
+            MouseActions.WheelAction = waScroll
+            MouseActions.WheelActive = waMouseOver
+            PrintSettings.DateFormat = 'dd/mm/yyyy'
+            PrintSettings.Font.Charset = DEFAULT_CHARSET
+            PrintSettings.Font.Color = clWindowText
+            PrintSettings.Font.Height = -11
+            PrintSettings.Font.Name = 'Tahoma'
+            PrintSettings.Font.Style = []
+            PrintSettings.FixedFont.Charset = DEFAULT_CHARSET
+            PrintSettings.FixedFont.Color = clWindowText
+            PrintSettings.FixedFont.Height = -11
+            PrintSettings.FixedFont.Name = 'Tahoma'
+            PrintSettings.FixedFont.Style = []
+            PrintSettings.HeaderFont.Charset = DEFAULT_CHARSET
+            PrintSettings.HeaderFont.Color = clWindowText
+            PrintSettings.HeaderFont.Height = -11
+            PrintSettings.HeaderFont.Name = 'Tahoma'
+            PrintSettings.HeaderFont.Style = []
+            PrintSettings.FooterFont.Charset = DEFAULT_CHARSET
+            PrintSettings.FooterFont.Color = clWindowText
+            PrintSettings.FooterFont.Height = -11
+            PrintSettings.FooterFont.Name = 'Tahoma'
+            PrintSettings.FooterFont.Style = []
+            PrintSettings.PageNumSep = '/'
+            ScrollSynch = True
+            SearchFooter.FindNextCaption = 'Find &next'
+            SearchFooter.FindPrevCaption = 'Find &previous'
+            SearchFooter.Font.Charset = DEFAULT_CHARSET
+            SearchFooter.Font.Color = clWindowText
+            SearchFooter.Font.Height = -11
+            SearchFooter.Font.Name = 'Tahoma'
+            SearchFooter.Font.Style = []
+            SearchFooter.HighLightCaption = 'Highlight'
+            SearchFooter.HintClose = 'Close'
+            SearchFooter.HintFindNext = 'Find next occurrence'
+            SearchFooter.HintFindPrev = 'Find previous occurrence'
+            SearchFooter.HintHighlight = 'Highlight occurrences'
+            SearchFooter.MatchCaseCaption = 'Match case'
+            ShowSelection = False
+            SortSettings.DefaultFormat = ssAutomatic
+            Version = '7.8.0.1'
+            ColWidths = (
+              30
+              44
+              120
+              120
+              60
+              100
+              80
+              60
+              150
+              148)
+          end
         end
       end
       object TPage
@@ -553,16 +709,18 @@ object FormMain: TFormMain
         Top = 0
         HelpContext = 1
         Caption = 'Setting'
+        ExplicitWidth = 1347
         object _pnBase_02_Setting: TPanel
           Left = 0
           Top = 0
-          Width = 1111
-          Height = 565
+          Width = 1318
+          Height = 734
           Align = alClient
           BevelOuter = bvNone
           Color = clBlack
           ParentBackground = False
           TabOrder = 0
+          ExplicitWidth = 1347
           object btn_Hide: TAdvSmoothButton
             Left = 480
             Top = 200
@@ -612,7 +770,7 @@ object FormMain: TFormMain
   object RibbonMenu: TdxRibbon
     Left = 0
     Top = 0
-    Width = 1111
+    Width = 1318
     Height = 124
     Cursor = crHandPoint
     BarManager = BarMgr
@@ -628,6 +786,7 @@ object FormMain: TFormMain
     Contexts = <>
     TabOrder = 1
     TabStop = False
+    ExplicitWidth = 1347
     object RibbonMenuTab_Main: TdxRibbonTab
       Active = True
       Caption = 'Menu'
@@ -1395,5 +1554,8 @@ object FormMain: TFormMain
         0000000000000000000000000000000000000000000000000000}
       Width = 60
     end
+  end
+  object ImgList: TImageList
+    Left = 548
   end
 end

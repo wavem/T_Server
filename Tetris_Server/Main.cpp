@@ -69,6 +69,9 @@
 #pragma link "dxSkinXmas2008Blue"
 #pragma link "AdvSmoothButton"
 #pragma link "AdvMemo"
+#pragma link "AdvGrid"
+#pragma link "AdvObj"
+#pragma link "BaseGrid"
 #pragma resource "*.dfm"
 TFormMain *FormMain;
 //---------------------------------------------------------------------------
@@ -98,6 +101,9 @@ void __fastcall TFormMain::InitProgram() {
 
 	// Init
 	m_TCPListenThread = NULL;
+
+	// Init Grid
+	InitGrid();
 
 	// Socket
 	WSADATA data;
@@ -133,6 +139,42 @@ void __fastcall TFormMain::ExitProgram() {
 
 	// Socket
 	WSACleanup();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFormMain::InitGrid() {
+	// Common
+	UnicodeString tempStr = L"";
+
+	// Load Images
+	TBitmap* t_bmp = new TBitmap;
+	t_bmp->LoadFromFile(L".\\Images\\green.bmp");
+	ImgList->Add(t_bmp, t_bmp);
+	t_bmp->FreeImage();
+
+	t_bmp->LoadFromFile(L".\\Images\\gray.bmp");
+	ImgList->Add(t_bmp, t_bmp);
+	t_bmp->FreeImage();
+
+	delete t_bmp;
+
+	// Setting
+	grid->ControlLook->NoDisabledButtonLook = true;
+
+	// Init Grid
+	int t_RowCnt = grid->RowCount;
+	for(int i = 1 ; i < t_RowCnt ; i++) {
+		grid->Cells[0][i] = i; // Idx
+		grid->AddImageIdx(1, i, 1, haCenter, Advgrid::vaCenter); // State
+		grid->Cells[2][i] = L"basslover7022"; // ID
+		grid->Cells[3][i] = L"192.168.220.201"; // IP
+		grid->Cells[4][i] = L"65535"; // Port
+		grid->Cells[5][i] = L"Lobby"; // Status
+		grid->AddButton(6, i, 70, 24, L"View", haCenter, Advgrid::vaCenter); // View
+		grid->Cells[7][i] = L"07"; // Last Message
+		grid->Cells[8][i] = L"2020-08-04 14:22:33"; // Connection Time
+		grid->Cells[9][i] = L"2020-08-04 14:22:33"; // Disconnection Time
+	}
 }
 //---------------------------------------------------------------------------
 

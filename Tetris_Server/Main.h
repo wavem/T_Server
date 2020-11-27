@@ -76,6 +76,11 @@
 
 #include "Define.h"
 #include "Password.h"
+#include "AdvGrid.hpp"
+#include "AdvObj.hpp"
+#include "BaseGrid.hpp"
+#include <Vcl.Grids.hpp>
+#include <Vcl.ImgList.hpp>
 #define MYMSG	40000
 //---------------------------------------------------------------------------
 class CTCPListenThread;
@@ -105,6 +110,8 @@ __published:	// IDE-managed Components
 	TAdvSmoothButton *btn_Resume;
 	TAdvSmoothButton *btn_GetRunningTime;
 	TdxBarLargeButton *MenuBtn_Lock;
+	TAdvStringGrid *grid;
+	TImageList *ImgList;
 	void __fastcall Exit1Click(TObject *Sender);
 	void __fastcall TrayIconDblClick(TObject *Sender);
 	void __fastcall MenuBtn_StatusClick(TObject *Sender);
@@ -129,6 +136,7 @@ public: // Routine
 	void __fastcall InitProgram();
 	void __fastcall ExitProgram();
 	void __fastcall PrintMsg(UnicodeString _str);
+	void __fastcall InitGrid();
 
 
 	void __fastcall DoMsg(TMessage &_msg);
