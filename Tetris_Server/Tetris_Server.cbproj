@@ -113,6 +113,10 @@
         <BCC_PCHName_Clang>Tetris_Server_PCH1.h</BCC_PCHName_Clang>
     </PropertyGroup>
     <ItemGroup>
+        <CppCompile Include="ClientThread.cpp">
+            <DependentOn>ClientThread.h</DependentOn>
+            <BuildOrder>6</BuildOrder>
+        </CppCompile>
         <CppCompile Include="Define.cpp">
             <DependentOn>Define.h</DependentOn>
             <BuildOrder>3</BuildOrder>
@@ -129,14 +133,18 @@
             <DependentOn>Password.h</DependentOn>
             <BuildOrder>4</BuildOrder>
         </CppCompile>
+        <CppCompile Include="TCPListenThread.cpp">
+            <DependentOn>TCPListenThread.h</DependentOn>
+            <BuildOrder>5</BuildOrder>
+        </CppCompile>
         <CppCompile Include="Tetris_Server.cpp">
             <BuildOrder>0</BuildOrder>
         </CppCompile>
         <PCHCompile Include="Tetris_Server_PCH1.h">
             <BuildOrder>1</BuildOrder>
         </PCHCompile>
-        <FormResources Include="Main.dfm"/>
         <FormResources Include="Password.dfm"/>
+        <FormResources Include="Main.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

@@ -2,7 +2,6 @@
 
 #pragma hdrstop
 
-#include "Define.h"
+#include "ClientThread.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
-

@@ -129,6 +129,12 @@ void __fastcall TFormMain::InitProgram() {
 
 void __fastcall TFormMain::ExitProgram() {
 
+	// Delete TCP Listen Socket
+	if(m_TCPListenSocket != INVALID_SOCKET) {
+		closesocket(m_TCPListenSocket);
+		m_TCPListenSocket = INVALID_SOCKET;
+	}
+
 	// Turn Off TCP Listen Thread Routine
 	if(m_TCPListenThread) {
 		m_TCPListenThread->DoTerminate();
@@ -187,10 +193,17 @@ void __fastcall TFormMain::btn_TestClick(TObject *Sender)
 void __fastcall TFormMain::btn_ListenClick(TObject *Sender)
 {
 	if(m_TCPListenThread) {
-		PrintMsg(L"TCP Listen Thread Already Running...");
+		PrintMsg(L"Server is already listening...");
 		return;
 	}
-	m_TCPListenThread = new CTCPListenThread;
+
+	if(CreateTCPListenSocket() == false) {
+		return;
+	}
+
+	PrintMsg(L"Success to create Listening Socket");
+
+	m_TCPListenThread = new CTCPListenThread(&m_TCPListenSocket);
 	PrintMsg(m_TCPListenThread->m_msg);
 	if(m_TCPListenThread->GetThreadStatus() == THREAD_TERMINATED) {
 		PrintMsg(L"TCP Listen Thread Fail...");
@@ -203,6 +216,49 @@ void __fastcall TFormMain::btn_ListenClick(TObject *Sender)
 		return;
 	}
 	PrintMsg(L"TCP Listen Thread Start...");
+}
+//---------------------------------------------------------------------------
+
+bool __fastcall TFormMain::CreateTCPListenSocket() {
+
+	// Common
+	UnicodeString tempStr = L"";
+
+	// Create Listen Socket
+	m_TCPListenSocket = socket(AF_INET, SOCK_STREAM, 0);
+	if(m_TCPListenSocket == INVALID_SOCKET) {
+		tempStr = L"Socket create fail";
+		PrintMsg(tempStr);
+		return false;
+	}
+
+	struct sockaddr_in	t_sockaddr_in;
+	memset(&t_sockaddr_in, 0, sizeof(t_sockaddr_in));
+	t_sockaddr_in.sin_family = AF_INET;
+	t_sockaddr_in.sin_addr.s_addr = htonl(INADDR_ANY);
+	t_sockaddr_in.sin_port = htons(TCP_SERVER_PORT);
+
+	// Set Socket Option : REUSE
+	int t_SockOpt = 1;
+	setsockopt(m_TCPListenSocket, SOL_SOCKET, SO_REUSEADDR, (char*)&t_SockOpt, sizeof(t_SockOpt));
+
+	// Bint Socket
+	if(bind(m_TCPListenSocket, (struct sockaddr*)&t_sockaddr_in, sizeof(t_sockaddr_in)) < 0) {
+		tempStr = L"Socket bind fail";
+		PrintMsg(tempStr);
+		return false;
+	}
+
+	// Listen Socket
+	if(listen(m_TCPListenSocket, MAX_TCP_CLIENT_LISTENING_COUNT) < 0) {
+		tempStr = L"Socket Listen Fail";
+		PrintMsg(tempStr);
+		return false;
+	}
+
+	tempStr = L"Socket is ready";
+	PrintMsg(tempStr);
+	return true;
 }
 //---------------------------------------------------------------------------
 
@@ -234,6 +290,7 @@ void __fastcall TFormMain::btn_TerminateClick(TObject *Sender)
 		PrintMsg(L"There is no TCP Listen Thread");
 		return;
 	}
+
 	m_TCPListenThread->DoTerminate();
 	PrintMsg(m_TCPListenThread->m_msg);
 	if(m_TCPListenThread->GetThreadStatus() == THREAD_TERMINATED) {

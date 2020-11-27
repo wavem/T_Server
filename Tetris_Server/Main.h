@@ -75,15 +75,19 @@
 //---------------------------------------------------------------------------
 
 #include "Define.h"
+#include "TCPListenThread.h"
+#include "ClientThread.h"
 #include "Password.h"
 #include "AdvGrid.hpp"
 #include "AdvObj.hpp"
 #include "BaseGrid.hpp"
 #include <Vcl.Grids.hpp>
 #include <Vcl.ImgList.hpp>
-#define MYMSG	40000
+
 //---------------------------------------------------------------------------
 class CTCPListenThread;
+class ClientThread;
+
 class TFormMain : public TForm
 {
 __published:	// IDE-managed Components
@@ -102,16 +106,17 @@ __published:	// IDE-managed Components
 	TdxBarLargeButton *MenuBtn_Version;
 	TPanel *_pnBase_02_Setting;
 	TAdvSmoothButton *btn_Hide;
+	TdxBarLargeButton *MenuBtn_Lock;
+	TAdvStringGrid *grid;
+	TImageList *ImgList;
 	TAdvMemo *memo;
 	TAdvSmoothButton *btn_Test;
 	TAdvSmoothButton *btn_Listen;
 	TAdvSmoothButton *btn_Stop;
-	TAdvSmoothButton *btn_Terminate;
 	TAdvSmoothButton *btn_Resume;
+	TAdvSmoothButton *btn_Terminate;
 	TAdvSmoothButton *btn_GetRunningTime;
-	TdxBarLargeButton *MenuBtn_Lock;
-	TAdvStringGrid *grid;
-	TImageList *ImgList;
+	TAdvMemo *memo_log;
 	void __fastcall Exit1Click(TObject *Sender);
 	void __fastcall TrayIconDblClick(TObject *Sender);
 	void __fastcall MenuBtn_StatusClick(TObject *Sender);
@@ -128,22 +133,31 @@ private:	// User declarations
 public:		// User declarations
 	__fastcall TFormMain(TComponent* Owner);
 
-
+// START TETRIS SERVER
 public: // Member
 	CTCPListenThread *m_TCPListenThread;
+	SOCKET m_TCPListenSocket;
+	ClientThread *m_Client[MAX_TCP_CLIENT_USER_COUNT];
+	SOCKET m_ClientSocket[MAX_TCP_CLIENT_USER_COUNT];
 
-public: // Routine
+
+public: // BASIC FUNCTIONS
 	void __fastcall InitProgram();
 	void __fastcall ExitProgram();
 	void __fastcall PrintMsg(UnicodeString _str);
 	void __fastcall InitGrid();
+
+public: // SOCKET FUNCTIONS
+	bool __fastcall CreateTCPListenSocket();
+
+
 
 
 	void __fastcall DoMsg(TMessage &_msg);
 
 
 BEGIN_MESSAGE_MAP
-	MESSAGE_HANDLER(MYMSG, TMessage, DoMsg)
+	MESSAGE_HANDLER(MSG_MEMO, TMessage, DoMsg)
 END_MESSAGE_MAP(TForm)
 };
 //---------------------------------------------------------------------------
