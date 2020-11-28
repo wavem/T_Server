@@ -100,7 +100,12 @@ void __fastcall TFormMain::InitProgram() {
 	TrayIcon->ShowBalloonHint();
 
 	// Init
+	m_ClientCnt = 0;
 	m_TCPListenThread = NULL;
+	for(int i = 0 ; i < MAX_TCP_CLIENT_USER_COUNT ; i++) {
+		m_ClientSocket[i] = INVALID_SOCKET;
+		m_Client[i] = NULL;
+	}
 
 	// Init Grid
 	InitGrid();
@@ -143,7 +148,23 @@ void __fastcall TFormMain::ExitProgram() {
 		m_TCPListenThread = NULL;
 	}
 
-	// Socket
+	// Delete Client Socket
+	for(int i = 0 ; i < MAX_TCP_CLIENT_USER_COUNT ; i++) {
+		if(m_ClientSocket[i] != INVALID_SOCKET) {
+			closesocket(m_ClientSocket[i]);
+			m_ClientSocket[i] = INVALID_SOCKET;
+		}
+	}
+
+	// Delete Client Thread
+	for(int i = 0 ; i < MAX_TCP_CLIENT_USER_COUNT ; i++) {
+		if(m_Client[i]) {
+			m_Client[i]->Terminate();
+			delete m_Client[i];
+		}
+	}
+
+	// Socket Clean Up
 	WSACleanup();
 }
 //---------------------------------------------------------------------------
@@ -172,14 +193,14 @@ void __fastcall TFormMain::InitGrid() {
 	for(int i = 1 ; i < t_RowCnt ; i++) {
 		grid->Cells[0][i] = i; // Idx
 		grid->AddImageIdx(1, i, 1, haCenter, Advgrid::vaCenter); // State
-		grid->Cells[2][i] = L"basslover7022"; // ID
-		grid->Cells[3][i] = L"192.168.220.201"; // IP
-		grid->Cells[4][i] = L"65535"; // Port
-		grid->Cells[5][i] = L"Lobby"; // Status
+		//grid->Cells[2][i] = L"basslover7022"; // ID
+		//grid->Cells[3][i] = L"192.168.220.201"; // IP
+		//grid->Cells[4][i] = L"65535"; // Port
+		//grid->Cells[5][i] = L"Lobby"; // Status
 		grid->AddButton(6, i, 70, 24, L"View", haCenter, Advgrid::vaCenter); // View
-		grid->Cells[7][i] = L"07"; // Last Message
-		grid->Cells[8][i] = L"2020-08-04 14:22:33"; // Connection Time
-		grid->Cells[9][i] = L"2020-08-04 14:22:33"; // Disconnection Time
+		//grid->Cells[7][i] = L"07"; // Last Message
+		//grid->Cells[8][i] = L"2020-08-04 14:22:33"; // Connection Time
+		//grid->Cells[9][i] = L"2020-08-04 14:22:33"; // Disconnection Time
 	}
 }
 //---------------------------------------------------------------------------
@@ -197,24 +218,11 @@ void __fastcall TFormMain::btn_ListenClick(TObject *Sender)
 		return;
 	}
 
-	if(CreateTCPListenSocket() == false) {
-		return;
-	}
-
+	if(CreateTCPListenSocket() == false) return;
 	PrintMsg(L"Success to create Listening Socket");
 
-	m_TCPListenThread = new CTCPListenThread(&m_TCPListenSocket);
-	PrintMsg(m_TCPListenThread->m_msg);
-	if(m_TCPListenThread->GetThreadStatus() == THREAD_TERMINATED) {
-		PrintMsg(L"TCP Listen Thread Fail...");
-
-		// Delete Thread
-		m_TCPListenThread->Terminate();
-		delete m_TCPListenThread;
-		m_TCPListenThread = NULL;
-		PrintMsg(L"TCP Listen Thread Terminated");
-		return;
-	}
+	// Create TCP Listen Thread
+	m_TCPListenThread = new CTCPListenThread(&m_TCPListenSocket, m_ClientSocket, &m_ClientCnt);
 	PrintMsg(L"TCP Listen Thread Start...");
 }
 //---------------------------------------------------------------------------
@@ -242,7 +250,7 @@ bool __fastcall TFormMain::CreateTCPListenSocket() {
 	int t_SockOpt = 1;
 	setsockopt(m_TCPListenSocket, SOL_SOCKET, SO_REUSEADDR, (char*)&t_SockOpt, sizeof(t_SockOpt));
 
-	// Bint Socket
+	// Bind Socket
 	if(bind(m_TCPListenSocket, (struct sockaddr*)&t_sockaddr_in, sizeof(t_sockaddr_in)) < 0) {
 		tempStr = L"Socket bind fail";
 		PrintMsg(tempStr);
@@ -292,7 +300,6 @@ void __fastcall TFormMain::btn_TerminateClick(TObject *Sender)
 	}
 
 	m_TCPListenThread->DoTerminate();
-	PrintMsg(m_TCPListenThread->m_msg);
 	if(m_TCPListenThread->GetThreadStatus() == THREAD_TERMINATED) {
 		m_TCPListenThread->Terminate();
 		delete m_TCPListenThread;
@@ -311,8 +318,8 @@ void __fastcall TFormMain::btn_GetRunningTimeClick(TObject *Sender)
 		return;
 	}
 	TTime t_StartTime, t_CurrentTime;
-	t_StartTime = m_TCPListenThread->GetStartTime();
-	t_CurrentTime = m_TCPListenThread->GetCurrentTime();
+	//t_StartTime = m_TCPListenThread->GetStartTime();
+	//t_CurrentTime = m_TCPListenThread->GetCurrentTime();
 	PrintMsg(L"Start : " + t_StartTime.TimeString() + L" ");
 	PrintMsg(L"Current : " + t_CurrentTime.TimeString() + L" ");
 }
@@ -321,6 +328,12 @@ void __fastcall TFormMain::btn_GetRunningTimeClick(TObject *Sender)
 void __fastcall TFormMain::PrintMsg(UnicodeString _str) {
 	int t_Idx = memo->Lines->Add(_str);
 	memo->SetCursor(0, t_Idx);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFormMain::PrintLog(UnicodeString _str) {
+	int t_Idx = memo_log->Lines->Add(_str);
+	memo_log->SetCursor(0, t_Idx);
 }
 //---------------------------------------------------------------------------
 
@@ -369,7 +382,7 @@ void __fastcall TFormMain::btn_HideClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TFormMain::DoMsg(TMessage &_msg) {
+void __fastcall TFormMain::PrintThreadMessage(TMessage &_msg) {
 	unsigned int t_wParam = _msg.WParam;
 	int t_lParam = _msg.LParam;
 
@@ -382,3 +395,71 @@ void __fastcall TFormMain::DoMsg(TMessage &_msg) {
 	memo->SetCursor(0, t_Idx);
 }
 //---------------------------------------------------------------------------
+
+void __fastcall TFormMain::tm_FindClientTimer(TObject *Sender)
+{
+	// Common
+	UnicodeString tempStr = L"";
+
+	BYTE t_Buffer[5] = {0, };
+	t_Buffer[0] = 0x01;
+	t_Buffer[1] = 0x02;
+	t_Buffer[2] = 0x03;
+	t_Buffer[3] = 0x04;
+	t_Buffer[4] = 0x05;
+
+	int t_rst = 0;
+
+	for(int i = 0 ; i < MAX_TCP_CLIENT_USER_COUNT ; i++) {
+		if(m_ClientSocket[i] != INVALID_SOCKET) {
+			t_rst = send(m_ClientSocket[i], t_Buffer, 5, 0);
+			//tempStr.sprintf(L"Socket[%d] -> Send Result : %d", i, t_rst);
+			//PrintLog(tempStr);
+			t_rst = 0;
+		}
+	}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFormMain::AddClient(TMessage &_msg) {
+
+	// Common
+	UnicodeString tempStr = L"";
+	UnicodeString t_IPStr = L"";
+	UnicodeString t_DateTimeStr = L"";
+	unsigned int t_wParam = _msg.WParam;
+	CLIENTINFO* p_ClientInfo;
+	CLIENTINFO t_ClientInfo;
+	memset(&t_ClientInfo, 0, sizeof(t_ClientInfo));
+	int t_Port = 0;
+	int t_ClientIdx = 0;
+	TDateTime t_DateTime;
+
+	p_ClientInfo = (CLIENTINFO*)t_wParam;
+	t_ClientInfo = *p_ClientInfo;
+
+	t_IPStr = inet_ntoa(t_ClientInfo.ClientSockAddrIn.sin_addr);
+	t_Port = ntohs(t_ClientInfo.ClientSockAddrIn.sin_port);
+	t_DateTime = t_ClientInfo.ConnectionDateTime;
+	t_ClientIdx = t_ClientInfo.ClientIndex;
+
+	t_DateTimeStr = t_DateTime.FormatString(L"yyyy-mm-dd, hh:mm:ss");
+
+
+	// Create Client Thread
+	//ClientThread *m_Client[MAX_TCP_CLIENT_USER_COUNT];
+
+
+	// Print Client Info into Grid
+	int t_FixedIdx = t_ClientIdx + 1; // Re-Fix Index for Print Grid
+	tempStr.sprintf(L"Client[%02X]", t_ClientIdx); // Temporary Creating Client ID
+	grid->RemoveImageIdx(1, t_FixedIdx);
+	grid->AddImageIdx(1, t_FixedIdx, 0, haCenter, Advgrid::vaCenter); // Set Green Icon
+	grid->Cells[2][t_FixedIdx] = tempStr; // Client ID
+	grid->Cells[3][t_FixedIdx] = t_IPStr; // Client IP
+	grid->Cells[4][t_FixedIdx] = t_Port; // Client Port
+	grid->Cells[5][t_FixedIdx] = L"Connected"; // Status
+	grid->Cells[8][t_FixedIdx] = t_DateTimeStr;
+}
+//---------------------------------------------------------------------------
+

@@ -117,6 +117,7 @@ __published:	// IDE-managed Components
 	TAdvSmoothButton *btn_Terminate;
 	TAdvSmoothButton *btn_GetRunningTime;
 	TAdvMemo *memo_log;
+	TTimer *tm_FindClient;
 	void __fastcall Exit1Click(TObject *Sender);
 	void __fastcall TrayIconDblClick(TObject *Sender);
 	void __fastcall MenuBtn_StatusClick(TObject *Sender);
@@ -129,6 +130,7 @@ __published:	// IDE-managed Components
 	void __fastcall btn_TerminateClick(TObject *Sender);
 	void __fastcall btn_ResumeClick(TObject *Sender);
 	void __fastcall btn_GetRunningTimeClick(TObject *Sender);
+	void __fastcall tm_FindClientTimer(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TFormMain(TComponent* Owner);
@@ -139,25 +141,33 @@ public: // Member
 	SOCKET m_TCPListenSocket;
 	ClientThread *m_Client[MAX_TCP_CLIENT_USER_COUNT];
 	SOCKET m_ClientSocket[MAX_TCP_CLIENT_USER_COUNT];
+	int m_ClientCnt;
 
 
 public: // BASIC FUNCTIONS
 	void __fastcall InitProgram();
 	void __fastcall ExitProgram();
 	void __fastcall PrintMsg(UnicodeString _str);
+	void __fastcall PrintLog(UnicodeString _str);
 	void __fastcall InitGrid();
 
 public: // SOCKET FUNCTIONS
 	bool __fastcall CreateTCPListenSocket();
 
+public: // ETC UI FUNCTIONS
 
 
 
-	void __fastcall DoMsg(TMessage &_msg);
+
+
+public: // Thread Message Handler
+	void __fastcall PrintThreadMessage(TMessage &_msg);
+	void __fastcall AddClient(TMessage &_msg);
 
 
 BEGIN_MESSAGE_MAP
-	MESSAGE_HANDLER(MSG_MEMO, TMessage, DoMsg)
+	MESSAGE_HANDLER(MSG_MEMO, TMessage, PrintThreadMessage)
+	MESSAGE_HANDLER(MSG_NEW_CONNECTION, TMessage, AddClient)
 END_MESSAGE_MAP(TForm)
 };
 //---------------------------------------------------------------------------

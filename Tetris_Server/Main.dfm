@@ -3,7 +3,7 @@ object FormMain: TFormMain
   Top = 0
   Caption = 'T_Server'
   ClientHeight = 858
-  ClientWidth = 1360
+  ClientWidth = 1468
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -152,7 +152,7 @@ object FormMain: TFormMain
   object __pnBase: TPanel
     Left = 0
     Top = 124
-    Width = 1360
+    Width = 1468
     Height = 734
     Align = alClient
     BevelOuter = bvNone
@@ -166,7 +166,6 @@ object FormMain: TFormMain
       Top = 0
       Width = 1009
       Height = 734
-      PageIndex = 1
       TabOrder = 0
       object TPage
         Left = 0
@@ -187,7 +186,7 @@ object FormMain: TFormMain
           object grid: TAdvStringGrid
             Left = 5
             Top = 6
-            Width = 940
+            Width = 947
             Height = 592
             Cursor = crDefault
             TabStop = False
@@ -333,8 +332,8 @@ object FormMain: TFormMain
               100
               80
               60
-              150
-              148)
+              156
+              156)
           end
         end
       end
@@ -655,7 +654,7 @@ object FormMain: TFormMain
     object memo: TAdvMemo
       Left = 1015
       Top = 6
-      Width = 338
+      Width = 446
       Height = 355
       Cursor = crIBeam
       ActiveLineSettings.ShowActiveLine = False
@@ -769,7 +768,7 @@ object FormMain: TFormMain
     object memo_log: TAdvMemo
       Left = 1015
       Top = 367
-      Width = 338
+      Width = 446
       Height = 355
       Cursor = crIBeam
       ActiveLineSettings.ShowActiveLine = False
@@ -884,7 +883,7 @@ object FormMain: TFormMain
   object RibbonMenu: TdxRibbon
     Left = 0
     Top = 0
-    Width = 1360
+    Width = 1468
     Height = 124
     Cursor = crHandPoint
     BarManager = BarMgr
@@ -1671,5 +1670,10 @@ object FormMain: TFormMain
   end
   object ImgList: TImageList
     Left = 548
+  end
+  object tm_FindClient: TTimer
+    Interval = 500
+    OnTimer = tm_FindClientTimer
+    Left = 576
   end
 end
