@@ -107,7 +107,7 @@
         <DynamicRTL>false</DynamicRTL>
         <UsePackages>false</UsePackages>
         <LinkPackageStatics>rtl.lib;vcl.lib;cxLibraryRS21.lib;dxGDIPlusRS21.lib;dxCoreRS21.lib;dxThemeRS21.lib;vclx.lib;dxBarRS21.lib;dxComnRS21.lib;dxRibbonRS21.lib;cxEditorsRS21.lib;cxDataRS21.lib;dbrtl.lib;vclimg.lib;vcldb.lib;dxSkinsCoreRS21.lib;dxSkinBlackRS21.lib;dxSkinBlueprintRS21.lib;dxSkinBlueRS21.lib;dxSkinCaramelRS21.lib;dxSkinCoffeeRS21.lib;dxSkinDarkRoomRS21.lib;dxSkinDarkSideRS21.lib;dxSkinDevExpressDarkStyleRS21.lib;dxSkinDevExpressStyleRS21.lib;dxSkinFoggyRS21.lib;dxSkinGlassOceansRS21.lib;dxSkinHighContrastRS21.lib;dxSkiniMaginaryRS21.lib;dxSkinLilianRS21.lib;dxSkinLiquidSkyRS21.lib;dxSkinLondonLiquidSkyRS21.lib;dxSkinMcSkinRS21.lib;dxSkinMetropolisDarkRS21.lib;dxSkinMetropolisRS21.lib;dxSkinMoneyTwinsRS21.lib;dxSkinOffice2007BlackRS21.lib;dxSkinOffice2007BlueRS21.lib;dxSkinOffice2007GreenRS21.lib;dxSkinOffice2007PinkRS21.lib;dxSkinOffice2007SilverRS21.lib;dxSkinOffice2010BlackRS21.lib;dxSkinOffice2010BlueRS21.lib;dxSkinOffice2010SilverRS21.lib;dxSkinOffice2013DarkGrayRS21.lib;dxSkinOffice2013LightGrayRS21.lib;dxSkinOffice2013WhiteRS21.lib;dxSkinPumpkinRS21.lib;dxSkinSevenClassicRS21.lib;dxSkinSevenRS21.lib;dxSkinSharpPlusRS21.lib;dxSkinSharpRS21.lib;dxSkinSilverRS21.lib;dxSkinSpringTimeRS21.lib;dxSkinStardustRS21.lib;dxSkinSummer2008RS21.lib;dxSkinTheAsphaltWorldRS21.lib;dxSkinValentineRS21.lib;dxSkinVisualStudio2013BlueRS21.lib;dxSkinVisualStudio2013DarkRS21.lib;dxSkinVisualStudio2013LightRS21.lib;dxSkinVS2010RS21.lib;dxSkinWhiteprintRS21.lib;dxSkinXmas2008BlueRS21.lib;dxRibbonCustomizationFormRS21.lib;cxTreeListRS21.lib;cxPageControlRS21.lib;cxExportRS21.lib;dxSpreadSheetRS21.lib;dxLayoutControlRS21.lib;xmlrtl.lib;cxBarEditItemRS21.lib;dxSkinsdxBarPainterRS21.lib;dxSkinsdxRibbonPainterRS21.lib;tmsexdXE7.lib;DbxCommonDriver.lib;dsnap.lib;soaprtl.lib;inet.lib;tmsdXE7.lib;adortl.lib;vclactnband.lib;VclSmp.lib</LinkPackageStatics>
-        <ILINK_LibraryPath>C:\Users\Public\Documents\Embarcadero\Studio\15.0\DCP\;C:\Program Files (x86)\DevExpress VCL\Library\RS21\;$(BDS)\lib\win32\release\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
+        <ILINK_LibraryPath>C:\Users\WAVE\Documents\tmssoftware\TMS Component Pack\BuilderXE7\Win32\Debug\;C:\Users\Public\Documents\Embarcadero\Studio\15.0\DCP\;C:\Program Files (x86)\DevExpress VCL\Library\RS21\;$(BDS)\lib\win32\release\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <Defines>NDEBUG;$(Defines)</Defines>
@@ -147,8 +147,15 @@
         <PCHCompile Include="Tetris_Server_PCH1.h">
             <BuildOrder>1</BuildOrder>
         </PCHCompile>
+        <CppCompile Include="Version.cpp">
+            <Form>Form1</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>Version.h</DependentOn>
+            <BuildOrder>7</BuildOrder>
+        </CppCompile>
         <FormResources Include="Password.dfm"/>
         <FormResources Include="Main.dfm"/>
+        <FormResources Include="Version.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
