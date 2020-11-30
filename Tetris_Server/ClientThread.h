@@ -9,13 +9,23 @@
 
 class ClientThread : public TThread {
 private:
+	ThreadWorkingType	m_eThreadWork;
+	SOCKET* mp_socket;
 
 public:
-	__fastcall Client();
+	CLIENTINFO info;
+
+public:
+	__fastcall ClientThread(SOCKET *_p_socket, CLIENTINFO _info);
+	__fastcall ~ClientThread();
+
+	void __fastcall Execute();
+	void __fastcall Stop();
+	void __fastcall Resume();
+	void __fastcall DoTerminate();
+	ThreadWorkingType __fastcall GetThreadStatus();
 };
-
-
-
+//---------------------------------------------------------------------------
 
 
 

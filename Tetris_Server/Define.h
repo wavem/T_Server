@@ -17,6 +17,15 @@
 #define MSG_MEMO	40000
 #define MSG_NEW_CONNECTION	40001
 
+// THREAD STATUS
+enum ThreadWorkingType
+{
+	THREAD_STOP = 0,
+	THREAD_RUNNING = 1,
+	THREAD_TERMINATED = 2,
+};
+//---------------------------------------------------------------------------
+
 // CLIENT INFORMATION
 typedef struct ST_CLIENTINFO {
 	int ClientIndex;
@@ -24,6 +33,9 @@ typedef struct ST_CLIENTINFO {
 	struct sockaddr_in ClientSockAddrIn;
 
 } CLIENTINFO;
+//---------------------------------------------------------------------------
+
+
 
 
 

@@ -435,31 +435,93 @@ void __fastcall TFormMain::AddClient(TMessage &_msg) {
 	int t_ClientIdx = 0;
 	TDateTime t_DateTime;
 
+	// Receive Client Info
 	p_ClientInfo = (CLIENTINFO*)t_wParam;
 	t_ClientInfo = *p_ClientInfo;
 
-	t_IPStr = inet_ntoa(t_ClientInfo.ClientSockAddrIn.sin_addr);
-	t_Port = ntohs(t_ClientInfo.ClientSockAddrIn.sin_port);
-	t_DateTime = t_ClientInfo.ConnectionDateTime;
+	// Extract Client Index
 	t_ClientIdx = t_ClientInfo.ClientIndex;
 
-	t_DateTimeStr = t_DateTime.FormatString(L"yyyy-mm-dd, hh:mm:ss");
-
-
 	// Create Client Thread
-	//ClientThread *m_Client[MAX_TCP_CLIENT_USER_COUNT];
+	m_Client[t_ClientIdx] = new ClientThread(&(m_ClientSocket[t_ClientIdx]) ,t_ClientInfo);
 
+	// Refresh Client Info Grid
+	RefreshClientInfoGrid();
+}
+//---------------------------------------------------------------------------
 
-	// Print Client Info into Grid
-	int t_FixedIdx = t_ClientIdx + 1; // Re-Fix Index for Print Grid
-	tempStr.sprintf(L"Client[%02X]", t_ClientIdx); // Temporary Creating Client ID
-	grid->RemoveImageIdx(1, t_FixedIdx);
-	grid->AddImageIdx(1, t_FixedIdx, 0, haCenter, Advgrid::vaCenter); // Set Green Icon
-	grid->Cells[2][t_FixedIdx] = tempStr; // Client ID
-	grid->Cells[3][t_FixedIdx] = t_IPStr; // Client IP
-	grid->Cells[4][t_FixedIdx] = t_Port; // Client Port
-	grid->Cells[5][t_FixedIdx] = L"Connected"; // Status
-	grid->Cells[8][t_FixedIdx] = t_DateTimeStr;
+void __fastcall TFormMain::RefreshClientInfoGrid() {
+
+	// Common
+	UnicodeString tempStr = L"";
+	int t_FixedIdx = 0;
+	UnicodeString t_IPStr = L"";
+	UnicodeString t_DateTimeStr = L"";
+	int t_Port = 0;
+	int t_ClientIdx = 0;
+	TDateTime t_DateTime;
+
+	// Refresh Routine
+	for(int i = 0 ; i < MAX_TCP_CLIENT_USER_COUNT ; i++) {
+		// Fix Index Number for Grid
+		t_FixedIdx = i + 1;
+
+		// Check if Thread is NULL, Reset Grid Row
+		if(m_Client[i] == NULL) {
+			grid->RemoveImageIdx(1, t_FixedIdx);
+			grid->Cells[2][t_FixedIdx] = L""; // Client ID
+			grid->Cells[3][t_FixedIdx] = L""; // Client IP
+			grid->Cells[4][t_FixedIdx] = L""; // Client Port
+			grid->Cells[5][t_FixedIdx] = L""; // Status
+			grid->Cells[8][t_FixedIdx] = L""; // Connected Date Time
+			continue;
+		}
+
+		// Parsing from Client Thread (For Test)
+		t_IPStr = inet_ntoa(m_Client[i]->info.ClientSockAddrIn.sin_addr);
+		t_Port = ntohs(m_Client[i]->info.ClientSockAddrIn.sin_port);
+		t_DateTime = m_Client[i]->info.ConnectionDateTime;
+		t_ClientIdx = m_Client[i]->info.ClientIndex; // Re-Parsing(Re-Extracting)
+
+		// Set Date Format String
+		t_DateTimeStr = t_DateTime.FormatString(L"yyyy-mm-dd, hh:mm:ss");
+
+		// Re Draw Grid
+		grid->RemoveImageIdx(1, t_FixedIdx);
+		grid->AddImageIdx(1, t_FixedIdx, 0, haCenter, Advgrid::vaCenter); // Set Green Icon
+		tempStr.sprintf(L"Client[%02X]", t_ClientIdx); // Temporary Creating Client ID
+		grid->Cells[2][t_FixedIdx] = tempStr; // Client ID
+		grid->Cells[3][t_FixedIdx] = t_IPStr; // Client IP
+		grid->Cells[4][t_FixedIdx] = t_Port; // Client Port
+		grid->Cells[5][t_FixedIdx] = L"Connected"; // Status
+		grid->Cells[8][t_FixedIdx] = t_DateTimeStr; // Connected Date Time
+	}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFormMain::tm_DeleteClientTimer(TObject *Sender)
+{
+	for(int i = 0 ; i < MAX_TCP_CLIENT_USER_COUNT ; i++) {
+		if(m_Client[i] == NULL) continue;
+		if(m_Client[i]->GetThreadStatus() == THREAD_TERMINATED) {
+        	// Close Socket
+			if(m_ClientSocket[i]) {
+				closesocket(m_ClientSocket[i]);
+				m_ClientSocket[i] = INVALID_SOCKET;
+			}
+
+			// Delete Client Thread
+			if(m_Client[i]) {
+				m_Client[i]->DoTerminate();
+				m_Client[i]->Terminate();
+				delete m_Client[i];
+				m_Client[i] = NULL;
+			}
+
+			// Refresh Client Info Grid
+			RefreshClientInfoGrid();
+		}
+	}
 }
 //---------------------------------------------------------------------------
 

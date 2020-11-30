@@ -159,19 +159,17 @@ object FormMain: TFormMain
     Color = clBlack
     ParentBackground = False
     TabOrder = 0
-    ExplicitTop = 130
-    ExplicitWidth = 1489
     object Notebook_Main: TNotebook
       Left = 0
       Top = 0
       Width = 1009
       Height = 734
+      PageIndex = 1
       TabOrder = 0
       object TPage
         Left = 0
         Top = 0
         Caption = 'Status'
-        ExplicitWidth = 1347
         object _pnBase_01_Status: TPanel
           Left = 0
           Top = 0
@@ -182,7 +180,6 @@ object FormMain: TFormMain
           Color = clBlack
           ParentBackground = False
           TabOrder = 0
-          ExplicitWidth = 1347
           object grid: TAdvStringGrid
             Left = 5
             Top = 6
@@ -342,7 +339,6 @@ object FormMain: TFormMain
         Top = 0
         HelpContext = 1
         Caption = 'Setting'
-        ExplicitWidth = 1347
         object _pnBase_02_Setting: TPanel
           Left = 0
           Top = 0
@@ -353,7 +349,6 @@ object FormMain: TFormMain
           Color = clBlack
           ParentBackground = False
           TabOrder = 0
-          ExplicitWidth = 1347
           object btn_Hide: TAdvSmoothButton
             Left = 480
             Top = 200
@@ -899,7 +894,6 @@ object FormMain: TFormMain
     Contexts = <>
     TabOrder = 1
     TabStop = False
-    ExplicitWidth = 1347
     object RibbonMenuTab_Main: TdxRibbonTab
       Active = True
       Caption = 'Menu'
@@ -1675,5 +1669,9 @@ object FormMain: TFormMain
     Interval = 500
     OnTimer = tm_FindClientTimer
     Left = 576
+  end
+  object tm_DeleteClient: TTimer
+    OnTimer = tm_DeleteClientTimer
+    Left = 604
   end
 end

@@ -118,6 +118,7 @@ __published:	// IDE-managed Components
 	TAdvSmoothButton *btn_GetRunningTime;
 	TAdvMemo *memo_log;
 	TTimer *tm_FindClient;
+	TTimer *tm_DeleteClient;
 	void __fastcall Exit1Click(TObject *Sender);
 	void __fastcall TrayIconDblClick(TObject *Sender);
 	void __fastcall MenuBtn_StatusClick(TObject *Sender);
@@ -131,6 +132,7 @@ __published:	// IDE-managed Components
 	void __fastcall btn_ResumeClick(TObject *Sender);
 	void __fastcall btn_GetRunningTimeClick(TObject *Sender);
 	void __fastcall tm_FindClientTimer(TObject *Sender);
+	void __fastcall tm_DeleteClientTimer(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TFormMain(TComponent* Owner);
@@ -155,8 +157,7 @@ public: // SOCKET FUNCTIONS
 	bool __fastcall CreateTCPListenSocket();
 
 public: // ETC UI FUNCTIONS
-
-
+	void __fastcall RefreshClientInfoGrid();
 
 
 

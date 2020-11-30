@@ -8,14 +8,6 @@
 
 
 
-enum ThreadWorkingType
-{
-	THREAD_STOP = 0,
-	THREAD_RUNNING = 1,
-	THREAD_TERMINATED = 2,
-};
-//---------------------------------------------------------------------------
-
 class CTCPListenThread : public TThread {
 private:
 	ThreadWorkingType	m_eThreadWork;

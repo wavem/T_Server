@@ -45,6 +45,9 @@ void __fastcall CTCPListenThread::Execute() {
 			continue;
 		}
 
+		// Reset Socket
+		tp_Socket = NULL;
+
 		// Find Empty Socket
 		for(int i = 0 ; i < MAX_TCP_CLIENT_USER_COUNT ; i++) {
 			if(*(mp_ClientSocket + i) == INVALID_SOCKET) {
@@ -58,6 +61,14 @@ void __fastcall CTCPListenThread::Execute() {
 		// Check Connected Client Count
 		if(*m_ClientCnt >= 60) {
 			WaitForSingleObject((void*)this->Handle, 500);
+			continue;
+		}
+
+		// Access Deny Because Socket is FULL
+		if(tp_Socket == NULL) {
+			WaitForSingleObject((void*)this->Handle, 5000);
+			tempStr.sprintf(L"Server is FULL");
+			SendMessage(FormMain->Handle, MSG_MEMO, (unsigned int)&tempStr, 0x10);
 			continue;
 		}
 
