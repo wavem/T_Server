@@ -49,7 +49,7 @@ void __fastcall ClientThread::Execute() {
 		}
 
 		// TCP Receive Routine
-		t_recvSize = recv(*mp_socket, t_Buff, 256, 0);
+		t_recvSize = recv(*mp_socket, (char*)t_Buff, 256, 0);
 		if(t_recvSize == 0 || t_recvSize == -1) {
 			tempStr.sprintf(L"Client [%d] is disconnected", info.ClientIndex);
 			SendMessage(FormMain->Handle, MSG_MEMO, (unsigned int)&tempStr, 0x10);

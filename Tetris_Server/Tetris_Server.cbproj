@@ -7,8 +7,8 @@
         <MainSource>Tetris_Server.cpp</MainSource>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
-        <Platform Condition="'$(Platform)'==''">Win32</Platform>
-        <TargetedPlatforms>1</TargetedPlatforms>
+        <Platform Condition="'$(Platform)'==''">Win64</Platform>
+        <TargetedPlatforms>2</TargetedPlatforms>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
         <Base>true</Base>
@@ -30,6 +30,12 @@
     </PropertyGroup>
     <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_1)'=='true') or '$(Cfg_1_Win32)'!=''">
         <Cfg_1_Win32>true</Cfg_1_Win32>
+        <CfgParent>Cfg_1</CfgParent>
+        <Cfg_1>true</Cfg_1>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Cfg_1)'=='true') or '$(Cfg_1_Win64)'!=''">
+        <Cfg_1_Win64>true</Cfg_1_Win64>
         <CfgParent>Cfg_1</CfgParent>
         <Cfg_1>true</Cfg_1>
         <Base>true</Base>
@@ -75,6 +81,11 @@
         <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win64)'!=''">
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
+        <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;$(DCC_Namespace)</DCC_Namespace>
+        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <PackageImports>adortl;bindcomp;bindcompdbx;bindcompfmx;bindcompvcl;bindengine;CloudService;CustomIPTransport;cxBarEditItemRS21;cxDataRS21;cxEditorsRS21;cxExportRS21;cxGridRS21;cxLibraryRS21;cxPageControlRS21;cxPivotGridChartRS21;cxPivotGridOLAPRS21;cxPivotGridRS21;cxSchedulerGridRS21;cxSchedulerRibbonStyleEventEditorRS21;cxSchedulerRS21;cxSchedulerTreeBrowserRS21;cxTreeListdxBarPopupMenuRS21;cxTreeListRS21;cxVerticalGridRS21;DataSnapClient;DataSnapCommon;DataSnapConnectors;DatasnapConnectorsFreePascal;DataSnapFireDAC;DataSnapIndy10ServerTransport;DataSnapNativeClient;DataSnapProviderClient;DataSnapServer;DataSnapServerMidas;dbexpress;dbrtl;dbxcds;DbxClientDriver;DbxCommonDriver;DBXDb2Driver;DBXFirebirdDriver;DBXInformixDriver;DBXInterBaseDriver;DBXMSSQLDriver;DBXMySQLDriver;DBXOdbcDriver;DBXOracleDriver;DBXSqliteDriver;DBXSybaseASADriver;DBXSybaseASEDriver;dsnap;dsnapcon;dsnapxml;dxADOServerModeRS21;dxBarDBNavRS21;dxBarExtDBItemsRS21;dxBarExtItemsRS21;dxBarRS21;dxComnRS21;dxCoreRS21;dxdborRS21;dxdbtrRS21;dxDBXServerModeRS21;dxDockingRS21;dxFireDACServerModeRS21;dxFlowChartRS21;dxGaugeControlRS21;dxGDIPlusRS21;dxLayoutControlRS21;dxMapControlRS21;dxmdsRS21;dxNavBarRS21;dxorgcRS21;dxPSCoreRS21;dxPScxCommonRS21;dxPScxExtCommonRS21;dxPScxGridLnkRS21;dxPScxPCProdRS21;dxPScxPivotGridLnkRS21;dxPScxSchedulerLnkRS21;dxPScxTLLnkRS21;dxPScxVGridLnkRS21;dxPSdxDBOCLnkRS21;dxPSdxDBTVLnkRS21;dxPSdxFCLnkRS21;dxPSdxGaugeControlLnkRS21;dxPSdxLCLnkRS21;dxPSdxOCLnkRS21;dxPSdxSpreadSheetLnkRS21;dxPSLnksRS21;dxPsPrVwAdvRS21;dxPSPrVwRibbonRS21;dxPSRichEditControlLnkRS21;dxRibbonCustomizationFormRS21;dxRibbonRS21;dxRichEditControlRS21;dxServerModeRS21;dxSkinBlackRS21;dxSkinBlueprintRS21;dxSkinBlueRS21;dxSkinCaramelRS21;dxSkinCoffeeRS21;dxSkinDarkRoomRS21;dxSkinDarkSideRS21;dxSkinDevExpressDarkStyleRS21;dxSkinDevExpressStyleRS21;dxSkinFoggyRS21;dxSkinGlassOceansRS21;dxSkinHighContrastRS21;dxSkiniMaginaryRS21;dxSkinLilianRS21;dxSkinLiquidSkyRS21;dxSkinLondonLiquidSkyRS21;dxSkinMcSkinRS21;dxSkinMetropolisDarkRS21;dxSkinMetropolisRS21;dxSkinMoneyTwinsRS21;dxSkinOffice2007BlackRS21;dxSkinOffice2007BlueRS21;dxSkinOffice2007GreenRS21;dxSkinOffice2007PinkRS21;dxSkinOffice2007SilverRS21;dxSkinOffice2010BlackRS21;dxSkinOffice2010BlueRS21;dxSkinOffice2010SilverRS21;dxSkinOffice2013DarkGrayRS21;dxSkinOffice2013LightGrayRS21;dxSkinOffice2013WhiteRS21;dxSkinPumpkinRS21;dxSkinsCoreRS21;dxSkinscxPCPainterRS21;dxSkinscxSchedulerPainterRS21;dxSkinsdxBarPainterRS21;dxSkinsdxDLPainterRS21;dxSkinsdxNavBarPainterRS21;dxSkinsdxRibbonPainterRS21;dxSkinSevenClassicRS21;dxSkinSevenRS21;dxSkinSharpPlusRS21;dxSkinSharpRS21;dxSkinSilverRS21;dxSkinSpringTimeRS21;dxSkinStardustRS21;dxSkinSummer2008RS21;dxSkinTheAsphaltWorldRS21;dxSkinValentineRS21;dxSkinVisualStudio2013BlueRS21;dxSkinVisualStudio2013DarkRS21;dxSkinVisualStudio2013LightRS21;dxSkinVS2010RS21;dxSkinWhiteprintRS21;dxSkinXmas2008BlueRS21;dxSpellCheckerRS21;dxSpreadSheetRS21;dxTabbedMDIRS21;dxThemeRS21;dxTileControlRS21;dxtrmdRS21;dxWizardControlRS21;emsclient;emsclientfiredac;FireDAC;FireDACADSDriver;FireDACASADriver;FireDACCommon;FireDACCommonDriver;FireDACDb2Driver;FireDACDBXDriver;FireDACDSDriver;FireDACIBDriver;FireDACInfxDriver;FireDACMSAccDriver;FireDACMSSQLDriver;FireDACMySQLDriver;FireDACODBCDriver;FireDACOracleDriver;FireDACPgDriver;FireDACSqliteDriver;fmx;fmxase;fmxdae;fmxFireDAC;fmxobj;ibxpress;IndyCore;IndyIPClient;IndyIPCommon;IndyIPServer;IndyProtocols;IndySystem;inet;inetdb;inetdbxpress;Intraweb;MetropolisUILiveTile;RESTBackendComponents;RESTComponents;rtl;soapmidas;soaprtl;soapserver;tethering;tmsdXE7;tmsexdXE7;vcl;vclactnband;vcldb;vcldsnap;vclFireDAC;vclib;vclie;vclimg;VCLRESTComponents;vclribbon;VclSmp;vcltouch;vclx;xmlrtl;$(PackageImports)</PackageImports>
         <BCC_PCHName_Clang>Tetris_Server_PCH1.h</BCC_PCHName_Clang>
         <IncludePath>$(BDSINCLUDE)\windows\vcl;$(IncludePath)</IncludePath>
@@ -107,7 +118,11 @@
         <DynamicRTL>false</DynamicRTL>
         <UsePackages>false</UsePackages>
         <LinkPackageStatics>rtl.lib;vcl.lib;cxLibraryRS21.lib;dxGDIPlusRS21.lib;dxCoreRS21.lib;dxThemeRS21.lib;vclx.lib;dxBarRS21.lib;dxComnRS21.lib;dxRibbonRS21.lib;cxEditorsRS21.lib;cxDataRS21.lib;dbrtl.lib;vclimg.lib;vcldb.lib;dxSkinsCoreRS21.lib;dxSkinBlackRS21.lib;dxSkinBlueprintRS21.lib;dxSkinBlueRS21.lib;dxSkinCaramelRS21.lib;dxSkinCoffeeRS21.lib;dxSkinDarkRoomRS21.lib;dxSkinDarkSideRS21.lib;dxSkinDevExpressDarkStyleRS21.lib;dxSkinDevExpressStyleRS21.lib;dxSkinFoggyRS21.lib;dxSkinGlassOceansRS21.lib;dxSkinHighContrastRS21.lib;dxSkiniMaginaryRS21.lib;dxSkinLilianRS21.lib;dxSkinLiquidSkyRS21.lib;dxSkinLondonLiquidSkyRS21.lib;dxSkinMcSkinRS21.lib;dxSkinMetropolisDarkRS21.lib;dxSkinMetropolisRS21.lib;dxSkinMoneyTwinsRS21.lib;dxSkinOffice2007BlackRS21.lib;dxSkinOffice2007BlueRS21.lib;dxSkinOffice2007GreenRS21.lib;dxSkinOffice2007PinkRS21.lib;dxSkinOffice2007SilverRS21.lib;dxSkinOffice2010BlackRS21.lib;dxSkinOffice2010BlueRS21.lib;dxSkinOffice2010SilverRS21.lib;dxSkinOffice2013DarkGrayRS21.lib;dxSkinOffice2013LightGrayRS21.lib;dxSkinOffice2013WhiteRS21.lib;dxSkinPumpkinRS21.lib;dxSkinSevenClassicRS21.lib;dxSkinSevenRS21.lib;dxSkinSharpPlusRS21.lib;dxSkinSharpRS21.lib;dxSkinSilverRS21.lib;dxSkinSpringTimeRS21.lib;dxSkinStardustRS21.lib;dxSkinSummer2008RS21.lib;dxSkinTheAsphaltWorldRS21.lib;dxSkinValentineRS21.lib;dxSkinVisualStudio2013BlueRS21.lib;dxSkinVisualStudio2013DarkRS21.lib;dxSkinVisualStudio2013LightRS21.lib;dxSkinVS2010RS21.lib;dxSkinWhiteprintRS21.lib;dxSkinXmas2008BlueRS21.lib;dxRibbonCustomizationFormRS21.lib;cxTreeListRS21.lib;cxPageControlRS21.lib;cxExportRS21.lib;dxSpreadSheetRS21.lib;dxLayoutControlRS21.lib;xmlrtl.lib;cxBarEditItemRS21.lib;dxSkinsdxBarPainterRS21.lib;dxSkinsdxRibbonPainterRS21.lib;tmsexdXE7.lib;DbxCommonDriver.lib;dsnap.lib;soaprtl.lib;inet.lib;tmsdXE7.lib;adortl.lib;vclactnband.lib;VclSmp.lib</LinkPackageStatics>
-        <ILINK_LibraryPath>C:\Users\WAVE\Documents\tmssoftware\TMS Component Pack\BuilderXE7\Win32\Debug\;C:\Users\Public\Documents\Embarcadero\Studio\15.0\DCP\;C:\Program Files (x86)\DevExpress VCL\Library\RS21\;$(BDS)\lib\win32\release\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
+        <ILINK_LibraryPath>C:\Users\WAVE_W64\Documents\tmssoftware\TMS Component Pack\DelphiXE7\Win32\Debug\;C:\Users\WAVE\Documents\tmssoftware\TMS Component Pack\BuilderXE7\Win32\Debug\;C:\Users\Public\Documents\Embarcadero\Studio\15.0\DCP\;C:\Program Files (x86)\DevExpress VCL\Library\RS21\;$(BDS)\lib\win32\release\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
+        <LinkPackageImports>rtl.bpi;vcl.bpi;cxLibraryRS21.bpi;dxGDIPlusRS21.bpi;dxCoreRS21.bpi;dxThemeRS21.bpi;vclx.bpi;dxBarRS21.bpi;dxComnRS21.bpi;dxRibbonRS21.bpi;cxEditorsRS21.bpi;cxDataRS21.bpi;dbrtl.bpi;vclimg.bpi;vcldb.bpi;dxSkinsCoreRS21.bpi;dxSkinBlackRS21.bpi;dxSkinBlueprintRS21.bpi;dxSkinBlueRS21.bpi;dxSkinCaramelRS21.bpi;dxSkinCoffeeRS21.bpi;dxSkinDarkRoomRS21.bpi;dxSkinDarkSideRS21.bpi;dxSkinDevExpressDarkStyleRS21.bpi;dxSkinDevExpressStyleRS21.bpi;dxSkinFoggyRS21.bpi;dxSkinGlassOceansRS21.bpi;dxSkinHighContrastRS21.bpi;dxSkiniMaginaryRS21.bpi;dxSkinLilianRS21.bpi;dxSkinLiquidSkyRS21.bpi;dxSkinLondonLiquidSkyRS21.bpi;dxSkinMcSkinRS21.bpi;dxSkinMetropolisDarkRS21.bpi;dxSkinMetropolisRS21.bpi;dxSkinMoneyTwinsRS21.bpi;dxSkinOffice2007BlackRS21.bpi;dxSkinOffice2007BlueRS21.bpi;dxSkinOffice2007GreenRS21.bpi;dxSkinOffice2007PinkRS21.bpi;dxSkinOffice2007SilverRS21.bpi;dxSkinOffice2010BlackRS21.bpi;dxSkinOffice2010BlueRS21.bpi;dxSkinOffice2010SilverRS21.bpi;dxSkinOffice2013DarkGrayRS21.bpi;dxSkinOffice2013LightGrayRS21.bpi;dxSkinOffice2013WhiteRS21.bpi;dxSkinPumpkinRS21.bpi;dxSkinSevenClassicRS21.bpi;dxSkinSevenRS21.bpi;dxSkinSharpPlusRS21.bpi;dxSkinSharpRS21.bpi;dxSkinSilverRS21.bpi;dxSkinSpringTimeRS21.bpi;dxSkinStardustRS21.bpi;dxSkinSummer2008RS21.bpi;dxSkinTheAsphaltWorldRS21.bpi;dxSkinValentineRS21.bpi;dxSkinVisualStudio2013BlueRS21.bpi;dxSkinVisualStudio2013DarkRS21.bpi;dxSkinVisualStudio2013LightRS21.bpi;dxSkinVS2010RS21.bpi;dxSkinWhiteprintRS21.bpi;dxSkinXmas2008BlueRS21.bpi;dxRibbonCustomizationFormRS21.bpi;cxTreeListRS21.bpi;cxPageControlRS21.bpi;cxExportRS21.bpi;dxSpreadSheetRS21.bpi;dxLayoutControlRS21.bpi;xmlrtl.bpi;cxBarEditItemRS21.bpi;dxSkinsdxBarPainterRS21.bpi;dxSkinsdxRibbonPainterRS21.bpi;tmsexdXE7.bpi;DbxCommonDriver.bpi;dsnap.bpi;soaprtl.bpi;inet.bpi;tmsdXE7.bpi;adortl.bpi;vclactnband.bpi;VclSmp.bpi</LinkPackageImports>
+        <ILINK_LibraryPath>C:\Program Files (x86)\DevExpress VCL\Library\RS21\Win64\;C:\Users\Public\Documents\Embarcadero\Studio\15.0\Dcp\Win64\;$(BDS)\lib\win64\release\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <Defines>NDEBUG;$(Defines)</Defines>
@@ -146,16 +161,21 @@
         </CppCompile>
         <PCHCompile Include="Tetris_Server_PCH1.h">
             <BuildOrder>1</BuildOrder>
+            <PCH>true</PCH>
         </PCHCompile>
+        <CppCompile Include="ThreadPool.cpp">
+            <DependentOn>ThreadPool.h</DependentOn>
+            <BuildOrder>8</BuildOrder>
+        </CppCompile>
         <CppCompile Include="Version.cpp">
             <Form>Form1</Form>
             <FormType>dfm</FormType>
             <DependentOn>Version.h</DependentOn>
             <BuildOrder>7</BuildOrder>
         </CppCompile>
+        <FormResources Include="Version.dfm"/>
         <FormResources Include="Password.dfm"/>
         <FormResources Include="Main.dfm"/>
-        <FormResources Include="Version.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -198,12 +218,6 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName=".\Win32\Debug\Tetris_Server.tds" Configuration="Debug" Class="DebugSymbols">
-                    <Platform Name="Win32">
-                        <RemoteName>Tetris_Server.tds</RemoteName>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
                 <DeployFile Condition="'$(DynamicRTL)'=='true' And '$(Multithreaded)'=='true'" LocalName="$(BDS)\bin\cc32160mt.dll" Class="DependencyModule">
                     <Platform Name="Win32">
                         <Overwrite>true</Overwrite>
@@ -214,7 +228,12 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName=".\Win32\Debug\Project1.tds" Configuration="Debug" Class="DebugSymbols"/>
+                <DeployFile LocalName=".\Win64\Debug\Tetris_Server.exe" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win64">
+                        <RemoteName>Tetris_Server.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile Condition="'$(DynamicRTL)'=='true'" LocalName="$(BDS)\Redist\osx32\libcgstl.dylib" Class="DependencyModule">
                     <Platform Name="OSX32">
                         <Overwrite>true</Overwrite>
@@ -573,8 +592,8 @@
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
             </Deployment>
             <Platforms>
-                <Platform value="Win32">True</Platform>
-                <Platform value="Win64">False</Platform>
+                <Platform value="Win32">False</Platform>
+                <Platform value="Win64">True</Platform>
             </Platforms>
         </BorlandProject>
         <ProjectFileVersion>12</ProjectFileVersion>

@@ -207,7 +207,46 @@ void __fastcall TFormMain::InitGrid() {
 
 void __fastcall TFormMain::btn_TestClick(TObject *Sender)
 {
+	// Common
+	UnicodeString tempStr = L"";
 	PrintMsg(L"TEST BUTTON CLICKED");
+
+	/*
+	CLIENTINFO tempinfo;
+	std::queue<CLIENTINFO> q;
+
+	tempStr.sprintf(L"queue size : %d", q.size());
+	PrintMsg(tempStr);
+
+	for(int i = 0 ; i < 5 ; i++) {
+		tempinfo.ClientIndex = i;
+		tempinfo.ClientSockAddrIn.sin_port = i + 10000;
+		q.push(tempinfo);
+		tempStr.sprintf(L"queue size : %d", q.size());
+		PrintMsg(tempStr);
+	}
+
+	for(int i = 0 ; i < 5 ; i++) {
+		tempinfo = q.front();
+		tempStr.sprintf(L"Port : %d", tempinfo.ClientSockAddrIn.sin_port);
+		PrintMsg(tempStr);
+		q.pop();
+		tempStr.sprintf(L"queue size : %d", q.size());
+		PrintMsg(tempStr);
+	}
+
+	std::vector<int> v;
+
+	tempStr.sprintf(L"size_t size : %d", sizeof(size_t));
+	PrintMsg(tempStr);
+	*/
+
+	int temp = 10;
+	int ret = 0;
+	//ret = [&temp](int v)->int{return v;};
+	//PrintMsg(ret);
+	//[]{FormMain->PrintMsg(L"hi");}();
+	[](int n){FormMain->PrintMsg(n);}();
 }
 //---------------------------------------------------------------------------
 
@@ -412,7 +451,8 @@ void __fastcall TFormMain::tm_FindClientTimer(TObject *Sender)
 
 	for(int i = 0 ; i < MAX_TCP_CLIENT_USER_COUNT ; i++) {
 		if(m_ClientSocket[i] != INVALID_SOCKET) {
-			t_rst = send(m_ClientSocket[i], t_Buffer, 5, 0);
+			t_rst = send(m_ClientSocket[i], (char*)t_Buffer, 5, 0);
+
 			//tempStr.sprintf(L"Socket[%d] -> Send Result : %d", i, t_rst);
 			//PrintLog(tempStr);
 			t_rst = 0;
