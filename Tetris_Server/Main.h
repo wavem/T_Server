@@ -72,7 +72,23 @@
 #include "dxSkinXmas2008Blue.hpp"
 #include "AdvSmoothButton.hpp"
 #include "AdvMemo.hpp"
+#include "AdvGrid.hpp"
+#include "AdvObj.hpp"
+#include "BaseGrid.hpp"
+#include <Vcl.Grids.hpp>
+#include <Vcl.ImgList.hpp>
 //---------------------------------------------------------------------------
+
+
+// FOR THREAD POOL : START
+#include <chrono>
+#include <condition_variable>
+#include <cstdio>
+#include <mutex>
+#include <queue>
+#include <thread>
+#include <vector>
+// FOR THREAD POOL : END
 
 #include "Define.h"
 #include "ThreadPool.h"
@@ -85,15 +101,6 @@
 #include <Vcl.Grids.hpp>
 #include <Vcl.ImgList.hpp>
 
-// FOR THREAD POOL : START
-#include <chrono>
-#include <condition_variable>
-#include <cstdio>
-#include <mutex>
-#include <queue>
-#include <thread>
-#include <vector>
-// FOR THREAD POOL : END
 //---------------------------------------------------------------------------
 class CTCPListenThread;
 class ClientThread;
@@ -175,6 +182,10 @@ public: // Thread Message Handler
 	void __fastcall PrintThreadMessage(TMessage &_msg);
 	void __fastcall AddClient(TMessage &_msg);
 
+public: // TEST
+	void __fastcall Worker(int& result, std::mutex& m);
+	int counter = 0;
+	std::mutex m_mutex;
 
 BEGIN_MESSAGE_MAP
 	MESSAGE_HANDLER(MSG_MEMO, TMessage, PrintThreadMessage)

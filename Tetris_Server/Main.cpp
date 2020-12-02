@@ -72,6 +72,9 @@
 #pragma link "AdvGrid"
 #pragma link "AdvObj"
 #pragma link "BaseGrid"
+#pragma link "AdvGrid"
+#pragma link "AdvObj"
+#pragma link "BaseGrid"
 #pragma resource "*.dfm"
 TFormMain *FormMain;
 //---------------------------------------------------------------------------
@@ -241,12 +244,36 @@ void __fastcall TFormMain::btn_TestClick(TObject *Sender)
 	PrintMsg(tempStr);
 	*/
 
-	int temp = 10;
-	int ret = 0;
+	//int temp = 10;
+	//int ret = 0;
 	//ret = [&temp](int v)->int{return v;};
 	//PrintMsg(ret);
 	//[]{FormMain->PrintMsg(L"hi");}();
-	[](int n){FormMain->PrintMsg(n);}();
+	//[](int n){FormMain->PrintMsg(n);}(temp);
+	//std::condition_variable cv;
+
+	std::vector<std::thread> workers;
+	for(int i = 0 ; i < 4 ; i++) {
+		workers.push_back(std::thread(Worker, std::ref(counter), std::ref(m_mutex)));
+	}
+
+	for(int i = 0 ; i < 4 ; i++) {
+		workers[i].join();
+	}
+
+	PrintMsg(counter);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFormMain::Worker(int& result, std::mutex& m) {
+	UnicodeString tempStr = L"";
+
+	for(int i = 0 ; i < 1000 ; i++) {
+		//m.lock();
+		tempStr.sprintf(L"%d", counter++);
+		//PrintMsg(tempStr);
+		//m.unlock();
+	}
 }
 //---------------------------------------------------------------------------
 
