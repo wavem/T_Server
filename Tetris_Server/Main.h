@@ -91,7 +91,7 @@
 // FOR THREAD POOL : END
 
 #include "Define.h"
-#include "ThreadPool.h"
+#include "DataSenderThread.h"
 #include "TCPListenThread.h"
 #include "ClientThread.h"
 #include "Password.h"
@@ -104,6 +104,7 @@
 //---------------------------------------------------------------------------
 class CTCPListenThread;
 class ClientThread;
+
 
 class TFormMain : public TForm
 {

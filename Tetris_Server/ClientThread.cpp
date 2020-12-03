@@ -31,14 +31,12 @@ void __fastcall ClientThread::Execute() {
 	// Common
 	UnicodeString tempStr = L"";
 	int t_ClientIdx = 0;
+	int t_RecvErrorCnt = 0;
 
 	CLIENTINFO t_ClientInfo;
 	struct sockaddr_in t_client_sockaddr_in;
 	memset(&t_client_sockaddr_in, 0, sizeof(t_client_sockaddr_in));
 	int t_len = sizeof(t_client_sockaddr_in);
-
-	BYTE t_Buff[256] = {0, };
-	int t_recvSize = 0;
 
 	while(!Terminated) {
 		// For Thread Stop & Resume
@@ -49,8 +47,7 @@ void __fastcall ClientThread::Execute() {
 		}
 
 		// TCP Receive Routine
-		t_recvSize = recv(*mp_socket, (char*)t_Buff, 256, 0);
-		if(t_recvSize == 0 || t_recvSize == -1) {
+		if(Receive() == false) {
 			tempStr.sprintf(L"Client [%d] is disconnected", info.ClientIndex);
 			SendMessage(FormMain->Handle, MSG_MEMO, (unsigned int)&tempStr, 0x10);
 			m_eThreadWork = THREAD_TERMINATED;
@@ -89,6 +86,54 @@ void __fastcall ClientThread::DoTerminate() {
 
 ThreadWorkingType __fastcall ClientThread::GetThreadStatus() {
 	return m_eThreadWork;
+}
+//---------------------------------------------------------------------------
+
+bool __fastcall ClientThread::Receive() {
+
+	// Common
+	UnicodeString tempStr = L"";
+	int t_recvSize = 0;
+	int t_CurrentSize = 0;
+	BYTE t_SecureCode;
+
+	// Reset Buffer
+	memset(m_RecvBuff, 0, sizeof(m_RecvBuff));
+
+	// Receive Secure Code
+	t_recvSize = recv(*mp_socket, (char*)&t_SecureCode, 1, 0);
+
+	// Check Connection
+	if(t_recvSize == 0 || t_recvSize == -1) return false;
+
+	// Check Secure Code
+	if(t_SecureCode != SECURE_CODE_C_TO_S) {
+		tempStr.sprintf(L"Secure Code Incorrect");
+		SendMessage(FormMain->Handle, MSG_MEMO, (unsigned int)&tempStr, 0x10);
+		return false;
+	}
+
+	// Input Secure Code Into Buffer
+	m_RecvBuff[0] = t_SecureCode;
+
+	// Check Connection
+	if(t_recvSize == 0 || t_recvSize == -1) return false;
+
+	// Setting Current Size
+	t_CurrentSize = t_recvSize;
+
+	// Receive Data Routine
+	while(t_CurrentSize != MAX_PACKET_SIZE) {
+		t_recvSize = recv(*mp_socket, (char*)m_RecvBuff + t_CurrentSize, MAX_PACKET_SIZE - t_CurrentSize, 0);
+
+		// Check Connection
+		if(t_recvSize == 0 || t_recvSize == -1) return false;
+
+		// Set Current Size
+		t_CurrentSize += t_recvSize;
+	}
+
+	return true;
 }
 //---------------------------------------------------------------------------
 

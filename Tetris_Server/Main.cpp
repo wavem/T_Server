@@ -468,7 +468,7 @@ void __fastcall TFormMain::tm_FindClientTimer(TObject *Sender)
 	UnicodeString tempStr = L"";
 
 	BYTE t_Buffer[5] = {0, };
-	t_Buffer[0] = 0x01;
+	t_Buffer[0] = 0x59;
 	t_Buffer[1] = 0x02;
 	t_Buffer[2] = 0x03;
 	t_Buffer[3] = 0x04;

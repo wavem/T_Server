@@ -136,6 +136,10 @@
             <DependentOn>ClientThread.h</DependentOn>
             <BuildOrder>6</BuildOrder>
         </CppCompile>
+        <CppCompile Include="DataSenderThread.cpp">
+            <DependentOn>DataSenderThread.h</DependentOn>
+            <BuildOrder>8</BuildOrder>
+        </CppCompile>
         <CppCompile Include="Define.cpp">
             <DependentOn>Define.h</DependentOn>
             <BuildOrder>3</BuildOrder>
@@ -163,10 +167,6 @@
             <BuildOrder>1</BuildOrder>
             <PCH>true</PCH>
         </PCHCompile>
-        <CppCompile Include="ThreadPool.cpp">
-            <DependentOn>ThreadPool.h</DependentOn>
-            <BuildOrder>8</BuildOrder>
-        </CppCompile>
         <CppCompile Include="Version.cpp">
             <Form>Form1</Form>
             <FormType>dfm</FormType>

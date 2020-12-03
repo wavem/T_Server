@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
 
-#ifndef ThreadPoolH
-#define ThreadPoolH
+#ifndef DataSenderThreadH
+#define DataSenderThreadH
 //---------------------------------------------------------------------------
 
 #include "Main.h"
@@ -25,6 +25,30 @@ private:
 
 	void WorkerThread();
 };
+
+
+class DataSenderThread : public TThread {
+private:
+	ThreadWorkingType	m_eThreadWork;
+	SOCKET* mp_socket;
+	CLIENTINFO info;
+	CLIENTMSG data;
+
+public:
+	DataSenderThread(SOCKET *_p_socket, CLIENTINFO _info);
+	~DataSenderThread();
+
+	bool __fastcall Send();
+	void __fastcall Execute();
+	void __fastcall Stop();
+	void __fastcall Resume();
+	void __fastcall DoTerminate();
+	ThreadWorkingType __fastcall GetThreadStatus();
+};
+//---------------------------------------------------------------------------
+
+
+
 
 
 //---------------------------------------------------------------------------
