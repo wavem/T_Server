@@ -96,12 +96,15 @@ bool __fastcall ClientThread::Receive() {
 	int t_recvSize = 0;
 	int t_CurrentSize = 0;
 	BYTE t_SecureCode;
+	unsigned short t_PacketSize = 0;
+	BYTE t_MessageType = 0;
 
 	// Reset Buffer
 	memset(m_RecvBuff, 0, sizeof(m_RecvBuff));
 
 	// Receive Secure Code
 	t_recvSize = recv(*mp_socket, (char*)&t_SecureCode, 1, 0);
+	t_CurrentSize += t_recvSize;
 
 	// Check Connection
 	if(t_recvSize == 0 || t_recvSize == -1) return false;
@@ -119,12 +122,29 @@ bool __fastcall ClientThread::Receive() {
 	// Check Connection
 	if(t_recvSize == 0 || t_recvSize == -1) return false;
 
-	// Setting Current Size
-	t_CurrentSize = t_recvSize;
+	// Check Data Size
+	t_recvSize = recv(*mp_socket, (char*)&t_PacketSize, 2, 0);
+	t_CurrentSize += t_recvSize;
+
+	// Check Connection
+	if(t_recvSize == 0 || t_recvSize == -1) return false;
+
+	// Input Data Size Into Buffer
+	memcpy(&m_RecvBuff[1], &t_PacketSize, 2);
+
+	// Check Message Type
+	t_recvSize = recv(*mp_socket, (char*)&t_MessageType, 1, 0);
+	t_CurrentSize += t_recvSize;
+
+	// Check Connection
+	if(t_recvSize == 0 || t_recvSize == -1) return false;
+
+	// Input Message Type Into Buffer
+	m_RecvBuff[3] = t_MessageType;
 
 	// Receive Data Routine
-	while(t_CurrentSize != MAX_PACKET_SIZE) {
-		t_recvSize = recv(*mp_socket, (char*)m_RecvBuff + t_CurrentSize, MAX_PACKET_SIZE - t_CurrentSize, 0);
+	while(t_CurrentSize != t_PacketSize) {
+		t_recvSize = recv(*mp_socket, (char*)(m_RecvBuff + t_CurrentSize), t_PacketSize - t_CurrentSize, 0);
 
 		// Check Connection
 		if(t_recvSize == 0 || t_recvSize == -1) return false;
@@ -132,6 +152,25 @@ bool __fastcall ClientThread::Receive() {
 		// Set Current Size
 		t_CurrentSize += t_recvSize;
 	}
+
+
+	tempStr.sprintf(L"Received Size : [%d]", t_PacketSize);
+	SendMessage(FormMain->Handle, MSG_MEMO, (unsigned int)&tempStr, 0x10);
+
+
+	wchar_t* temp = new wchar_t[t_PacketSize - 4];
+	memcpy(temp, &m_RecvBuff[4], t_PacketSize - 4);
+	tempStr = temp;
+	tempStr += L" ";
+	SendMessage(FormMain->Handle, MSG_MEMO, (unsigned int)&tempStr, 0x10);
+
+
+
+	delete[] temp;
+	//tempStr.w_str()
+
+	//memcpy(m_RecvBuff, tempStr.w_str(), t_PacketSize - 4);
+	//SendMessage(FormMain->Handle, MSG_MEMO, (unsigned int)&tempStr, 0x10);
 
 	return true;
 }
