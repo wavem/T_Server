@@ -592,3 +592,11 @@ void __fastcall TFormMain::tm_DeleteClientTimer(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TFormMain::MenuBtn_VersionClick(TObject *Sender)
+{
+	TFormVersion *dlg = new TFormVersion(NULL);
+	dlg->ShowModal();
+	delete dlg;
+}
+//---------------------------------------------------------------------------
+

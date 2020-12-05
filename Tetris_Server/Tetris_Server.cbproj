@@ -172,7 +172,7 @@
             <PCH>true</PCH>
         </PCHCompile>
         <CppCompile Include="Version.cpp">
-            <Form>Form1</Form>
+            <Form>FormVersion</Form>
             <FormType>dfm</FormType>
             <DependentOn>Version.h</DependentOn>
             <BuildOrder>7</BuildOrder>

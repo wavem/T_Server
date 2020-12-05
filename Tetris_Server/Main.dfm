@@ -170,6 +170,8 @@ object FormMain: TFormMain
         Left = 0
         Top = 0
         Caption = 'Status'
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object _pnBase_01_Status: TPanel
           Left = 0
           Top = 0
@@ -1390,6 +1392,7 @@ object FormMain: TFormMain
       Category = 0
       Hint = 'Version'
       Visible = ivAlways
+      OnClick = MenuBtn_VersionClick
       HotGlyph.Data = {
         36100000424D3610000000000000360000002800000020000000200000000100
         2000000000000010000000000000000000000000000000000000000000000000

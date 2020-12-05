@@ -95,6 +95,7 @@
 #include "TCPListenThread.h"
 #include "ClientThread.h"
 #include "Password.h"
+#include "Version.h"
 #include "AdvGrid.hpp"
 #include "AdvObj.hpp"
 #include "BaseGrid.hpp"
@@ -151,6 +152,7 @@ __published:	// IDE-managed Components
 	void __fastcall btn_GetRunningTimeClick(TObject *Sender);
 	void __fastcall tm_FindClientTimer(TObject *Sender);
 	void __fastcall tm_DeleteClientTimer(TObject *Sender);
+	void __fastcall MenuBtn_VersionClick(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TFormMain(TComponent* Owner);
