@@ -179,11 +179,14 @@ public: // SOCKET FUNCTIONS
 public: // ETC UI FUNCTIONS
 	void __fastcall RefreshClientInfoGrid();
 
+public: // Received Message Queue
+	std::queue<CLIENTMSG> m_ClientMsgQ;
 
 
 public: // Thread Message Handler
 	void __fastcall PrintThreadMessage(TMessage &_msg);
 	void __fastcall AddClient(TMessage &_msg);
+	void __fastcall ReceiveClientMessage(TMessage &_msg);
 
 public: // TEST
 	void __fastcall Worker(int& result, std::mutex& m);
@@ -193,6 +196,7 @@ public: // TEST
 BEGIN_MESSAGE_MAP
 	MESSAGE_HANDLER(MSG_MEMO, TMessage, PrintThreadMessage)
 	MESSAGE_HANDLER(MSG_NEW_CONNECTION, TMessage, AddClient)
+	MESSAGE_HANDLER(MSG_CLIENT_MESSAGE, TMessage, ReceiveClientMessage)
 END_MESSAGE_MAP(TForm)
 };
 //---------------------------------------------------------------------------

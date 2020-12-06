@@ -11,7 +11,7 @@ class ClientThread : public TThread {
 private:
 	ThreadWorkingType	m_eThreadWork;
 	SOCKET* mp_socket;
-	BYTE m_RecvBuff[MAX_PACKET_SIZE] = {0, };
+	BYTE m_RecvBuff[MAX_RECV_PACKET_SIZE] = {0, };
 
 public:
 	CLIENTINFO info;

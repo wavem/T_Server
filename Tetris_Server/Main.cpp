@@ -600,3 +600,32 @@ void __fastcall TFormMain::MenuBtn_VersionClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TFormMain::ReceiveClientMessage(TMessage &_msg) {
+
+	// Common
+	UnicodeString tempStr = L"";
+	unsigned int t_wParam = _msg.WParam;
+	CLIENTMSG* p_ClientMsg;
+	CLIENTMSG t_ClientMsg;
+	memset(&t_ClientMsg, 0, sizeof(t_ClientMsg));
+
+	unsigned short t_RecvSize = 0;
+
+	// Receive Client Message
+	p_ClientMsg = (CLIENTMSG*)t_wParam;
+	t_ClientMsg = *p_ClientMsg;
+
+	memcpy(&t_RecvSize, &t_ClientMsg.Data[1], 2);
+	tempStr.sprintf(L"Received Size : [%d]", t_RecvSize);
+	PrintLog(tempStr);
+
+	// Receive Chatting Text and Print Out
+	wchar_t* temp = new wchar_t[t_RecvSize - 4];
+	memcpy(temp, &t_ClientMsg.Data[4], t_RecvSize - 4);
+	tempStr = temp;
+	tempStr += L"    ";
+	PrintLog(tempStr);
+	delete[] temp;
+}
+//---------------------------------------------------------------------------
+

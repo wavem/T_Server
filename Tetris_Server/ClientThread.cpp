@@ -11,10 +11,8 @@ __fastcall ClientThread::ClientThread(SOCKET *_p_socket, CLIENTINFO _info) {
 	Priority = tpTimeCritical;
 	memset(&info, 0, sizeof(info));
 	memcpy(&info, &_info, sizeof(info));
-
-
+	data.ClientInfo = info;
 	mp_socket = _p_socket;
-
 	m_eThreadWork = THREAD_RUNNING;
 }
 //---------------------------------------------------------------------------
@@ -48,16 +46,13 @@ void __fastcall ClientThread::Execute() {
 
 		// TCP Receive Routine
 		if(Receive() == false) {
-			tempStr.sprintf(L"Client [%d] is disconnected", info.ClientIndex);
+			tempStr.sprintf(L"Client [%d] is disconnected", data.ClientInfo.ClientIndex);
 			SendMessage(FormMain->Handle, MSG_MEMO, (unsigned int)&tempStr, 0x10);
 			m_eThreadWork = THREAD_TERMINATED;
 			return;
 		}
 
-		// Time Calculation
-		//m_ConnectionDateTime = Now();
-
-		WaitForSingleObject((void*)this->Handle, 100);
+		WaitForSingleObject((void*)this->Handle, 50);
 	}
 	m_eThreadWork = THREAD_TERMINATED;
 }
@@ -101,6 +96,7 @@ bool __fastcall ClientThread::Receive() {
 
 	// Reset Buffer
 	memset(m_RecvBuff, 0, sizeof(m_RecvBuff));
+	memset(data.Data, 0, sizeof(data.Data));
 
 	// Receive Secure Code
 	t_recvSize = recv(*mp_socket, (char*)&t_SecureCode, 1, 0);
@@ -153,24 +149,9 @@ bool __fastcall ClientThread::Receive() {
 		t_CurrentSize += t_recvSize;
 	}
 
-
-	tempStr.sprintf(L"Received Size : [%d]", t_PacketSize);
-	SendMessage(FormMain->Handle, MSG_MEMO, (unsigned int)&tempStr, 0x10);
-
-
-	wchar_t* temp = new wchar_t[t_PacketSize - 4];
-	memcpy(temp, &m_RecvBuff[4], t_PacketSize - 4);
-	tempStr = temp;
-	tempStr += L" ";
-	SendMessage(FormMain->Handle, MSG_MEMO, (unsigned int)&tempStr, 0x10);
-
-
-
-	delete[] temp;
-	//tempStr.w_str()
-
-	//memcpy(m_RecvBuff, tempStr.w_str(), t_PacketSize - 4);
-	//SendMessage(FormMain->Handle, MSG_MEMO, (unsigned int)&tempStr, 0x10);
+	// Send a Proper Message To Main Thread.
+	memcpy(data.Data, m_RecvBuff, MAX_RECV_PACKET_SIZE);
+	SendMessage(FormMain->Handle, MSG_CLIENT_MESSAGE, (unsigned int)&data, 0x10);
 
 	return true;
 }

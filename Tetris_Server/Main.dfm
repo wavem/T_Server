@@ -170,8 +170,6 @@ object FormMain: TFormMain
         Left = 0
         Top = 0
         Caption = 'Status'
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object _pnBase_01_Status: TPanel
           Left = 0
           Top = 0
@@ -719,10 +717,10 @@ object FormMain: TFormMain
       Gutter.Font.Height = -13
       Gutter.Font.Name = 'Courier New'
       Gutter.Font.Style = []
-      Font.Charset = DEFAULT_CHARSET
+      Font.Charset = HANGEUL_CHARSET
       Font.Color = clBlack
       Font.Height = -13
-      Font.Name = 'COURIER NEW'
+      Font.Name = 'FixedSys'
       Font.Style = []
       HiddenCaret = False
       Lines.Strings = (
