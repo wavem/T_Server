@@ -105,7 +105,7 @@
 //---------------------------------------------------------------------------
 class CTCPListenThread;
 class ClientThread;
-
+class DataSenderThread;
 
 class TFormMain : public TForm
 {
@@ -159,11 +159,12 @@ public:		// User declarations
 
 // START TETRIS SERVER
 public: // Member
-	CTCPListenThread *m_TCPListenThread;
+	CTCPListenThread* m_TCPListenThread;
 	SOCKET m_TCPListenSocket;
-	ClientThread *m_Client[MAX_TCP_CLIENT_USER_COUNT];
+	ClientThread* m_Client[MAX_TCP_CLIENT_USER_COUNT];
 	SOCKET m_ClientSocket[MAX_TCP_CLIENT_USER_COUNT];
 	int m_ClientCnt;
+	DataSenderThread* m_SenderThread[MAX_SENDER_THREAD_COUNT];
 
 
 public: // BASIC FUNCTIONS
@@ -182,6 +183,7 @@ public: // ETC UI FUNCTIONS
 public: // Received Message Queue
 	std::queue<CLIENTMSG> m_ClientMsgQ;
 	std::mutex m_Mutex_ClientMsgQ;
+	std::condition_variable m_cv_ClientMsgQ;
 
 
 public: // Thread Message Handler

@@ -58,16 +58,12 @@ void ThreadPool::EnqueueJob(std::function<void()> job) {
 }
 //---------------------------------------------------------------------------
 
-
-
-
 /*
-
 ThreadPool::ThreadPool(size_t num_threads)
-    : num_threads_(num_threads), stop_all(false) {
+	: num_threads_(num_threads), stop_all(false) {
   worker_threads_.reserve(num_threads_);
   for (size_t i = 0; i < num_threads_; ++i) {
-    worker_threads_.emplace_back([this]() { this->WorkerThread(); });
+	worker_threads_.emplace_back([this]() { this->WorkerThread(); });
   }
 }
 
@@ -123,22 +119,19 @@ int main() {
   for (int i = 0; i < 10; i++) {
 	pool.EnqueueJob([i]() { work(i % 3 + 1, i); });
   }
-}                    */
-
+}
+*/
 
 
 //---------------------------------------------------------------------------
 
-
-
-DataSenderThread::DataSenderThread(SOCKET *_p_socket, CLIENTINFO _info) {
+DataSenderThread::DataSenderThread(int _iID, std::mutex* _p_mutex, std::condition_variable* _p_cv) {
 	m_eThreadWork = THREAD_STOP;
 	Priority = tpTimeCritical;
-	//memset(&info, 0, sizeof(info));
-	//memcpy(&info, &_info, sizeof(info));
 
-
-	mp_socket = _p_socket;
+	iSenderID = _iID;
+	p_mutex_ClientMsgQ = _p_mutex;
+	p_cv = _p_cv;
 
 	m_eThreadWork = THREAD_RUNNING;
 }
@@ -146,7 +139,7 @@ DataSenderThread::DataSenderThread(SOCKET *_p_socket, CLIENTINFO _info) {
 
 DataSenderThread::~DataSenderThread() {
 	UnicodeString tempStr = L"";
-	tempStr.sprintf(L"[%d]Client Thread Terminated (from thread message)", info.ClientIndex);
+	tempStr.sprintf(L"[%d]Data Sender Thread Terminated (from thread message)", iSenderID);
 	SendMessage(FormMain->Handle, MSG_MEMO, (unsigned int)&tempStr, 0x10);
 }
 //---------------------------------------------------------------------------
@@ -155,35 +148,21 @@ void __fastcall DataSenderThread::Execute() {
 
 	// Common
 	UnicodeString tempStr = L"";
-	int t_ClientIdx = 0;
-
-	CLIENTINFO t_ClientInfo;
-	struct sockaddr_in t_client_sockaddr_in;
-	memset(&t_client_sockaddr_in, 0, sizeof(t_client_sockaddr_in));
-	int t_len = sizeof(t_client_sockaddr_in);
-
-	BYTE t_Buff[256] = {0, };
-	int t_recvSize = 0;
 
 	while(!Terminated) {
 		// For Thread Stop & Resume
 		if(m_eThreadWork != THREAD_RUNNING) {
 			if(m_eThreadWork == THREAD_TERMINATED) break;
-			WaitForSingleObject((void*)this->Handle, 500);
+			WaitForSingleObject((void*)this->Handle, 200);
 			continue;
 		}
 
-		// TCP Receive Routine
-		t_recvSize = recv(*mp_socket, (char*)t_Buff, 256, 0);
-		if(t_recvSize == 0 || t_recvSize == -1) {
-			tempStr.sprintf(L"Client [%d] is disconnected", info.ClientIndex);
-			SendMessage(FormMain->Handle, MSG_MEMO, (unsigned int)&tempStr, 0x10);
-			m_eThreadWork = THREAD_TERMINATED;
-			return;
-		}
+		std::unique_lock<std::mutex> lk(*p_mutex_ClientMsgQ);
+		p_cv->wait(lk, [=]{return !FormMain->m_ClientMsgQ.empty() || m_eThreadWork != THREAD_RUNNING;});
 
-		// Time Calculation
-		//m_ConnectionDateTime = Now();
+		data = FormMain->m_ClientMsgQ.front();
+		FormMain->m_ClientMsgQ.pop();
+		p_mutex_ClientMsgQ->unlock();
 
 		WaitForSingleObject((void*)this->Handle, 100);
 	}
@@ -202,11 +181,7 @@ void __fastcall DataSenderThread::Resume() {
 //---------------------------------------------------------------------------
 
 void __fastcall DataSenderThread::DoTerminate() {
-
-	if(*mp_socket != INVALID_SOCKET) {
-		closesocket(*mp_socket);
-		*mp_socket = INVALID_SOCKET;
-	}
+	// Do I have to Unlock Mutex Here ?
 
 	m_eThreadWork = THREAD_TERMINATED;
 }

@@ -33,9 +33,12 @@ private:
 	SOCKET* mp_socket;
 	CLIENTINFO info;
 	CLIENTMSG data;
+	std::mutex* p_mutex_ClientMsgQ;
+	std::condition_variable* p_cv;
+	int iSenderID;
 
 public:
-	DataSenderThread(SOCKET *_p_socket, CLIENTINFO _info);
+	DataSenderThread(int _iID, std::mutex* _p_mutex, std::condition_variable* _p_cv);
 	~DataSenderThread();
 
 	bool __fastcall Send();

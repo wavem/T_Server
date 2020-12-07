@@ -110,6 +110,11 @@ void __fastcall TFormMain::InitProgram() {
 		m_Client[i] = NULL;
 	}
 
+	// Init Sender Thread
+	for(int i = 0 ; i < MAX_SENDER_THREAD_COUNT ; i++) {
+		m_SenderThread[i] = NULL;
+	}
+
 	// Init Grid
 	InitGrid();
 
@@ -164,6 +169,17 @@ void __fastcall TFormMain::ExitProgram() {
 		if(m_Client[i]) {
 			m_Client[i]->Terminate();
 			delete m_Client[i];
+		}
+	}
+
+	// Delete Sender Thread
+	for(int i = 0 ; i < MAX_SENDER_THREAD_COUNT ; i++) {
+		if(m_SenderThread[i]) {
+			m_SenderThread[i]->DoTerminate();
+			m_cv_ClientMsgQ.notify_all();
+			m_SenderThread[i]->Terminate();
+			delete m_SenderThread[i];
+			m_SenderThread[i] = NULL;
 		}
 	}
 
@@ -290,6 +306,12 @@ void __fastcall TFormMain::btn_ListenClick(TObject *Sender)
 	// Create TCP Listen Thread
 	m_TCPListenThread = new CTCPListenThread(&m_TCPListenSocket, m_ClientSocket, &m_ClientCnt);
 	PrintMsg(L"TCP Listen Thread Start...");
+
+	// Create Sender Thread
+	for(int i = 0 ; i < MAX_SENDER_THREAD_COUNT ; i++) {
+		m_SenderThread[i] = new DataSenderThread(i, &m_Mutex_ClientMsgQ, &m_cv_ClientMsgQ);
+	}
+	PrintMsg(L"Sender Thread 1~10 Start...");
 }
 //---------------------------------------------------------------------------
 
@@ -637,6 +659,9 @@ void __fastcall TFormMain::ReceiveClientMessage(TMessage &_msg) {
 	m_Mutex_ClientMsgQ.lock();
 	m_ClientMsgQ.push(t_ClientMsg);
 	m_Mutex_ClientMsgQ.unlock();
+
+	// Notify
+	m_cv_ClientMsgQ.notify_one();
 
 	// Test Message
 	tempStr.sprintf(L"Queue Size(After) : [%d]", m_ClientMsgQ.size());
