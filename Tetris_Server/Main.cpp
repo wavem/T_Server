@@ -615,6 +615,7 @@ void __fastcall TFormMain::ReceiveClientMessage(TMessage &_msg) {
 	p_ClientMsg = (CLIENTMSG*)t_wParam;
 	t_ClientMsg = *p_ClientMsg;
 
+	// Logging Received Data Size
 	memcpy(&t_RecvSize, &t_ClientMsg.Data[1], 2);
 	tempStr.sprintf(L"Received Size : [%d]", t_RecvSize);
 	PrintLog(tempStr);
@@ -626,6 +627,20 @@ void __fastcall TFormMain::ReceiveClientMessage(TMessage &_msg) {
 	tempStr += L"    ";
 	PrintLog(tempStr);
 	delete[] temp;
+
+
+	// Test Message
+	tempStr.sprintf(L"Queue Size(Before) : [%d]", m_ClientMsgQ.size());
+	PrintLog(tempStr);
+
+	// Push into Client Message Queue
+	m_Mutex_ClientMsgQ.lock();
+	m_ClientMsgQ.push(t_ClientMsg);
+	m_Mutex_ClientMsgQ.unlock();
+
+	// Test Message
+	tempStr.sprintf(L"Queue Size(After) : [%d]", m_ClientMsgQ.size());
+	PrintLog(tempStr);
 }
 //---------------------------------------------------------------------------
 

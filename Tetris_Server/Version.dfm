@@ -67,7 +67,7 @@ object FormVersion: TFormVersion
       Top = 92
       Width = 234
       Height = 16
-      Caption = 'Update Date : 2020-12-06 PM 16:33'
+      Caption = 'Update Date : 2020-12-07 PM 23:21'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -13

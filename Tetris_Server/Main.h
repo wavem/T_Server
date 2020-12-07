@@ -181,6 +181,7 @@ public: // ETC UI FUNCTIONS
 
 public: // Received Message Queue
 	std::queue<CLIENTMSG> m_ClientMsgQ;
+	std::mutex m_Mutex_ClientMsgQ;
 
 
 public: // Thread Message Handler
