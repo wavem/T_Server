@@ -13,7 +13,7 @@
 #define MAX_TCP_CLIENT_LISTENING_COUNT	10
 #define MAX_TCP_CLIENT_USER_COUNT		60
 
-#define MAX_SENDER_THREAD_COUNT	10
+#define MAX_SENDER_THREAD_COUNT	5
 
 #define MAX_RECV_PACKET_SIZE		300
 #define MAX_SEND_PACKET_SIZE		1300
@@ -40,6 +40,7 @@ typedef struct ST_CLIENTINFO {
 	int ClientIndex;
 	TDateTime ConnectionDateTime;
 	struct sockaddr_in ClientSockAddrIn;
+	SOCKET ClientSocket;
 } CLIENTINFO;
 //---------------------------------------------------------------------------
 

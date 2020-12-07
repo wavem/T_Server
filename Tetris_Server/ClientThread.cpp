@@ -13,6 +13,7 @@ __fastcall ClientThread::ClientThread(SOCKET *_p_socket, CLIENTINFO _info) {
 	memcpy(&info, &_info, sizeof(info));
 	data.ClientInfo = info;
 	mp_socket = _p_socket;
+	info.ClientSocket = *mp_socket;
 	m_eThreadWork = THREAD_RUNNING;
 }
 //---------------------------------------------------------------------------
@@ -90,7 +91,7 @@ bool __fastcall ClientThread::Receive() {
 	UnicodeString tempStr = L"";
 	int t_recvSize = 0;
 	int t_CurrentSize = 0;
-	BYTE t_SecureCode;
+	BYTE t_SecureCode = 0;
 	unsigned short t_PacketSize = 0;
 	BYTE t_MessageType = 0;
 

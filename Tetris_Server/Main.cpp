@@ -662,6 +662,7 @@ void __fastcall TFormMain::ReceiveClientMessage(TMessage &_msg) {
 
 	// Notify
 	m_cv_ClientMsgQ.notify_one();
+	//m_cv_ClientMsgQ.notify_all();
 
 	// Test Message
 	tempStr.sprintf(L"Queue Size(After) : [%d]", m_ClientMsgQ.size());

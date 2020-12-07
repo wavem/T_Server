@@ -170,6 +170,8 @@ object FormMain: TFormMain
         Left = 0
         Top = 0
         Caption = 'Status'
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object _pnBase_01_Status: TPanel
           Left = 0
           Top = 0
@@ -1667,6 +1669,7 @@ object FormMain: TFormMain
     Left = 548
   end
   object tm_FindClient: TTimer
+    Enabled = False
     Interval = 500
     OnTimer = tm_FindClientTimer
     Left = 576

@@ -157,16 +157,68 @@ void __fastcall DataSenderThread::Execute() {
 			continue;
 		}
 
+		if(p_mutex_ClientMsgQ->try_lock() == false) {
+			WaitForSingleObject((void*)this->Handle, 100);
+			continue;
+		}
 		std::unique_lock<std::mutex> lk(*p_mutex_ClientMsgQ);
-		p_cv->wait(lk, [=]{return !FormMain->m_ClientMsgQ.empty() || m_eThreadWork != THREAD_RUNNING;});
+		p_cv->wait(lk, [&]()->BOOL
+		{
+			bool t_rst = !FormMain->m_ClientMsgQ.empty() || m_eThreadWork != THREAD_RUNNING;
+			p_mutex_ClientMsgQ->unlock();
+			return t_rst;
+		});
+
+		//if(FormMain->m_ClientMsgQ.empty()) continue;
 
 		data = FormMain->m_ClientMsgQ.front();
 		FormMain->m_ClientMsgQ.pop();
 		p_mutex_ClientMsgQ->unlock();
+		//continue;
+
+		// Send Routine
+		if(Send()) {
+
+		} else {
+
+		}
 
 		WaitForSingleObject((void*)this->Handle, 100);
 	}
 	m_eThreadWork = THREAD_TERMINATED;
+}
+//---------------------------------------------------------------------------
+
+bool __fastcall DataSenderThread::Send() {
+
+	// Common
+	UnicodeString tempStr = L"";
+	int t_rst = 0;
+	int t_MessageType = 0;
+	unsigned short t_PacketSize = 0;
+
+	// Extract Message Type
+	t_MessageType = data.Data[3];
+
+	// Extract Packet Size
+	memcpy(&t_PacketSize, &data.Data[1], 2);
+
+	// Send Routine
+	switch(t_MessageType) {
+	case 1:	// Chatting
+		for(int i = 0 ; i < MAX_TCP_CLIENT_USER_COUNT ; i++) {
+			if(FormMain->m_ClientSocket[i] != INVALID_SOCKET) {
+				t_rst = 0;
+				t_rst = send(FormMain->m_ClientSocket[i], (char*)data.Data, t_PacketSize, 0);
+			}
+		}
+		break;
+
+	default:
+		break;
+	}
+
+	return true;
 }
 //---------------------------------------------------------------------------
 
