@@ -202,7 +202,7 @@ bool __fastcall DataSenderThread::Send() {
 
 	// Send Routine
 	switch(t_MessageType) {
-	case 1:	// Chatting
+	case DATA_TYPE_LOBBY_CHATTING:
 		for(int i = 0 ; i < MAX_TCP_CLIENT_USER_COUNT ; i++) {
 			if(FormMain->m_ClientSocket[i] != INVALID_SOCKET) {
 				t_rst = 0;
