@@ -170,8 +170,6 @@ object FormMain: TFormMain
         Left = 0
         Top = 0
         Caption = 'Status'
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object _pnBase_01_Status: TPanel
           Left = 0
           Top = 0
@@ -644,6 +642,84 @@ object FormMain: TFormMain
             Version = '2.1.0.0'
             OnClick = btn_GetRunningTimeClick
             TMSStyle = 0
+          end
+          object btn_UserInfo: TAdvSmoothButton
+            Left = 32
+            Top = 278
+            Width = 120
+            Height = 35
+            Cursor = crHandPoint
+            Hint = 'DB'
+            Appearance.GlowPercentage = 35
+            Appearance.Font.Charset = DEFAULT_CHARSET
+            Appearance.Font.Color = clAqua
+            Appearance.Font.Height = -15
+            Appearance.Font.Name = 'Tahoma'
+            Appearance.Font.Style = [fsBold]
+            Appearance.Rounding = 12
+            Status.Caption = '0'
+            Status.Appearance.Fill.Color = clRed
+            Status.Appearance.Fill.ColorMirror = clNone
+            Status.Appearance.Fill.ColorMirrorTo = clNone
+            Status.Appearance.Fill.GradientType = gtSolid
+            Status.Appearance.Fill.GradientMirrorType = gtSolid
+            Status.Appearance.Fill.BorderColor = clGray
+            Status.Appearance.Fill.Rounding = 8
+            Status.Appearance.Fill.ShadowOffset = 0
+            Status.Appearance.Fill.Glow = gmNone
+            Status.Appearance.Font.Charset = DEFAULT_CHARSET
+            Status.Appearance.Font.Color = clWhite
+            Status.Appearance.Font.Height = -11
+            Status.Appearance.Font.Name = 'Tahoma'
+            Status.Appearance.Font.Style = []
+            Bevel = False
+            BevelColor = clLime
+            Caption = 'USER INFO'
+            Color = clNavy
+            ParentFont = False
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 7
+            ShowFocus = False
+            Version = '2.1.0.0'
+            OnClick = btn_UserInfoClick
+            TMSStyle = 0
+          end
+        end
+      end
+      object TPage
+        Left = 0
+        Top = 0
+        HelpContext = 2
+        Caption = 'User Info'
+        ExplicitWidth = 0
+        ExplicitHeight = 0
+        object _pnBase_03_UserInfo: TPanel
+          Left = 0
+          Top = 0
+          Width = 1009
+          Height = 734
+          Align = alClient
+          BevelOuter = bvNone
+          Color = clBlack
+          ParentBackground = False
+          TabOrder = 0
+          ExplicitLeft = 80
+          ExplicitTop = 72
+          ExplicitWidth = 185
+          ExplicitHeight = 41
+          object DBGrid1: TDBGrid
+            Left = 32
+            Top = 40
+            Width = 265
+            Height = 665
+            Options = [dgEditing, dgAlwaysShowEditor, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+            TabOrder = 0
+            TitleFont.Charset = DEFAULT_CHARSET
+            TitleFont.Color = clWindowText
+            TitleFont.Height = -11
+            TitleFont.Name = 'Tahoma'
+            TitleFont.Style = []
           end
         end
       end
@@ -1677,5 +1753,18 @@ object FormMain: TFormMain
   object tm_DeleteClient: TTimer
     OnTimer = tm_DeleteClientTimer
     Left = 604
+  end
+  object ADOConnection: TADOConnection
+    Left = 704
+  end
+  object tbUSER: TADOTable
+    Left = 732
+  end
+  object dsUSER: TDataSource
+    Left = 760
+  end
+  object queryUSER: TADOQuery
+    Parameters = <>
+    Left = 788
   end
 end

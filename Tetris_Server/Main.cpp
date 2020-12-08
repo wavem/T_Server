@@ -673,3 +673,9 @@ void __fastcall TFormMain::ReceiveClientMessage(TMessage &_msg) {
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TFormMain::btn_UserInfoClick(TObject *Sender)
+{
+	Notebook_Main->PageIndex = 2; // DB USER INFO
+}
+//---------------------------------------------------------------------------
+

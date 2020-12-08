@@ -77,6 +77,9 @@
 #include "BaseGrid.hpp"
 #include <Vcl.Grids.hpp>
 #include <Vcl.ImgList.hpp>
+#include <Data.DB.hpp>
+#include <Data.Win.ADODB.hpp>
+#include <Vcl.DBGrids.hpp>
 //---------------------------------------------------------------------------
 
 
@@ -138,6 +141,13 @@ __published:	// IDE-managed Components
 	TAdvMemo *memo_log;
 	TTimer *tm_FindClient;
 	TTimer *tm_DeleteClient;
+	TADOConnection *ADOConnection;
+	TADOTable *tbUSER;
+	TDataSource *dsUSER;
+	TPanel *_pnBase_03_UserInfo;
+	TDBGrid *DBGrid1;
+	TAdvSmoothButton *btn_UserInfo;
+	TADOQuery *queryUSER;
 	void __fastcall Exit1Click(TObject *Sender);
 	void __fastcall TrayIconDblClick(TObject *Sender);
 	void __fastcall MenuBtn_StatusClick(TObject *Sender);
@@ -153,6 +163,7 @@ __published:	// IDE-managed Components
 	void __fastcall tm_FindClientTimer(TObject *Sender);
 	void __fastcall tm_DeleteClientTimer(TObject *Sender);
 	void __fastcall MenuBtn_VersionClick(TObject *Sender);
+	void __fastcall btn_UserInfoClick(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TFormMain(TComponent* Owner);
