@@ -152,7 +152,8 @@ bool __fastcall ClientThread::Receive() {
 
 	// Send a Proper Message To Main Thread.
 	memcpy(data.Data, m_RecvBuff, MAX_RECV_PACKET_SIZE);
-	SendMessage(FormMain->Handle, MSG_CLIENT_MESSAGE, (unsigned int)&data, 0x10);
+	//SendMessage(FormMain->Handle, MSG_CLIENT_MESSAGE, (unsigned int)&data, 0x10);
+	PostMessage(FormMain->Handle, MSG_CLIENT_MESSAGE, (unsigned int)&data, 0x10);
 
 	return true;
 }

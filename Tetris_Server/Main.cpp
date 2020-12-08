@@ -656,9 +656,14 @@ void __fastcall TFormMain::ReceiveClientMessage(TMessage &_msg) {
 	PrintLog(tempStr);
 
 	// Push into Client Message Queue
-	m_Mutex_ClientMsgQ.lock();
-	m_ClientMsgQ.push(t_ClientMsg);
-	m_Mutex_ClientMsgQ.unlock();
+	//m_Mutex_ClientMsgQ.lock();
+	if(m_Mutex_ClientMsgQ.try_lock()) {
+		m_ClientMsgQ.push(t_ClientMsg);
+		m_Mutex_ClientMsgQ.unlock();
+	} else {
+		tempStr.sprintf(L"Lock Fail");
+		PrintLog(tempStr);
+	}
 
 	// Notify
 	m_cv_ClientMsgQ.notify_one();

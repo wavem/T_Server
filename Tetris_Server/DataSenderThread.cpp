@@ -157,24 +157,21 @@ void __fastcall DataSenderThread::Execute() {
 			continue;
 		}
 
-		if(p_mutex_ClientMsgQ->try_lock() == false) {
-			WaitForSingleObject((void*)this->Handle, 100);
-			continue;
-		}
-		std::unique_lock<std::mutex> lk(*p_mutex_ClientMsgQ);
-		p_cv->wait(lk, [&]()->BOOL
+		std::unique_lock<std::mutex> lk(*p_mutex_ClientMsgQ, std::defer_lock);
+		p_cv->wait(lk, [this]()->BOOL
 		{
 			bool t_rst = !FormMain->m_ClientMsgQ.empty() || m_eThreadWork != THREAD_RUNNING;
-			p_mutex_ClientMsgQ->unlock();
 			return t_rst;
 		});
 
-		//if(FormMain->m_ClientMsgQ.empty()) continue;
+		if(m_eThreadWork != THREAD_RUNNING) return;
 
+		if(FormMain->m_ClientMsgQ.empty()) continue;
+
+		p_mutex_ClientMsgQ->lock();
 		data = FormMain->m_ClientMsgQ.front();
 		FormMain->m_ClientMsgQ.pop();
 		p_mutex_ClientMsgQ->unlock();
-		//continue;
 
 		// Send Routine
 		if(Send()) {
