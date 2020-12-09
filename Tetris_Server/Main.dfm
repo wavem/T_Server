@@ -164,7 +164,7 @@ object FormMain: TFormMain
       Top = 0
       Width = 1009
       Height = 734
-      PageIndex = 1
+      PageIndex = 2
       TabOrder = 0
       object TPage
         Left = 0
@@ -692,8 +692,6 @@ object FormMain: TFormMain
         Top = 0
         HelpContext = 2
         Caption = 'User Info'
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object _pnBase_03_UserInfo: TPanel
           Left = 0
           Top = 0
@@ -704,10 +702,6 @@ object FormMain: TFormMain
           Color = clBlack
           ParentBackground = False
           TabOrder = 0
-          ExplicitLeft = 80
-          ExplicitTop = 72
-          ExplicitWidth = 185
-          ExplicitHeight = 41
           object DBGrid1: TDBGrid
             Left = 32
             Top = 40
@@ -720,6 +714,25 @@ object FormMain: TFormMain
             TitleFont.Height = -11
             TitleFont.Name = 'Tahoma'
             TitleFont.Style = []
+            Columns = <
+              item
+                Expanded = False
+                FieldName = 'ID'
+                Width = 47
+                Visible = True
+              end
+              item
+                Expanded = False
+                FieldName = 'UserName'
+                Width = 100
+                Visible = True
+              end
+              item
+                Expanded = False
+                FieldName = 'Password'
+                Width = 100
+                Visible = True
+              end>
           end
         end
       end
@@ -1754,17 +1767,8 @@ object FormMain: TFormMain
     OnTimer = tm_DeleteClientTimer
     Left = 604
   end
-  object ADOConnection: TADOConnection
-    Left = 704
-  end
-  object tbUSER: TADOTable
-    Left = 732
-  end
-  object dsUSER: TDataSource
-    Left = 760
-  end
-  object queryUSER: TADOQuery
-    Parameters = <>
-    Left = 788
+  object ADOConnection1: TADOConnection
+    Left = 696
+    Top = 8
   end
 end

@@ -141,13 +141,10 @@ __published:	// IDE-managed Components
 	TAdvMemo *memo_log;
 	TTimer *tm_FindClient;
 	TTimer *tm_DeleteClient;
-	TADOConnection *ADOConnection;
-	TADOTable *tbUSER;
-	TDataSource *dsUSER;
 	TPanel *_pnBase_03_UserInfo;
 	TDBGrid *DBGrid1;
 	TAdvSmoothButton *btn_UserInfo;
-	TADOQuery *queryUSER;
+	TADOConnection *ADOConnection1;
 	void __fastcall Exit1Click(TObject *Sender);
 	void __fastcall TrayIconDblClick(TObject *Sender);
 	void __fastcall MenuBtn_StatusClick(TObject *Sender);
