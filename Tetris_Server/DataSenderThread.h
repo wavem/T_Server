@@ -14,10 +14,11 @@ private:
 	//std::mutex* p_mutex_ClientMsgQ;
 	//std::condition_variable* p_cv;
 	int iSenderID;
+	HANDLE Mutex;
 
 public:
 	//DataSenderThread(int _iID, std::mutex* _p_mutex, std::condition_variable* _p_cv);
-	DataSenderThread();
+	DataSenderThread(int _iID, HANDLE _Mutex);
 	__fastcall ~DataSenderThread();
 
 	bool __fastcall Send();

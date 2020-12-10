@@ -82,6 +82,8 @@
 #include <Vcl.DBGrids.hpp>
 //---------------------------------------------------------------------------
 
+#include <queue>
+
 #include "Define.h"
 #include "DataSenderThread.h"
 #include "TCPListenThread.h"
@@ -133,6 +135,7 @@ __published:	// IDE-managed Components
 	TPanel *_pnBase_03_UserInfo;
 	TDBGrid *DBGrid1;
 	TAdvSmoothButton *btn_UserInfo;
+	TAdvSmoothButton *btn_Count;
 	void __fastcall Exit1Click(TObject *Sender);
 	void __fastcall TrayIconDblClick(TObject *Sender);
 	void __fastcall MenuBtn_StatusClick(TObject *Sender);
@@ -149,6 +152,7 @@ __published:	// IDE-managed Components
 	void __fastcall tm_DeleteClientTimer(TObject *Sender);
 	void __fastcall MenuBtn_VersionClick(TObject *Sender);
 	void __fastcall btn_UserInfoClick(TObject *Sender);
+	void __fastcall btn_CountClick(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TFormMain(TComponent* Owner);
@@ -161,6 +165,7 @@ public: // Member
 	SOCKET m_ClientSocket[MAX_TCP_CLIENT_USER_COUNT];
 	int m_ClientCnt;
 	DataSenderThread* m_SenderThread[MAX_SENDER_THREAD_COUNT];
+	int m_SenderThreadWorkCount[MAX_SENDER_THREAD_COUNT];
 
 
 public: // BASIC FUNCTIONS
@@ -177,7 +182,8 @@ public: // ETC UI FUNCTIONS
 	void __fastcall RefreshClientInfoGrid();
 
 public: // Received Message Queue
-	//std::queue<CLIENTMSG> m_ClientMsgQ;
+	HANDLE m_Mutex;
+	std::queue<CLIENTMSG> m_ClientMsgQ;
 	//std::mutex m_Mutex_ClientMsgQ;
 	//std::condition_variable m_cv_ClientMsgQ;
 
@@ -187,10 +193,6 @@ public: // Thread Message Handler
 	void __fastcall AddClient(TMessage &_msg);
 	void __fastcall ReceiveClientMessage(TMessage &_msg);
 
-public: // TEST
-	//void __fastcall Worker(int& result, std::mutex& m);
-	//int counter = 0;
-	//std::mutex m_mutex;
 
 BEGIN_MESSAGE_MAP
 	MESSAGE_HANDLER(MSG_MEMO, TMessage, PrintThreadMessage)

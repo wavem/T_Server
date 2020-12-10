@@ -21,11 +21,12 @@ DataSenderThread::DataSenderThread(int _iID, std::mutex* _p_mutex, std::conditio
 //---------------------------------------------------------------------------
 */
 
-DataSenderThread::DataSenderThread() {
+DataSenderThread::DataSenderThread(int _iID, HANDLE _Mutex) {
 	m_eThreadWork = THREAD_STOP;
 	Priority = tpTimeCritical;
 
-	//iSenderID = _iID;
+	Mutex = _Mutex;
+	iSenderID = _iID;
 	//p_mutex_ClientMsgQ = _p_mutex;
 	//p_cv = _p_cv;
 
@@ -44,6 +45,7 @@ void __fastcall DataSenderThread::Execute() {
 
 	// Common
 	UnicodeString tempStr = L"";
+	int temp = 0;
 
 	while(!Terminated) {
 		// For Thread Stop & Resume
@@ -52,6 +54,25 @@ void __fastcall DataSenderThread::Execute() {
 			WaitForSingleObject((void*)this->Handle, 200);
 			continue;
 		}
+
+		WaitForSingleObject(Mutex, INFINITE);
+		if(FormMain->m_ClientMsgQ.empty() == false) {
+			data = FormMain->m_ClientMsgQ.front();
+			FormMain->m_ClientMsgQ.pop();
+			FormMain->m_SenderThreadWorkCount[iSenderID]++;
+			//Sleep(10);
+		} else {
+			//Sleep(10);
+		}
+
+		ReleaseMutex(Mutex);
+		if(iSenderID == 5) {
+			Sleep(1000);
+		}
+
+
+
+		//return;
 
 		/*
 		std::unique_lock<std::mutex> lk(*p_mutex_ClientMsgQ, std::defer_lock);
@@ -62,9 +83,10 @@ void __fastcall DataSenderThread::Execute() {
 		});
 
 		*/
-		if(m_eThreadWork != THREAD_RUNNING) return;
+		//if(m_eThreadWork != THREAD_RUNNING) return;
 
 		//if(FormMain->m_ClientMsgQ.empty()) continue;
+
 
 		//p_mutex_ClientMsgQ->lock();
 		//data = FormMain->m_ClientMsgQ.front();
@@ -72,13 +94,13 @@ void __fastcall DataSenderThread::Execute() {
 		//p_mutex_ClientMsgQ->unlock();
 
 		// Send Routine
-		if(Send()) {
+		//if(Send()) {
 
-		} else {
+		//} else {
 
-		}
+		//}
 
-		WaitForSingleObject((void*)this->Handle, 100);
+		//WaitForSingleObject((void*)this->Handle, 500);
 	}
 	m_eThreadWork = THREAD_TERMINATED;
 }

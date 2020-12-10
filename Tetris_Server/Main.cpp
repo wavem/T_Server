@@ -113,10 +113,15 @@ void __fastcall TFormMain::InitProgram() {
 	// Init Sender Thread
 	for(int i = 0 ; i < MAX_SENDER_THREAD_COUNT ; i++) {
 		m_SenderThread[i] = NULL;
+		m_SenderThreadWorkCount[i] = 0;
 	}
 
 	// Init Grid
 	InitGrid();
+
+	// Create Mutex
+	m_Mutex = CreateMutex(NULL, true, NULL);
+	ReleaseMutex(m_Mutex);
 
 	// Socket
 	WSADATA data;
@@ -228,75 +233,38 @@ void __fastcall TFormMain::btn_TestClick(TObject *Sender)
 {
 	// Common
 	UnicodeString tempStr = L"";
-	PrintMsg(L"TEST BUTTON CLICKED");
+	//PrintMsg(L"TEST BUTTON CLICKED");
 
-	/*
-	CLIENTINFO tempinfo;
-	std::queue<CLIENTINFO> q;
+	DWORD ret = 0;
+	CLIENTMSG t_ClientMsg;
+	memset(&t_ClientMsg, 0, sizeof(t_ClientMsg));
 
-	tempStr.sprintf(L"queue size : %d", q.size());
+
+	// Create Mutex
+	for(int i = 0 ; i < 1000; i++) {
+		ret = WaitForSingleObject(m_Mutex, 2000);
+		if(ret == WAIT_FAILED) {
+			tempStr = L"wait failed";
+		} else if(ret == WAIT_ABANDONED) {
+			tempStr = L"wait abandoned";
+		} else if(ret == WAIT_TIMEOUT) {
+			tempStr = L"Wait Time out!!";
+		} else if(ret == WAIT_OBJECT_0) {
+			tempStr = L"Pushed into Queue";
+			for(int i = 0 ; i < 100 ; i++) {
+				m_ClientMsgQ.push(t_ClientMsg);
+			}
+		} else {
+			tempStr = L"ETC";
+		}
+	//	PrintMsg(tempStr);
+
+		ReleaseMutex(m_Mutex);
+	}
+	tempStr.sprintf(L"Queue Size : %d", m_ClientMsgQ.size());
 	PrintMsg(tempStr);
-
-	for(int i = 0 ; i < 5 ; i++) {
-		tempinfo.ClientIndex = i;
-		tempinfo.ClientSockAddrIn.sin_port = i + 10000;
-		q.push(tempinfo);
-		tempStr.sprintf(L"queue size : %d", q.size());
-		PrintMsg(tempStr);
-	}
-
-	for(int i = 0 ; i < 5 ; i++) {
-		tempinfo = q.front();
-		tempStr.sprintf(L"Port : %d", tempinfo.ClientSockAddrIn.sin_port);
-		PrintMsg(tempStr);
-		q.pop();
-		tempStr.sprintf(L"queue size : %d", q.size());
-		PrintMsg(tempStr);
-	}
-
-	std::vector<int> v;
-
-	tempStr.sprintf(L"size_t size : %d", sizeof(size_t));
-	PrintMsg(tempStr);
-	*/
-
-	//int temp = 10;
-	//int ret = 0;
-	//ret = [&temp](int v)->int{return v;};
-	//PrintMsg(ret);
-	//[]{FormMain->PrintMsg(L"hi");}();
-	//[](int n){FormMain->PrintMsg(n);}(temp);
-	//std::condition_variable cv;
-
-
-	/*
-	std::vector<std::thread> workers;
-	for(int i = 0 ; i < 4 ; i++) {
-		workers.push_back(std::thread(Worker, std::ref(counter), std::ref(m_mutex)));
-	}
-
-	for(int i = 0 ; i < 4 ; i++) {
-		workers[i].join();
-	}
-
-	PrintMsg(counter);
-	*/
 }
 //---------------------------------------------------------------------------
-
-/*
-void __fastcall TFormMain::Worker(int& result, std::mutex& m) {
-	UnicodeString tempStr = L"";
-
-	for(int i = 0 ; i < 1000 ; i++) {
-		//m.lock();
-		tempStr.sprintf(L"%d", counter++);
-		//PrintMsg(tempStr);
-		//m.unlock();
-	}
-}
-//---------------------------------------------------------------------------
-*/
 
 void __fastcall TFormMain::btn_ListenClick(TObject *Sender)
 {
@@ -315,7 +283,7 @@ void __fastcall TFormMain::btn_ListenClick(TObject *Sender)
 	// Create Sender Thread
 	for(int i = 0 ; i < MAX_SENDER_THREAD_COUNT ; i++) {
 		//m_SenderThread[i] = new DataSenderThread(i, &m_Mutex_ClientMsgQ, &m_cv_ClientMsgQ);
-		m_SenderThread[i] = new DataSenderThread();
+		m_SenderThread[i] = new DataSenderThread(i, m_Mutex);
 	}
 	PrintMsg(L"Sender Thread 1~10 Start...");
 }
@@ -658,10 +626,13 @@ void __fastcall TFormMain::ReceiveClientMessage(TMessage &_msg) {
 
 
 	// Test Message
-	//tempStr.sprintf(L"Queue Size(Before) : [%d]", m_ClientMsgQ.size());
-	//PrintLog(tempStr);
+	tempStr.sprintf(L"Queue Size(Before) : [%d]", m_ClientMsgQ.size());
+	PrintLog(tempStr);
 
 	// Push into Client Message Queue
+
+
+
 	//if(m_Mutex_ClientMsgQ.try_lock()) {
 	//	m_ClientMsgQ.push(t_ClientMsg);
 	//	m_Mutex_ClientMsgQ.unlock();
@@ -674,14 +645,27 @@ void __fastcall TFormMain::ReceiveClientMessage(TMessage &_msg) {
 	//m_cv_ClientMsgQ.notify_one();
 
 	// Test Message
-	//tempStr.sprintf(L"Queue Size(After) : [%d]", m_ClientMsgQ.size());
-	//PrintLog(tempStr);
+	tempStr.sprintf(L"Queue Size(After) : [%d]", m_ClientMsgQ.size());
+	PrintLog(tempStr);
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TFormMain::btn_UserInfoClick(TObject *Sender)
 {
 	Notebook_Main->PageIndex = 2; // DB USER INFO
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFormMain::btn_CountClick(TObject *Sender)
+{
+	// Common
+	UnicodeString tempStr = L"";
+
+	for(int i = 0 ; i < MAX_SENDER_THREAD_COUNT ; i++) {
+		tempStr.sprintf(L"[%d] count : %d", i, m_SenderThreadWorkCount[i]);
+		PrintLog(tempStr);
+	}
+	PrintLog(L"-----------------------");
 }
 //---------------------------------------------------------------------------
 
