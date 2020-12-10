@@ -7,8 +7,8 @@
         <MainSource>Tetris_Server.cpp</MainSource>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
-        <Platform Condition="'$(Platform)'==''">Win64</Platform>
-        <TargetedPlatforms>2</TargetedPlatforms>
+        <Platform Condition="'$(Platform)'==''">Win32</Platform>
+        <TargetedPlatforms>3</TargetedPlatforms>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
         <Base>true</Base>
@@ -169,7 +169,6 @@
         </CppCompile>
         <PCHCompile Include="Tetris_Server_PCH1.h">
             <BuildOrder>1</BuildOrder>
-            <PCH>true</PCH>
         </PCHCompile>
         <CppCompile Include="Version.cpp">
             <Form>FormVersion</Form>
@@ -596,7 +595,7 @@
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
             </Deployment>
             <Platforms>
-                <Platform value="Win32">False</Platform>
+                <Platform value="Win32">True</Platform>
                 <Platform value="Win64">True</Platform>
             </Platforms>
         </BorlandProject>

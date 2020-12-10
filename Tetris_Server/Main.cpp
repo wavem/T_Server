@@ -176,7 +176,7 @@ void __fastcall TFormMain::ExitProgram() {
 	for(int i = 0 ; i < MAX_SENDER_THREAD_COUNT ; i++) {
 		if(m_SenderThread[i]) {
 			m_SenderThread[i]->DoTerminate();
-			m_cv_ClientMsgQ.notify_all();
+			//m_cv_ClientMsgQ.notify_all();
 			m_SenderThread[i]->Terminate();
 			delete m_SenderThread[i];
 			m_SenderThread[i] = NULL;
@@ -268,6 +268,8 @@ void __fastcall TFormMain::btn_TestClick(TObject *Sender)
 	//[](int n){FormMain->PrintMsg(n);}(temp);
 	//std::condition_variable cv;
 
+
+	/*
 	std::vector<std::thread> workers;
 	for(int i = 0 ; i < 4 ; i++) {
 		workers.push_back(std::thread(Worker, std::ref(counter), std::ref(m_mutex)));
@@ -278,9 +280,11 @@ void __fastcall TFormMain::btn_TestClick(TObject *Sender)
 	}
 
 	PrintMsg(counter);
+	*/
 }
 //---------------------------------------------------------------------------
 
+/*
 void __fastcall TFormMain::Worker(int& result, std::mutex& m) {
 	UnicodeString tempStr = L"";
 
@@ -292,6 +296,7 @@ void __fastcall TFormMain::Worker(int& result, std::mutex& m) {
 	}
 }
 //---------------------------------------------------------------------------
+*/
 
 void __fastcall TFormMain::btn_ListenClick(TObject *Sender)
 {
@@ -309,7 +314,8 @@ void __fastcall TFormMain::btn_ListenClick(TObject *Sender)
 
 	// Create Sender Thread
 	for(int i = 0 ; i < MAX_SENDER_THREAD_COUNT ; i++) {
-		m_SenderThread[i] = new DataSenderThread(i, &m_Mutex_ClientMsgQ, &m_cv_ClientMsgQ);
+		//m_SenderThread[i] = new DataSenderThread(i, &m_Mutex_ClientMsgQ, &m_cv_ClientMsgQ);
+		m_SenderThread[i] = new DataSenderThread();
 	}
 	PrintMsg(L"Sender Thread 1~10 Start...");
 }
@@ -652,24 +658,24 @@ void __fastcall TFormMain::ReceiveClientMessage(TMessage &_msg) {
 
 
 	// Test Message
-	tempStr.sprintf(L"Queue Size(Before) : [%d]", m_ClientMsgQ.size());
-	PrintLog(tempStr);
+	//tempStr.sprintf(L"Queue Size(Before) : [%d]", m_ClientMsgQ.size());
+	//PrintLog(tempStr);
 
 	// Push into Client Message Queue
-	if(m_Mutex_ClientMsgQ.try_lock()) {
-		m_ClientMsgQ.push(t_ClientMsg);
-		m_Mutex_ClientMsgQ.unlock();
-	} else {
-		tempStr.sprintf(L"Lock Fail");
-		PrintLog(tempStr);
-	}
+	//if(m_Mutex_ClientMsgQ.try_lock()) {
+	//	m_ClientMsgQ.push(t_ClientMsg);
+	//	m_Mutex_ClientMsgQ.unlock();
+	//} else {
+	//	tempStr.sprintf(L"Lock Fail");
+	//	PrintLog(tempStr);
+	//}
 
 	// Notify
-	m_cv_ClientMsgQ.notify_one();
+	//m_cv_ClientMsgQ.notify_one();
 
 	// Test Message
-	tempStr.sprintf(L"Queue Size(After) : [%d]", m_ClientMsgQ.size());
-	PrintLog(tempStr);
+	//tempStr.sprintf(L"Queue Size(After) : [%d]", m_ClientMsgQ.size());
+	//PrintLog(tempStr);
 }
 //---------------------------------------------------------------------------
 

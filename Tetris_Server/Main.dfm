@@ -164,7 +164,7 @@ object FormMain: TFormMain
       Top = 0
       Width = 1009
       Height = 734
-      PageIndex = 2
+      PageIndex = 1
       TabOrder = 0
       object TPage
         Left = 0
@@ -1766,9 +1766,5 @@ object FormMain: TFormMain
   object tm_DeleteClient: TTimer
     OnTimer = tm_DeleteClientTimer
     Left = 604
-  end
-  object ADOConnection1: TADOConnection
-    Left = 696
-    Top = 8
   end
 end
