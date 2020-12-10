@@ -184,9 +184,6 @@ public: // ETC UI FUNCTIONS
 public: // Received Message Queue
 	HANDLE m_Mutex;
 	std::queue<CLIENTMSG> m_ClientMsgQ;
-	//std::mutex m_Mutex_ClientMsgQ;
-	//std::condition_variable m_cv_ClientMsgQ;
-
 
 public: // Thread Message Handler
 	void __fastcall PrintThreadMessage(TMessage &_msg);

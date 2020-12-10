@@ -233,12 +233,14 @@ void __fastcall TFormMain::btn_TestClick(TObject *Sender)
 {
 	// Common
 	UnicodeString tempStr = L"";
-	//PrintMsg(L"TEST BUTTON CLICKED");
+	PrintMsg(L"TEST BUTTON CLICKED");
 
+
+// Below is Message Queue Test Code
+#if 0
 	DWORD ret = 0;
 	CLIENTMSG t_ClientMsg;
 	memset(&t_ClientMsg, 0, sizeof(t_ClientMsg));
-
 
 	// Create Mutex
 	for(int i = 0 ; i < 1000; i++) {
@@ -263,6 +265,7 @@ void __fastcall TFormMain::btn_TestClick(TObject *Sender)
 	}
 	tempStr.sprintf(L"Queue Size : %d", m_ClientMsgQ.size());
 	PrintMsg(tempStr);
+#endif
 }
 //---------------------------------------------------------------------------
 
@@ -462,20 +465,17 @@ void __fastcall TFormMain::tm_FindClientTimer(TObject *Sender)
 {
 	// Common
 	UnicodeString tempStr = L"";
-
 	BYTE t_Buffer[5] = {0, };
 	t_Buffer[0] = 0x59;
 	t_Buffer[1] = 0x02;
 	t_Buffer[2] = 0x03;
 	t_Buffer[3] = 0x04;
 	t_Buffer[4] = 0x05;
-
 	int t_rst = 0;
 
 	for(int i = 0 ; i < MAX_TCP_CLIENT_USER_COUNT ; i++) {
 		if(m_ClientSocket[i] != INVALID_SOCKET) {
-			t_rst = send(m_ClientSocket[i], (char*)t_Buffer, 5, 0);
-
+			//t_rst = send(m_ClientSocket[i], (char*)t_Buffer, 5, 0);
 			//tempStr.sprintf(L"Socket[%d] -> Send Result : %d", i, t_rst);
 			//PrintLog(tempStr);
 			t_rst = 0;
@@ -624,25 +624,26 @@ void __fastcall TFormMain::ReceiveClientMessage(TMessage &_msg) {
 	PrintLog(tempStr);
 	delete[] temp;
 
-
 	// Test Message
 	tempStr.sprintf(L"Queue Size(Before) : [%d]", m_ClientMsgQ.size());
 	PrintLog(tempStr);
 
 	// Push into Client Message Queue
-
-
-
-	//if(m_Mutex_ClientMsgQ.try_lock()) {
-	//	m_ClientMsgQ.push(t_ClientMsg);
-	//	m_Mutex_ClientMsgQ.unlock();
-	//} else {
-	//	tempStr.sprintf(L"Lock Fail");
-	//	PrintLog(tempStr);
-	//}
-
-	// Notify
-	//m_cv_ClientMsgQ.notify_one();
+	int ret = WaitForSingleObject(m_Mutex, 2000);
+	if(ret == WAIT_FAILED) {
+		tempStr = L"Wait Failed";
+	} else if(ret == WAIT_ABANDONED) {
+		tempStr = L"Wait Abandoned";
+	} else if(ret == WAIT_TIMEOUT) {
+		tempStr = L"Wait Time Out";
+	} else if(ret == WAIT_OBJECT_0) {
+		tempStr = L"Success to Push Packet into Message Queue";
+		m_ClientMsgQ.push(t_ClientMsg);
+	} else {
+		tempStr = L"ETC";
+	}
+	PrintMsg(tempStr);
+	ReleaseMutex(m_Mutex);
 
 	// Test Message
 	tempStr.sprintf(L"Queue Size(After) : [%d]", m_ClientMsgQ.size());

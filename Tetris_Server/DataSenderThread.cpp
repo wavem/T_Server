@@ -6,29 +6,11 @@
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 
-
-/*
-DataSenderThread::DataSenderThread(int _iID, std::mutex* _p_mutex, std::condition_variable* _p_cv) {
-	m_eThreadWork = THREAD_STOP;
-	Priority = tpTimeCritical;
-
-	iSenderID = _iID;
-	p_mutex_ClientMsgQ = _p_mutex;
-	p_cv = _p_cv;
-
-	m_eThreadWork = THREAD_RUNNING;
-}
-//---------------------------------------------------------------------------
-*/
-
 DataSenderThread::DataSenderThread(int _iID, HANDLE _Mutex) {
 	m_eThreadWork = THREAD_STOP;
 	Priority = tpTimeCritical;
-
 	Mutex = _Mutex;
 	iSenderID = _iID;
-	//p_mutex_ClientMsgQ = _p_mutex;
-	//p_cv = _p_cv;
 
 	m_eThreadWork = THREAD_RUNNING;
 }
@@ -56,52 +38,24 @@ void __fastcall DataSenderThread::Execute() {
 		}
 
 		WaitForSingleObject(Mutex, INFINITE);
-		if(FormMain->m_ClientMsgQ.empty() == false) {
-			data = FormMain->m_ClientMsgQ.front();
-			FormMain->m_ClientMsgQ.pop();
-			FormMain->m_SenderThreadWorkCount[iSenderID]++;
-			//Sleep(10);
-		} else {
-			//Sleep(10);
+		if(FormMain->m_ClientMsgQ.empty()) {
+			ReleaseMutex(Mutex);
+			continue;
 		}
 
+		data = FormMain->m_ClientMsgQ.front();
+		FormMain->m_ClientMsgQ.pop();
+		FormMain->m_SenderThreadWorkCount[iSenderID]++;
 		ReleaseMutex(Mutex);
-		if(iSenderID == 5) {
-			Sleep(1000);
-		}
-
-
-
-		//return;
-
-		/*
-		std::unique_lock<std::mutex> lk(*p_mutex_ClientMsgQ, std::defer_lock);
-		p_cv->wait(lk, [this]()->BOOL
-		{
-			bool t_rst = !FormMain->m_ClientMsgQ.empty() || m_eThreadWork != THREAD_RUNNING;
-			return t_rst;
-		});
-
-		*/
-		//if(m_eThreadWork != THREAD_RUNNING) return;
-
-		//if(FormMain->m_ClientMsgQ.empty()) continue;
-
-
-		//p_mutex_ClientMsgQ->lock();
-		//data = FormMain->m_ClientMsgQ.front();
-		//FormMain->m_ClientMsgQ.pop();
-		//p_mutex_ClientMsgQ->unlock();
 
 		// Send Routine
-		//if(Send()) {
+		if(Send()) {
 
-		//} else {
+		} else {
 
-		//}
-
-		//WaitForSingleObject((void*)this->Handle, 500);
+		}
 	}
+
 	m_eThreadWork = THREAD_TERMINATED;
 }
 //---------------------------------------------------------------------------
@@ -150,8 +104,6 @@ void __fastcall DataSenderThread::Resume() {
 //---------------------------------------------------------------------------
 
 void __fastcall DataSenderThread::DoTerminate() {
-	// Do I have to Unlock Mutex Here ?
-
 	m_eThreadWork = THREAD_TERMINATED;
 }
 //---------------------------------------------------------------------------
