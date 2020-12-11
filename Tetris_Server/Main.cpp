@@ -604,29 +604,68 @@ void __fastcall TFormMain::ReceiveClientMessage(TMessage &_msg) {
 	CLIENTMSG* p_ClientMsg;
 	CLIENTMSG t_ClientMsg;
 	memset(&t_ClientMsg, 0, sizeof(t_ClientMsg));
-
 	unsigned short t_RecvSize = 0;
+	BYTE t_DataType = 0;
+	int t_ClientIdx = 0;
 
 	// Receive Client Message
 	p_ClientMsg = (CLIENTMSG*)t_wParam;
 	t_ClientMsg = *p_ClientMsg;
 
-	// Logging Received Data Size
+	// Logging Received Information
+	t_ClientIdx = t_ClientMsg.ClientInfo.ClientIndex;
 	memcpy(&t_RecvSize, &t_ClientMsg.Data[1], 2);
-	tempStr.sprintf(L"Received Size : [%d]", t_RecvSize);
+	tempStr.sprintf(L"Received %04d byte from Client[%02d]", t_RecvSize, t_ClientIdx);
 	PrintLog(tempStr);
 
-	// Receive Chatting Text and Print Out
-	wchar_t* temp = new wchar_t[t_RecvSize - 4];
-	memcpy(temp, &t_ClientMsg.Data[4], t_RecvSize - 4);
-	tempStr = temp;
-	tempStr += L"    ";
-	PrintLog(tempStr);
-	delete[] temp;
+	// Extract Data Type
+	t_DataType = t_ClientMsg.Data[3];
+
+	// Distribute Message by Data Type
+	switch(t_DataType) {
+	case DATA_TYPE_SIGN_UP:
+		break;
+
+	case DATA_TYPE_SIGN_IN:
+		break;
+
+	case DATA_TYPE_SIGN_OUT:
+		break;
+
+	case DATA_TYPE_LOBBY_CHATTING:
+		ClientMsg_LOBBY_CHATTING(t_ClientMsg);
+		break;
+
+	case DATA_TYPE_INGAME_CHATTING:
+		break;
+
+	case DATA_TYPE_CHANGE_USER_INFO:
+		break;
+
+	case DATA_TYPE_INGAME_CMD:
+		break;
+
+	case DATA_TYPE_ENTER_GAME_ROOM:
+		break;
+
+	case DATA_TYPE_ESCAPE_GAME_ROOM:
+		break;
+
+	case DATA_TYPE_HEART_BEAT:
+		break;
+
+	case DATA_TYPE_INGAME_DATA:
+		break;
+
+	default:
+		break;
+	}
+
+
 
 	// Test Message
-	tempStr.sprintf(L"Queue Size(Before) : [%d]", m_ClientMsgQ.size());
-	PrintLog(tempStr);
+	//tempStr.sprintf(L"Queue Size(Before) : [%d]", m_ClientMsgQ.size());
+	//PrintLog(tempStr);
 
 	// Push into Client Message Queue
 	int ret = WaitForSingleObject(m_Mutex, 2000);
@@ -646,8 +685,8 @@ void __fastcall TFormMain::ReceiveClientMessage(TMessage &_msg) {
 	ReleaseMutex(m_Mutex);
 
 	// Test Message
-	tempStr.sprintf(L"Queue Size(After) : [%d]", m_ClientMsgQ.size());
-	PrintLog(tempStr);
+	//tempStr.sprintf(L"Queue Size(After) : [%d]", m_ClientMsgQ.size());
+	//PrintLog(tempStr);
 }
 //---------------------------------------------------------------------------
 
@@ -669,4 +708,31 @@ void __fastcall TFormMain::btn_CountClick(TObject *Sender)
 	PrintLog(L"-----------------------");
 }
 //---------------------------------------------------------------------------
+
+void __fastcall TFormMain::ClientMsg_LOBBY_CHATTING(CLIENTMSG _ClientMsg) {
+
+	// Common
+	UnicodeString tempStr = L"";
+	UnicodeString str_Chat = L"";
+	unsigned short t_RecvSize = 0;
+	int t_ClientIdx = 0;
+	CLIENTMSG t_ClientMsg;
+
+	// Extract Information
+	t_ClientMsg = _ClientMsg;
+	t_ClientIdx = t_ClientMsg.ClientInfo.ClientIndex;
+	memcpy(&t_RecvSize, &t_ClientMsg.Data[1], 2);
+	str_Chat.sprintf(L"Client[%02d] : ", t_ClientIdx);
+
+	// Receive Chatting Text and Print Out
+	wchar_t* temp = new wchar_t[t_RecvSize - 4];
+	memcpy(temp, &t_ClientMsg.Data[4], t_RecvSize - 4);
+	tempStr = temp;
+	tempStr += L"    ";
+	str_Chat += tempStr; // Merge Text Message
+	PrintLog(str_Chat);
+	delete[] temp;
+}
+//---------------------------------------------------------------------------
+
 

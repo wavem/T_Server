@@ -136,6 +136,10 @@ __published:	// IDE-managed Components
 	TDBGrid *DBGrid1;
 	TAdvSmoothButton *btn_UserInfo;
 	TAdvSmoothButton *btn_Count;
+	TADOConnection *ADOConnection;
+	TADOTable *Table_User;
+	TADOQuery *Query_USER;
+	TDataSource *DataSource_USER;
 	void __fastcall Exit1Click(TObject *Sender);
 	void __fastcall TrayIconDblClick(TObject *Sender);
 	void __fastcall MenuBtn_StatusClick(TObject *Sender);
@@ -184,6 +188,9 @@ public: // ETC UI FUNCTIONS
 public: // Received Message Queue
 	HANDLE m_Mutex;
 	std::queue<CLIENTMSG> m_ClientMsgQ;
+
+public: // Client Message Handler
+	void __fastcall ClientMsg_LOBBY_CHATTING(CLIENTMSG _ClientMsg);
 
 public: // Thread Message Handler
 	void __fastcall PrintThreadMessage(TMessage &_msg);

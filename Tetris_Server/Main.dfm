@@ -164,7 +164,7 @@ object FormMain: TFormMain
       Top = 0
       Width = 1009
       Height = 734
-      PageIndex = 1
+      PageIndex = 2
       TabOrder = 0
       object TPage
         Left = 0
@@ -350,8 +350,8 @@ object FormMain: TFormMain
           ParentBackground = False
           TabOrder = 0
           object btn_Hide: TAdvSmoothButton
-            Left = 480
-            Top = 200
+            Left = 304
+            Top = 32
             Width = 120
             Height = 35
             Cursor = crHandPoint
@@ -644,8 +644,8 @@ object FormMain: TFormMain
             TMSStyle = 0
           end
           object btn_UserInfo: TAdvSmoothButton
-            Left = 32
-            Top = 278
+            Left = 168
+            Top = 73
             Width = 120
             Height = 35
             Cursor = crHandPoint
@@ -749,6 +749,7 @@ object FormMain: TFormMain
             Top = 40
             Width = 265
             Height = 665
+            DataSource = DataSource_USER
             Options = [dgEditing, dgAlwaysShowEditor, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
             TabOrder = 0
             TitleFont.Charset = DEFAULT_CHARSET
@@ -1808,5 +1809,39 @@ object FormMain: TFormMain
   object tm_DeleteClient: TTimer
     OnTimer = tm_DeleteClientTimer
     Left = 604
+  end
+  object ADOConnection: TADOConnection
+    Connected = True
+    ConnectionString = 
+      'Provider=Microsoft.Jet.OLEDB.4.0;User ID=Admin;Data Source=Z:\wa' +
+      've\020_Test\MDB\010_SourceCode\MDB_TEST\Win32\Debug\DB\DB.mdb;Mo' +
+      'de=Share Deny None;Persist Security Info=False;Jet OLEDB:System ' +
+      'database="";Jet OLEDB:Registry Path="";Jet OLEDB:Database Passwo' +
+      'rd="";Jet OLEDB:Engine Type=5;Jet OLEDB:Database Locking Mode=1;' +
+      'Jet OLEDB:Global Partial Bulk Ops=2;Jet OLEDB:Global Bulk Transa' +
+      'ctions=1;Jet OLEDB:New Database Password="";Jet OLEDB:Create Sys' +
+      'tem Database=False;Jet OLEDB:Encrypt Database=False;Jet OLEDB:Do' +
+      'n'#39't Copy Locale on Compact=False;Jet OLEDB:Compact Without Repli' +
+      'ca Repair=False;Jet OLEDB:SFP=False'
+    LoginPrompt = False
+    Mode = cmShareDenyNone
+    Provider = 'Microsoft.Jet.OLEDB.4.0'
+    Left = 696
+  end
+  object Table_User: TADOTable
+    Active = True
+    Connection = ADOConnection
+    CursorType = ctStatic
+    TableDirect = True
+    TableName = 'USER'
+    Left = 724
+  end
+  object Query_USER: TADOQuery
+    Parameters = <>
+    Left = 780
+  end
+  object DataSource_USER: TDataSource
+    DataSet = Table_User
+    Left = 752
   end
 end
