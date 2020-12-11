@@ -140,6 +140,8 @@ __published:	// IDE-managed Components
 	TADOTable *Table_User;
 	TADOQuery *Query_USER;
 	TDataSource *DataSource_USER;
+	TAdvSmoothButton *btn_AddDB;
+	TAdvSmoothButton *btn_DelDB;
 	void __fastcall Exit1Click(TObject *Sender);
 	void __fastcall TrayIconDblClick(TObject *Sender);
 	void __fastcall MenuBtn_StatusClick(TObject *Sender);
@@ -157,6 +159,8 @@ __published:	// IDE-managed Components
 	void __fastcall MenuBtn_VersionClick(TObject *Sender);
 	void __fastcall btn_UserInfoClick(TObject *Sender);
 	void __fastcall btn_CountClick(TObject *Sender);
+	void __fastcall btn_AddDBClick(TObject *Sender);
+	void __fastcall btn_DelDBClick(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TFormMain(TComponent* Owner);
@@ -188,6 +192,12 @@ public: // ETC UI FUNCTIONS
 public: // Received Message Queue
 	HANDLE m_Mutex;
 	std::queue<CLIENTMSG> m_ClientMsgQ;
+
+public: // USER DB ROUTINE
+	bool __fastcall FindUserID(UnicodeString _ID);
+	bool __fastcall AddUserID(UnicodeString _ID, UnicodeString _PW, UnicodeString _USERNAME);
+	bool __fastcall DeleteUserID(UnicodeString _ID);
+	bool __fastcall Login(UnicodeString _ID, UnicodeString _PW);
 
 public: // Client Message Handler
 	void __fastcall ClientMsg_LOBBY_CHATTING(CLIENTMSG _ClientMsg);

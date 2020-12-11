@@ -747,7 +747,7 @@ object FormMain: TFormMain
           object DBGrid1: TDBGrid
             Left = 32
             Top = 40
-            Width = 265
+            Width = 377
             Height = 665
             DataSource = DataSource_USER
             Options = [dgEditing, dgAlwaysShowEditor, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
@@ -761,7 +761,7 @@ object FormMain: TFormMain
               item
                 Expanded = False
                 FieldName = 'ID'
-                Width = 47
+                Width = 40
                 Visible = True
               end
               item
@@ -772,10 +772,100 @@ object FormMain: TFormMain
               end
               item
                 Expanded = False
+                FieldName = 'UserID'
+                Width = 100
+                Visible = True
+              end
+              item
+                Expanded = False
                 FieldName = 'Password'
                 Width = 100
                 Visible = True
               end>
+          end
+          object btn_AddDB: TAdvSmoothButton
+            Left = 472
+            Top = 64
+            Width = 120
+            Height = 35
+            Cursor = crHandPoint
+            Hint = 'TEST'
+            Appearance.GlowPercentage = 35
+            Appearance.Font.Charset = DEFAULT_CHARSET
+            Appearance.Font.Color = clAqua
+            Appearance.Font.Height = -15
+            Appearance.Font.Name = 'Tahoma'
+            Appearance.Font.Style = [fsBold]
+            Appearance.Rounding = 12
+            Status.Caption = '0'
+            Status.Appearance.Fill.Color = clRed
+            Status.Appearance.Fill.ColorMirror = clNone
+            Status.Appearance.Fill.ColorMirrorTo = clNone
+            Status.Appearance.Fill.GradientType = gtSolid
+            Status.Appearance.Fill.GradientMirrorType = gtSolid
+            Status.Appearance.Fill.BorderColor = clGray
+            Status.Appearance.Fill.Rounding = 8
+            Status.Appearance.Fill.ShadowOffset = 0
+            Status.Appearance.Fill.Glow = gmNone
+            Status.Appearance.Font.Charset = DEFAULT_CHARSET
+            Status.Appearance.Font.Color = clWhite
+            Status.Appearance.Font.Height = -11
+            Status.Appearance.Font.Name = 'Tahoma'
+            Status.Appearance.Font.Style = []
+            Bevel = False
+            BevelColor = clLime
+            Caption = 'ADD'
+            Color = clNavy
+            ParentFont = False
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 1
+            ShowFocus = False
+            Version = '2.1.0.0'
+            OnClick = btn_AddDBClick
+            TMSStyle = 0
+          end
+          object btn_DelDB: TAdvSmoothButton
+            Left = 472
+            Top = 105
+            Width = 120
+            Height = 35
+            Cursor = crHandPoint
+            Hint = 'TEST'
+            Appearance.GlowPercentage = 35
+            Appearance.Font.Charset = DEFAULT_CHARSET
+            Appearance.Font.Color = clAqua
+            Appearance.Font.Height = -15
+            Appearance.Font.Name = 'Tahoma'
+            Appearance.Font.Style = [fsBold]
+            Appearance.Rounding = 12
+            Status.Caption = '0'
+            Status.Appearance.Fill.Color = clRed
+            Status.Appearance.Fill.ColorMirror = clNone
+            Status.Appearance.Fill.ColorMirrorTo = clNone
+            Status.Appearance.Fill.GradientType = gtSolid
+            Status.Appearance.Fill.GradientMirrorType = gtSolid
+            Status.Appearance.Fill.BorderColor = clGray
+            Status.Appearance.Fill.Rounding = 8
+            Status.Appearance.Fill.ShadowOffset = 0
+            Status.Appearance.Fill.Glow = gmNone
+            Status.Appearance.Font.Charset = DEFAULT_CHARSET
+            Status.Appearance.Font.Color = clWhite
+            Status.Appearance.Font.Height = -11
+            Status.Appearance.Font.Name = 'Tahoma'
+            Status.Appearance.Font.Style = []
+            Bevel = False
+            BevelColor = clLime
+            Caption = 'Delete'
+            Color = clNavy
+            ParentFont = False
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 2
+            ShowFocus = False
+            Version = '2.1.0.0'
+            OnClick = btn_DelDBClick
+            TMSStyle = 0
           end
         end
       end
@@ -1814,15 +1904,15 @@ object FormMain: TFormMain
     Connected = True
     ConnectionString = 
       'Provider=Microsoft.Jet.OLEDB.4.0;User ID=Admin;Data Source=Z:\wa' +
-      've\020_Test\MDB\010_SourceCode\MDB_TEST\Win32\Debug\DB\DB.mdb;Mo' +
-      'de=Share Deny None;Persist Security Info=False;Jet OLEDB:System ' +
-      'database="";Jet OLEDB:Registry Path="";Jet OLEDB:Database Passwo' +
-      'rd="";Jet OLEDB:Engine Type=5;Jet OLEDB:Database Locking Mode=1;' +
-      'Jet OLEDB:Global Partial Bulk Ops=2;Jet OLEDB:Global Bulk Transa' +
-      'ctions=1;Jet OLEDB:New Database Password="";Jet OLEDB:Create Sys' +
-      'tem Database=False;Jet OLEDB:Encrypt Database=False;Jet OLEDB:Do' +
-      'n'#39't Copy Locale on Compact=False;Jet OLEDB:Compact Without Repli' +
-      'ca Repair=False;Jet OLEDB:SFP=False'
+      've\010_Project\010_Game\Tetris\Server\010_Source\Tetris_Server\W' +
+      'in32\Debug\DB\DB.mdb;Mode=Share Deny None;Persist Security Info=' +
+      'False;Jet OLEDB:System database="";Jet OLEDB:Registry Path="";Je' +
+      't OLEDB:Database Password="";Jet OLEDB:Engine Type=5;Jet OLEDB:D' +
+      'atabase Locking Mode=1;Jet OLEDB:Global Partial Bulk Ops=2;Jet O' +
+      'LEDB:Global Bulk Transactions=1;Jet OLEDB:New Database Password=' +
+      '"";Jet OLEDB:Create System Database=False;Jet OLEDB:Encrypt Data' +
+      'base=False;Jet OLEDB:Don'#39't Copy Locale on Compact=False;Jet OLED' +
+      'B:Compact Without Replica Repair=False;Jet OLEDB:SFP=False'
     LoginPrompt = False
     Mode = cmShareDenyNone
     Provider = 'Microsoft.Jet.OLEDB.4.0'
@@ -1837,7 +1927,12 @@ object FormMain: TFormMain
     Left = 724
   end
   object Query_USER: TADOQuery
+    Connection = ADOConnection
+    CursorType = ctStatic
+    DataSource = DataSource_USER
     Parameters = <>
+    SQL.Strings = (
+      'Select * from DB.USER')
     Left = 780
   end
   object DataSource_USER: TDataSource

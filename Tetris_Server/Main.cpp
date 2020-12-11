@@ -735,4 +735,121 @@ void __fastcall TFormMain::ClientMsg_LOBBY_CHATTING(CLIENTMSG _ClientMsg) {
 }
 //---------------------------------------------------------------------------
 
+bool __fastcall TFormMain::FindUserID(UnicodeString _ID) {
 
+	// Common
+	UnicodeString tempStr = L"";
+	UnicodeString t_sql = L"";
+
+	// Making Query
+	t_sql = L"Select * from DB\\DB.USER where UserID = '";
+	t_sql += _ID;
+	t_sql += L"'";
+
+	// Find User Routine
+	Query_USER->SQL->Clear();
+	Query_USER->SQL->Add(t_sql);
+	Query_USER->Open();
+	tempStr = Query_USER->FieldByName(L"UserID")->AsString;
+	if(tempStr == _ID) {
+		return true;
+	} else {
+		return false;
+	}
+}
+//---------------------------------------------------------------------------
+
+bool __fastcall TFormMain::AddUserID(UnicodeString _ID, UnicodeString _PW, UnicodeString _USERNAME) {
+
+	// Common
+	UnicodeString tempStr = L"";
+
+	if(FindUserID(_ID)) {
+		PrintMsg(L"The ID Already Exists...");
+		return false;
+	}
+
+	Table_User->Insert();
+	Table_User->FieldByName(L"UserName")->AsString = _USERNAME;
+	Table_User->FieldByName(L"UserID")->AsString = _ID;
+	Table_User->FieldByName(L"Password")->AsString = _PW;
+	Table_User->Post();
+
+	return true;
+}
+//---------------------------------------------------------------------------
+
+bool __fastcall TFormMain::DeleteUserID(UnicodeString _ID) {
+
+	// Common
+	UnicodeString tempStr = L"";
+	UnicodeString t_sql = L"";
+
+	// Check Exists
+	if(FindUserID(_ID) == false) {
+		PrintMsg(L"There is no ID");
+		return false;
+	}
+
+	// Making Query
+	t_sql = L"Delete from DB\\DB.USER where UserID = '";
+	t_sql += _ID;
+	t_sql += L"'";
+
+	// Delete User Routine
+	Query_USER->SQL->Clear();
+	Query_USER->SQL->Add(t_sql);
+	Query_USER->ExecSQL();
+
+	// Refresh DB Grid
+	t_sql = L"Select * from DB\\DB.USER";
+	Query_USER->SQL->Clear();
+	Query_USER->SQL->Add(t_sql);
+	Query_USER->Open();
+	Table_User->Active = false;
+	Table_User->Active = true;
+
+	// Check Success to Delete
+	if(FindUserID(_ID)) {
+		return false;
+	} else {
+		return true;
+	}
+}
+//---------------------------------------------------------------------------
+
+bool __fastcall TFormMain::Login(UnicodeString _ID, UnicodeString _PW) {
+
+	// Common
+	UnicodeString tempStr = L"";
+
+	// ID Existence Check
+	if(FindUserID(_ID)) {
+		return false;
+	}
+
+	// Login Routine
+
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFormMain::btn_AddDBClick(TObject *Sender)
+{
+	if(AddUserID(L"MJW", L"mjw", L"WAVE")) {
+		PrintMsg(L"Complete");
+	} else {
+		PrintMsg(L"Fail");
+	}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFormMain::btn_DelDBClick(TObject *Sender)
+{
+	//Table_User->Refresh();
+	if(DeleteUserID(L"MJW")) {
+		PrintMsg(L"Delete Complete");
+	} else {
+		PrintMsg(L"Delete Fail...");
+	}
+}
+//---------------------------------------------------------------------------
