@@ -822,14 +822,32 @@ bool __fastcall TFormMain::Login(UnicodeString _ID, UnicodeString _PW) {
 
 	// Common
 	UnicodeString tempStr = L"";
+	UnicodeString t_sql = L"";
 
 	// ID Existence Check
-	if(FindUserID(_ID)) {
+	if(FindUserID(_ID) == false) {
+		PrintMsg(L"There is no ID");
 		return false;
 	}
 
 	// Login Routine
+	t_sql = L"Select * from DB\\DB.USER where UserID = '";
+	t_sql += _ID;
+	t_sql += L"'";
 
+	// Find User Routine
+	Query_USER->SQL->Clear();
+	Query_USER->SQL->Add(t_sql);
+	Query_USER->Open();
+	tempStr = Query_USER->FieldByName(L"Password")->AsString;
+	if(tempStr == _PW) {
+		// Login Routine Here
+
+		return true;
+	} else {
+		PrintMsg(L"Password is incorrect");
+		return false;
+	}
 }
 //---------------------------------------------------------------------------
 
@@ -845,7 +863,6 @@ void __fastcall TFormMain::btn_AddDBClick(TObject *Sender)
 
 void __fastcall TFormMain::btn_DelDBClick(TObject *Sender)
 {
-	//Table_User->Refresh();
 	if(DeleteUserID(L"MJW")) {
 		PrintMsg(L"Delete Complete");
 	} else {
