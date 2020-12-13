@@ -200,6 +200,7 @@ public: // USER DB ROUTINE
 	bool __fastcall Login(UnicodeString _ID, UnicodeString _PW);
 
 public: // Client Message Handler
+	void __fastcall ClientMsg_SIGN_UP(CLIENTMSG* _ClientMsg);
 	void __fastcall ClientMsg_LOBBY_CHATTING(CLIENTMSG _ClientMsg);
 
 public: // Thread Message Handler

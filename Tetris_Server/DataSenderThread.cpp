@@ -76,6 +76,10 @@ bool __fastcall DataSenderThread::Send() {
 
 	// Send Routine
 	switch(t_MessageType) {
+	case DATA_TYPE_SIGN_UP:
+		t_rst = 0;
+		t_rst = send(FormMain->m_ClientSocket[data.ClientInfo.ClientIndex], (char*)data.Data, t_PacketSize, 0);
+		break;
 	case DATA_TYPE_LOBBY_CHATTING:
 		for(int i = 0 ; i < MAX_TCP_CLIENT_USER_COUNT ; i++) {
 			if(FormMain->m_ClientSocket[i] != INVALID_SOCKET) {

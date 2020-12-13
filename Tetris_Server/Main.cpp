@@ -624,6 +624,7 @@ void __fastcall TFormMain::ReceiveClientMessage(TMessage &_msg) {
 	// Distribute Message by Data Type
 	switch(t_DataType) {
 	case DATA_TYPE_SIGN_UP:
+		ClientMsg_SIGN_UP(&t_ClientMsg);
 		break;
 
 	case DATA_TYPE_SIGN_IN:
@@ -867,6 +868,63 @@ void __fastcall TFormMain::btn_DelDBClick(TObject *Sender)
 		PrintMsg(L"Delete Complete");
 	} else {
 		PrintMsg(L"Delete Fail...");
+	}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFormMain::ClientMsg_SIGN_UP(CLIENTMSG* _ClientMsg) {
+
+	// Common
+	UnicodeString tempStr = L"";
+	UnicodeString t_UserNameStr = L"";
+	UnicodeString t_UserIDStr = L"";
+	UnicodeString t_UserPWStr = L"";
+	unsigned short t_RecvSize = 0;
+	int t_ClientIdx = 0;
+	CLIENTMSG t_ClientMsg;
+	int t_Size = 0;
+	BYTE t_rst = 0;
+	unsigned short t_SendSize = 5; // Fixed.. in Protocol
+
+	// Extract Information
+	t_ClientMsg = *_ClientMsg;
+	t_ClientIdx = t_ClientMsg.ClientInfo.ClientIndex;
+
+	// Extract User Name
+	t_Size = t_ClientMsg.Data[126]; // 126 is User Name Size
+	wchar_t* t_UserName = new wchar_t[t_Size];
+	memcpy(t_UserName, &t_ClientMsg.Data[4], t_Size);
+	t_UserNameStr = t_UserName;
+	PrintLog(t_UserNameStr);
+	delete[] t_UserName;
+
+	// Extract User ID
+	t_Size = t_ClientMsg.Data[127]; // 127 is User ID Size
+	wchar_t* t_UserID = new wchar_t[t_Size];
+	memcpy(t_UserID, &t_ClientMsg.Data[46], t_Size);
+	t_UserIDStr = t_UserID;
+	PrintLog(t_UserIDStr);
+	delete[] t_UserID;
+
+	// Extract User PW
+	t_Size = t_ClientMsg.Data[128]; // 128 is User PW Size
+	wchar_t* t_UserPW = new wchar_t[t_Size];
+	memcpy(t_UserPW, &t_ClientMsg.Data[86], t_Size);
+	t_UserPWStr = t_UserPW;
+	PrintLog(t_UserPWStr);
+	delete[] t_UserPW;
+
+	// Try to add User ID
+	memcpy(&_ClientMsg->Data[1], &t_SendSize, sizeof(t_SendSize));
+	memset(&_ClientMsg->Data[4], 0, MAX_RECV_PACKET_SIZE - 4);
+	if(AddUserID(t_UserIDStr, t_UserPWStr, t_UserNameStr)) {
+		t_rst = 0;
+		memcpy(&_ClientMsg->Data[4], &t_rst, sizeof(t_rst));
+		PrintLog(L"Welcome into DB");
+	} else {
+		t_rst = 1;
+		memcpy(&_ClientMsg->Data[4], &t_rst, sizeof(t_rst));
+		PrintLog(L"Not Welcome into DB");
 	}
 }
 //---------------------------------------------------------------------------
