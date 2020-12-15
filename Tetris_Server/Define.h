@@ -39,6 +39,11 @@
 #define DATA_TYPE_HEART_BEAT		10
 #define DATA_TYPE_INGAME_DATA		11
 
+// LOG-IN ERROR TYPE
+#define ERR_LOGIN_OK	0
+#define ERR_LOGIN_PW	1
+#define ERR_LOGIN_ID	2
+
 
 // THREAD STATUS
 enum ThreadWorkingType

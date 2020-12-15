@@ -628,6 +628,7 @@ void __fastcall TFormMain::ReceiveClientMessage(TMessage &_msg) {
 		break;
 
 	case DATA_TYPE_SIGN_IN:
+		ClientMsg_SIGN_IN(&t_ClientMsg);
 		break;
 
 	case DATA_TYPE_SIGN_OUT:
@@ -819,39 +820,6 @@ bool __fastcall TFormMain::DeleteUserID(UnicodeString _ID) {
 }
 //---------------------------------------------------------------------------
 
-bool __fastcall TFormMain::Login(UnicodeString _ID, UnicodeString _PW) {
-
-	// Common
-	UnicodeString tempStr = L"";
-	UnicodeString t_sql = L"";
-
-	// ID Existence Check
-	if(FindUserID(_ID) == false) {
-		PrintMsg(L"There is no ID");
-		return false;
-	}
-
-	// Login Routine
-	t_sql = L"Select * from DB\\DB.USER where UserID = '";
-	t_sql += _ID;
-	t_sql += L"'";
-
-	// Find User Routine
-	Query_USER->SQL->Clear();
-	Query_USER->SQL->Add(t_sql);
-	Query_USER->Open();
-	tempStr = Query_USER->FieldByName(L"Password")->AsString;
-	if(tempStr == _PW) {
-		// Login Routine Here
-
-		return true;
-	} else {
-		PrintMsg(L"Password is incorrect");
-		return false;
-	}
-}
-//---------------------------------------------------------------------------
-
 void __fastcall TFormMain::btn_AddDBClick(TObject *Sender)
 {
 	if(AddUserID(L"MJW", L"mjw", L"WAVE")) {
@@ -925,6 +893,85 @@ void __fastcall TFormMain::ClientMsg_SIGN_UP(CLIENTMSG* _ClientMsg) {
 		t_rst = 1;
 		memcpy(&_ClientMsg->Data[4], &t_rst, sizeof(t_rst));
 		PrintLog(L"Not Welcome into DB");
+	}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFormMain::ClientMsg_SIGN_IN(CLIENTMSG* _ClientMsg) {
+
+	// Common
+	UnicodeString tempStr = L"";
+	UnicodeString t_UserIDStr = L"";
+	UnicodeString t_UserPWStr = L"";
+	unsigned short t_RecvSize = 0;
+	int t_ClientIdx = 0;
+	CLIENTMSG t_ClientMsg;
+	int t_Size = 0;
+	BYTE t_rst = 0;
+	unsigned short t_SendSize = 5; // Fixed.. in Protocol
+
+	// Extract Information
+	t_ClientMsg = *_ClientMsg;
+	t_ClientIdx = t_ClientMsg.ClientInfo.ClientIndex;
+
+	// Extract User ID
+	t_Size = t_ClientMsg.Data[127]; // 127 is User ID Size
+	wchar_t* t_UserID = new wchar_t[t_Size];
+	memcpy(t_UserID, &t_ClientMsg.Data[46], t_Size);
+	t_UserIDStr = t_UserID;
+	PrintLog(t_UserIDStr);
+	delete[] t_UserID;
+
+	// Extract User PW
+	t_Size = t_ClientMsg.Data[128]; // 128 is User PW Size
+	wchar_t* t_UserPW = new wchar_t[t_Size];
+	memcpy(t_UserPW, &t_ClientMsg.Data[86], t_Size);
+	t_UserPWStr = t_UserPW;
+	PrintLog(t_UserPWStr);
+	delete[] t_UserPW;
+
+	// Try to add User ID
+	memcpy(&_ClientMsg->Data[1], &t_SendSize, sizeof(t_SendSize));
+	memset(&_ClientMsg->Data[4], 0, MAX_RECV_PACKET_SIZE - 4);
+	t_rst = Login(t_UserIDStr, t_UserPWStr);
+	memcpy(&_ClientMsg->Data[4], &t_rst, sizeof(t_rst));
+	if(t_rst == ERR_LOGIN_OK) {
+		PrintLog(L"Welcome into DB");
+	} else {
+		PrintLog(L"Not Welcome into DB");
+	}
+}
+//---------------------------------------------------------------------------
+
+BYTE __fastcall TFormMain::Login(UnicodeString _ID, UnicodeString _PW) {
+
+	// Common
+	UnicodeString tempStr = L"";
+	UnicodeString t_sql = L"";
+
+	// ID Existence Check
+	if(FindUserID(_ID) == false) {
+		PrintMsg(L"There is no ID");
+		return ERR_LOGIN_ID;
+	}
+
+	// Login Routine
+	t_sql = L"Select * from DB\\DB.USER where UserID = '";
+	t_sql += _ID;
+	t_sql += L"'";
+
+	// Find User Routine
+	Query_USER->SQL->Clear();
+	Query_USER->SQL->Add(t_sql);
+	Query_USER->Open();
+	tempStr = Query_USER->FieldByName(L"Password")->AsString;
+	if(tempStr == _PW) {
+		// Login Routine Here
+
+		return ERR_LOGIN_OK;
+	} else {
+		PrintMsg(L"Password is incorrect");
+		return ERR_LOGIN_PW;
 	}
 }
 //---------------------------------------------------------------------------
