@@ -80,6 +80,7 @@
 #include <Data.DB.hpp>
 #include <Data.Win.ADODB.hpp>
 #include <Vcl.DBGrids.hpp>
+#include "AdvEdit.hpp"
 //---------------------------------------------------------------------------
 
 #include <queue>
@@ -133,7 +134,7 @@ __published:	// IDE-managed Components
 	TTimer *tm_FindClient;
 	TTimer *tm_DeleteClient;
 	TPanel *_pnBase_03_UserInfo;
-	TDBGrid *DBGrid1;
+	TDBGrid *DBGrid_User;
 	TAdvSmoothButton *btn_UserInfo;
 	TAdvSmoothButton *btn_Count;
 	TADOConnection *ADOConnection;
@@ -142,6 +143,12 @@ __published:	// IDE-managed Components
 	TDataSource *DataSource_USER;
 	TAdvSmoothButton *btn_AddDB;
 	TAdvSmoothButton *btn_DelDB;
+	TLabel *lb_Title_SignUp_ID;
+	TLabel *lb_Title_SignUp_PW;
+	TLabel *lb_Title_SignUp_UserName;
+	TAdvEdit *ed_PW;
+	TAdvEdit *ed_UserName;
+	TAdvEdit *ed_ID;
 	void __fastcall Exit1Click(TObject *Sender);
 	void __fastcall TrayIconDblClick(TObject *Sender);
 	void __fastcall MenuBtn_StatusClick(TObject *Sender);

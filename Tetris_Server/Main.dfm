@@ -170,8 +170,6 @@ object FormMain: TFormMain
         Left = 0
         Top = 0
         Caption = 'Status'
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object _pnBase_01_Status: TPanel
           Left = 0
           Top = 0
@@ -341,8 +339,6 @@ object FormMain: TFormMain
         Top = 0
         HelpContext = 1
         Caption = 'Setting'
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object _pnBase_02_Setting: TPanel
           Left = 0
           Top = 0
@@ -748,13 +744,52 @@ object FormMain: TFormMain
           Color = clBlack
           ParentBackground = False
           TabOrder = 0
-          object DBGrid1: TDBGrid
-            Left = 32
-            Top = 40
-            Width = 377
+          object lb_Title_SignUp_ID: TLabel
+            Left = 785
+            Top = 33
+            Width = 18
+            Height = 18
+            Caption = 'ID'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clGradientActiveCaption
+            Font.Height = -15
+            Font.Name = 'Tahoma'
+            Font.Style = [fsBold]
+            ParentFont = False
+          end
+          object lb_Title_SignUp_PW: TLabel
+            Left = 730
+            Top = 65
+            Width = 73
+            Height = 18
+            Caption = 'Password'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clGradientActiveCaption
+            Font.Height = -15
+            Font.Name = 'Tahoma'
+            Font.Style = [fsBold]
+            ParentFont = False
+          end
+          object lb_Title_SignUp_UserName: TLabel
+            Left = 721
+            Top = 98
+            Width = 82
+            Height = 18
+            Caption = 'User Name'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clGradientActiveCaption
+            Font.Height = -15
+            Font.Name = 'Tahoma'
+            Font.Style = [fsBold]
+            ParentFont = False
+          end
+          object DBGrid_User: TDBGrid
+            Left = 16
+            Top = 16
+            Width = 689
             Height = 665
             DataSource = DataSource_USER
-            Options = [dgEditing, dgAlwaysShowEditor, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+            Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
             TabOrder = 0
             TitleFont.Charset = DEFAULT_CHARSET
             TitleFont.Color = clWindowText
@@ -771,25 +806,49 @@ object FormMain: TFormMain
               item
                 Expanded = False
                 FieldName = 'UserName'
-                Width = 100
+                Width = 110
                 Visible = True
               end
               item
                 Expanded = False
                 FieldName = 'UserID'
-                Width = 100
+                Width = 110
                 Visible = True
               end
               item
                 Expanded = False
                 FieldName = 'Password'
-                Width = 100
+                Width = 110
+                Visible = True
+              end
+              item
+                Expanded = False
+                FieldName = 'Grade'
+                Width = 74
+                Visible = True
+              end
+              item
+                Expanded = False
+                FieldName = 'WinCount'
+                Width = 74
+                Visible = True
+              end
+              item
+                Expanded = False
+                FieldName = 'DefeatCount'
+                Width = 74
+                Visible = True
+              end
+              item
+                Expanded = False
+                FieldName = 'WinRate'
+                Width = 74
                 Visible = True
               end>
           end
           object btn_AddDB: TAdvSmoothButton
-            Left = 472
-            Top = 64
+            Left = 840
+            Top = 136
             Width = 120
             Height = 35
             Cursor = crHandPoint
@@ -830,8 +889,8 @@ object FormMain: TFormMain
             TMSStyle = 0
           end
           object btn_DelDB: TAdvSmoothButton
-            Left = 472
-            Top = 105
+            Left = 840
+            Top = 177
             Width = 120
             Height = 35
             Cursor = crHandPoint
@@ -870,6 +929,117 @@ object FormMain: TFormMain
             Version = '2.1.0.0'
             OnClick = btn_DelDBClick
             TMSStyle = 0
+          end
+          object ed_PW: TAdvEdit
+            Left = 815
+            Top = 62
+            Width = 169
+            Height = 26
+            AutoThousandSeparator = False
+            BorderColor = clGradientInactiveCaption
+            EditAlign = eaCenter
+            EditType = etPassword
+            EmptyTextStyle = []
+            SoftBorder = True
+            LabelFont.Charset = DEFAULT_CHARSET
+            LabelFont.Color = clWindowText
+            LabelFont.Height = -11
+            LabelFont.Name = 'Tahoma'
+            LabelFont.Style = []
+            Lookup.Font.Charset = DEFAULT_CHARSET
+            Lookup.Font.Color = clWindowText
+            Lookup.Font.Height = -11
+            Lookup.Font.Name = 'Arial'
+            Lookup.Font.Style = []
+            Lookup.Separator = ';'
+            BevelInner = bvNone
+            BevelOuter = bvNone
+            BiDiMode = bdLeftToRight
+            ParentBiDiMode = False
+            CanUndo = False
+            Color = clGradientInactiveCaption
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -15
+            Font.Name = 'Tahoma'
+            Font.Style = [fsBold]
+            MaxLength = 16
+            ParentFont = False
+            PasswordChar = '*'
+            TabOrder = 3
+            Text = ''
+            Visible = True
+            Version = '3.3.5.3'
+          end
+          object ed_UserName: TAdvEdit
+            Left = 815
+            Top = 94
+            Width = 169
+            Height = 26
+            BorderColor = clGradientInactiveCaption
+            EditAlign = eaCenter
+            EmptyTextStyle = []
+            SoftBorder = True
+            LabelFont.Charset = DEFAULT_CHARSET
+            LabelFont.Color = clWindowText
+            LabelFont.Height = -11
+            LabelFont.Name = 'Tahoma'
+            LabelFont.Style = []
+            Lookup.Font.Charset = DEFAULT_CHARSET
+            Lookup.Font.Color = clWindowText
+            Lookup.Font.Height = -11
+            Lookup.Font.Name = 'Arial'
+            Lookup.Font.Style = []
+            Lookup.Separator = ';'
+            BevelInner = bvNone
+            BevelOuter = bvNone
+            Color = clGradientInactiveCaption
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -15
+            Font.Name = 'Tahoma'
+            Font.Style = [fsBold]
+            MaxLength = 16
+            ParentFont = False
+            TabOrder = 4
+            Text = ''
+            Visible = True
+            Version = '3.3.5.3'
+          end
+          object ed_ID: TAdvEdit
+            Left = 815
+            Top = 30
+            Width = 169
+            Height = 26
+            BorderColor = clGradientInactiveCaption
+            EditAlign = eaCenter
+            EmptyTextStyle = []
+            SoftBorder = True
+            LabelFont.Charset = DEFAULT_CHARSET
+            LabelFont.Color = clWindowText
+            LabelFont.Height = -11
+            LabelFont.Name = 'Tahoma'
+            LabelFont.Style = []
+            Lookup.Font.Charset = DEFAULT_CHARSET
+            Lookup.Font.Color = clWindowText
+            Lookup.Font.Height = -11
+            Lookup.Font.Name = 'Arial'
+            Lookup.Font.Style = []
+            Lookup.Separator = ';'
+            BevelInner = bvNone
+            BevelOuter = bvNone
+            Color = clGradientInactiveCaption
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -15
+            Font.Name = 'Tahoma'
+            Font.Style = [fsBold]
+            MaxLength = 16
+            ParentFont = False
+            TabOrder = 5
+            Text = ''
+            Visible = True
+            Version = '3.3.5.3'
           end
         end
       end

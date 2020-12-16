@@ -75,6 +75,7 @@
 #pragma link "AdvGrid"
 #pragma link "AdvObj"
 #pragma link "BaseGrid"
+#pragma link "AdvEdit"
 #pragma resource "*.dfm"
 TFormMain *FormMain;
 //---------------------------------------------------------------------------
@@ -775,6 +776,10 @@ bool __fastcall TFormMain::AddUserID(UnicodeString _ID, UnicodeString _PW, Unico
 	Table_User->FieldByName(L"UserName")->AsString = _USERNAME;
 	Table_User->FieldByName(L"UserID")->AsString = _ID;
 	Table_User->FieldByName(L"Password")->AsString = _PW;
+	Table_User->FieldByName(L"Grade")->AsString = L"го╪Ж";
+	Table_User->FieldByName(L"WinCount")->AsInteger = 0;
+	Table_User->FieldByName(L"DefeatCount")->AsInteger = 0;
+	Table_User->FieldByName(L"WinRate")->AsInteger = 0;
 	Table_User->Post();
 
 	return true;
@@ -822,18 +827,44 @@ bool __fastcall TFormMain::DeleteUserID(UnicodeString _ID) {
 
 void __fastcall TFormMain::btn_AddDBClick(TObject *Sender)
 {
-	if(AddUserID(L"MJW", L"mjw", L"WAVE")) {
-		PrintMsg(L"Complete");
+	UnicodeString t_ID = ed_ID->Text;
+	UnicodeString t_PW = ed_PW->Text;
+	UnicodeString t_UserName = ed_UserName->Text;
+
+	// Pre Return
+	if(t_ID == L"" || t_PW == L"" || t_UserName == L"") {
+		PrintMsg(L"ERROR : Input User Info");
+		return;
+	}
+
+	// Add User Account
+	if(AddUserID(t_ID, t_PW, t_UserName)) {
+		PrintMsg(L"Add User Account Complete.");
+		ed_ID->Text = L"";
+		ed_PW->Text = L"";
+		ed_UserName->Text = L"";
 	} else {
-		PrintMsg(L"Fail");
+		PrintMsg(L"Add User Account Failed.");
 	}
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TFormMain::btn_DelDBClick(TObject *Sender)
 {
-	if(DeleteUserID(L"MJW")) {
+	UnicodeString t_ID = ed_ID->Text;
+
+	// Pre Return
+	if(t_ID == L"") {
+		PrintMsg(L"ERROR : Input User ID");
+		return;
+	}
+
+	// Delete User Account
+	if(DeleteUserID(t_ID)) {
 		PrintMsg(L"Delete Complete");
+		ed_ID->Text = L"";
+		ed_PW->Text = L"";
+		ed_UserName->Text = L"";
 	} else {
 		PrintMsg(L"Delete Fail...");
 	}
