@@ -604,7 +604,9 @@ void __fastcall TFormMain::ReceiveClientMessage(TMessage &_msg) {
 	unsigned int t_wParam = _msg.WParam;
 	CLIENTMSG* p_ClientMsg;
 	CLIENTMSG t_ClientMsg;
+	SERVERMSG t_ServerMsg;
 	memset(&t_ClientMsg, 0, sizeof(t_ClientMsg));
+	memset(&t_ServerMsg, 0, sizeof(t_ServerMsg));
 	unsigned short t_RecvSize = 0;
 	BYTE t_DataType = 0;
 	int t_ClientIdx = 0;
@@ -613,7 +615,7 @@ void __fastcall TFormMain::ReceiveClientMessage(TMessage &_msg) {
 	p_ClientMsg = (CLIENTMSG*)t_wParam;
 	t_ClientMsg = *p_ClientMsg;
 
-	// Logging Received Information
+	// Logging Received Information (Client Info & Packet Size)
 	t_ClientIdx = t_ClientMsg.ClientInfo.ClientIndex;
 	memcpy(&t_RecvSize, &t_ClientMsg.Data[1], 2);
 	tempStr.sprintf(L"Received %04d byte from Client[%02d]", t_RecvSize, t_ClientIdx);
@@ -625,18 +627,18 @@ void __fastcall TFormMain::ReceiveClientMessage(TMessage &_msg) {
 	// Distribute Message by Data Type
 	switch(t_DataType) {
 	case DATA_TYPE_SIGN_UP:
-		ClientMsg_SIGN_UP(&t_ClientMsg);
+		ClientMsg_SIGN_UP(t_ClientMsg, &t_ServerMsg);
 		break;
 
 	case DATA_TYPE_SIGN_IN:
-		ClientMsg_SIGN_IN(&t_ClientMsg);
+		ClientMsg_SIGN_IN(t_ClientMsg, &t_ServerMsg);
 		break;
 
 	case DATA_TYPE_SIGN_OUT:
 		break;
 
 	case DATA_TYPE_LOBBY_CHATTING:
-		ClientMsg_LOBBY_CHATTING(t_ClientMsg);
+		ClientMsg_LOBBY_CHATTING(t_ClientMsg, &t_ServerMsg);
 		break;
 
 	case DATA_TYPE_INGAME_CHATTING:
@@ -680,7 +682,7 @@ void __fastcall TFormMain::ReceiveClientMessage(TMessage &_msg) {
 		tempStr = L"Wait Time Out";
 	} else if(ret == WAIT_OBJECT_0) {
 		tempStr = L"Success to Push Packet into Message Queue";
-		m_ClientMsgQ.push(t_ClientMsg);
+		m_ServerMsgQ.push(t_ServerMsg);
 	} else {
 		tempStr = L"ETC";
 	}
@@ -712,7 +714,7 @@ void __fastcall TFormMain::btn_CountClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TFormMain::ClientMsg_LOBBY_CHATTING(CLIENTMSG _ClientMsg) {
+void __fastcall TFormMain::ClientMsg_LOBBY_CHATTING(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg) {
 
 	// Common
 	UnicodeString tempStr = L"";
@@ -720,12 +722,17 @@ void __fastcall TFormMain::ClientMsg_LOBBY_CHATTING(CLIENTMSG _ClientMsg) {
 	unsigned short t_RecvSize = 0;
 	int t_ClientIdx = 0;
 	CLIENTMSG t_ClientMsg;
+	memset(&t_ClientMsg, 0, sizeof(t_ClientMsg));
 
 	// Extract Information
 	t_ClientMsg = _ClientMsg;
 	t_ClientIdx = t_ClientMsg.ClientInfo.ClientIndex;
 	memcpy(&t_RecvSize, &t_ClientMsg.Data[1], 2);
 	str_Chat.sprintf(L"Client[%02d] : ", t_ClientIdx);
+
+	// Copy Client Msg to Server Msg
+	_pServerMsg->ClientInfo = t_ClientMsg.ClientInfo;
+	memcpy(_pServerMsg->Data, t_ClientMsg.Data, MAX_RECV_PACKET_SIZE);
 
 	// Receive Chatting Text and Print Out
 	wchar_t* temp = new wchar_t[t_RecvSize - 4];
@@ -871,7 +878,7 @@ void __fastcall TFormMain::btn_DelDBClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TFormMain::ClientMsg_SIGN_UP(CLIENTMSG* _ClientMsg) {
+void __fastcall TFormMain::ClientMsg_SIGN_UP(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg) {
 
 	// Common
 	UnicodeString tempStr = L"";
@@ -881,12 +888,13 @@ void __fastcall TFormMain::ClientMsg_SIGN_UP(CLIENTMSG* _ClientMsg) {
 	unsigned short t_RecvSize = 0;
 	int t_ClientIdx = 0;
 	CLIENTMSG t_ClientMsg;
+	memset(&t_ClientMsg, 0, sizeof(t_ClientMsg));
 	int t_Size = 0;
 	BYTE t_rst = 0;
 	unsigned short t_SendSize = 5; // Fixed.. in Protocol
 
 	// Extract Information
-	t_ClientMsg = *_ClientMsg;
+	t_ClientMsg = _ClientMsg;
 	t_ClientIdx = t_ClientMsg.ClientInfo.ClientIndex;
 
 	// Extract User Name
@@ -913,22 +921,26 @@ void __fastcall TFormMain::ClientMsg_SIGN_UP(CLIENTMSG* _ClientMsg) {
 	PrintLog(t_UserPWStr);
 	delete[] t_UserPW;
 
+	// Copy Client Msg to Server Msg
+	_pServerMsg->ClientInfo = t_ClientMsg.ClientInfo;
+	memcpy(_pServerMsg->Data, t_ClientMsg.Data, MAX_RECV_PACKET_SIZE);
+
 	// Try to add User ID
-	memcpy(&_ClientMsg->Data[1], &t_SendSize, sizeof(t_SendSize));
-	memset(&_ClientMsg->Data[4], 0, MAX_RECV_PACKET_SIZE - 4);
+	memcpy(&_pServerMsg->Data[1], &t_SendSize, sizeof(t_SendSize));
+	memset(&_pServerMsg->Data[4], 0, MAX_RECV_PACKET_SIZE - 4);
 	if(AddUserID(t_UserIDStr, t_UserPWStr, t_UserNameStr)) {
 		t_rst = 0;
-		memcpy(&_ClientMsg->Data[4], &t_rst, sizeof(t_rst));
+		memcpy(&_pServerMsg->Data[4], &t_rst, sizeof(t_rst));
 		PrintLog(L"Welcome into DB");
 	} else {
 		t_rst = 1;
-		memcpy(&_ClientMsg->Data[4], &t_rst, sizeof(t_rst));
+		memcpy(&_pServerMsg->Data[4], &t_rst, sizeof(t_rst));
 		PrintLog(L"Not Welcome into DB");
 	}
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TFormMain::ClientMsg_SIGN_IN(CLIENTMSG* _ClientMsg) {
+void __fastcall TFormMain::ClientMsg_SIGN_IN(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg) {
 
 	// Common
 	UnicodeString tempStr = L"";
@@ -937,12 +949,13 @@ void __fastcall TFormMain::ClientMsg_SIGN_IN(CLIENTMSG* _ClientMsg) {
 	unsigned short t_RecvSize = 0;
 	int t_ClientIdx = 0;
 	CLIENTMSG t_ClientMsg;
+	memset(&t_ClientMsg, 0, sizeof(t_ClientMsg));
 	int t_Size = 0;
 	BYTE t_rst = 0;
 	unsigned short t_SendSize = 5; // Fixed.. in Protocol
 
 	// Extract Information
-	t_ClientMsg = *_ClientMsg;
+	t_ClientMsg = _ClientMsg;
 	t_ClientIdx = t_ClientMsg.ClientInfo.ClientIndex;
 
 	// Extract User ID
@@ -961,11 +974,15 @@ void __fastcall TFormMain::ClientMsg_SIGN_IN(CLIENTMSG* _ClientMsg) {
 	PrintLog(t_UserPWStr);
 	delete[] t_UserPW;
 
+	// Copy Client Msg to Server Msg
+	_pServerMsg->ClientInfo = t_ClientMsg.ClientInfo;
+	memcpy(_pServerMsg->Data, t_ClientMsg.Data, MAX_RECV_PACKET_SIZE);
+
 	// Try to add User ID
-	memcpy(&_ClientMsg->Data[1], &t_SendSize, sizeof(t_SendSize));
-	memset(&_ClientMsg->Data[4], 0, MAX_RECV_PACKET_SIZE - 4);
+	memcpy(&_pServerMsg->Data[1], &t_SendSize, sizeof(t_SendSize));
+	memset(&_pServerMsg->Data[4], 0, MAX_RECV_PACKET_SIZE - 4);
 	t_rst = Login(t_UserIDStr, t_UserPWStr);
-	memcpy(&_ClientMsg->Data[4], &t_rst, sizeof(t_rst));
+	memcpy(&_pServerMsg->Data[4], &t_rst, sizeof(t_rst));
 	if(t_rst == ERR_LOGIN_OK) {
 		PrintLog(L"Welcome into DB");
 	} else {

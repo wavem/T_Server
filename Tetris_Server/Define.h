@@ -63,15 +63,19 @@ typedef struct ST_CLIENTINFO {
 } CLIENTINFO;
 //---------------------------------------------------------------------------
 
+// Client -> Server Message
 typedef struct ST_CLIENTMESSAGE {
 	CLIENTINFO ClientInfo;
 	BYTE Data[MAX_RECV_PACKET_SIZE];
 } CLIENTMSG;
 //---------------------------------------------------------------------------
 
-
-
-
+// Server -> Client Messate
+typedef struct ST_SERVERMESSAGE {
+	CLIENTINFO ClientInfo;
+	BYTE Data[MAX_SEND_PACKET_SIZE];
+} SERVERMSG;
+//---------------------------------------------------------------------------
 
 
 

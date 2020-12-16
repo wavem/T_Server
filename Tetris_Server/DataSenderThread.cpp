@@ -37,14 +37,17 @@ void __fastcall DataSenderThread::Execute() {
 			continue;
 		}
 
+		// Reset Send Buffer Memory
+		memset(&ServerMsg, 0, sizeof(ServerMsg));
+
 		WaitForSingleObject(Mutex, INFINITE);
-		if(FormMain->m_ClientMsgQ.empty()) {
+		if(FormMain->m_ServerMsgQ.empty()) {
 			ReleaseMutex(Mutex);
 			continue;
 		}
 
-		data = FormMain->m_ClientMsgQ.front();
-		FormMain->m_ClientMsgQ.pop();
+		ServerMsg = FormMain->m_ServerMsgQ.front();
+		FormMain->m_ServerMsgQ.pop();
 		FormMain->m_SenderThreadWorkCount[iSenderID]++;
 		ReleaseMutex(Mutex);
 
@@ -69,26 +72,26 @@ bool __fastcall DataSenderThread::Send() {
 	unsigned short t_PacketSize = 0;
 
 	// Extract Message Type
-	t_MessageType = data.Data[3];
+	t_MessageType = ServerMsg.Data[3];
 
 	// Extract Packet Size
-	memcpy(&t_PacketSize, &data.Data[1], 2);
+	memcpy(&t_PacketSize, &ServerMsg.Data[1], 2);
 
 	// Send Routine
 	switch(t_MessageType) {
 	case DATA_TYPE_SIGN_UP:
 		t_rst = 0;
-		t_rst = send(FormMain->m_ClientSocket[data.ClientInfo.ClientIndex], (char*)data.Data, t_PacketSize, 0);
+		t_rst = send(FormMain->m_ClientSocket[ServerMsg.ClientInfo.ClientIndex], (char*)ServerMsg.Data, t_PacketSize, 0);
 		break;
 	case DATA_TYPE_SIGN_IN:
 		t_rst = 0;
-		t_rst = send(FormMain->m_ClientSocket[data.ClientInfo.ClientIndex], (char*)data.Data, t_PacketSize, 0);
+		t_rst = send(FormMain->m_ClientSocket[ServerMsg.ClientInfo.ClientIndex], (char*)ServerMsg.Data, t_PacketSize, 0);
 		break;
 	case DATA_TYPE_LOBBY_CHATTING:
 		for(int i = 0 ; i < MAX_TCP_CLIENT_USER_COUNT ; i++) {
 			if(FormMain->m_ClientSocket[i] != INVALID_SOCKET) {
 				t_rst = 0;
-				t_rst = send(FormMain->m_ClientSocket[i], (char*)data.Data, t_PacketSize, 0);
+				t_rst = send(FormMain->m_ClientSocket[i], (char*)ServerMsg.Data, t_PacketSize, 0);
 			}
 		}
 		break;

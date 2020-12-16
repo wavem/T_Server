@@ -10,7 +10,7 @@ class DataSenderThread : public TThread {
 private:
 	ThreadWorkingType	m_eThreadWork;
 	SOCKET* mp_socket;
-	CLIENTMSG data;
+	SERVERMSG ServerMsg;
 	//std::mutex* p_mutex_ClientMsgQ;
 	//std::condition_variable* p_cv;
 	int iSenderID;

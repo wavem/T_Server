@@ -198,7 +198,7 @@ public: // ETC UI FUNCTIONS
 
 public: // Received Message Queue
 	HANDLE m_Mutex;
-	std::queue<CLIENTMSG> m_ClientMsgQ;
+	std::queue<SERVERMSG> m_ServerMsgQ;
 
 public: // USER DB ROUTINE
 	bool __fastcall FindUserID(UnicodeString _ID);
@@ -207,9 +207,9 @@ public: // USER DB ROUTINE
 	BYTE __fastcall Login(UnicodeString _ID, UnicodeString _PW);
 
 public: // Client Message Handler
-	void __fastcall ClientMsg_SIGN_UP(CLIENTMSG* _ClientMsg);
-	void __fastcall ClientMsg_SIGN_IN(CLIENTMSG* _ClientMsg);
-	void __fastcall ClientMsg_LOBBY_CHATTING(CLIENTMSG _ClientMsg);
+	void __fastcall ClientMsg_SIGN_UP(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg);
+	void __fastcall ClientMsg_SIGN_IN(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg);
+	void __fastcall ClientMsg_LOBBY_CHATTING(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg);
 
 public: // Thread Message Handler
 	void __fastcall PrintThreadMessage(TMessage &_msg);
