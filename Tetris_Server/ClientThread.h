@@ -17,6 +17,8 @@ private:
 public:
 	CLIENTINFO info;
 	CLIENTMSG data;
+	UnicodeString UserID;
+	int ClientScreenStatus;
 
 public:
 	__fastcall ClientThread(SOCKET *_p_socket, CLIENTINFO _info);

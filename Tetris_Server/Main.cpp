@@ -76,6 +76,10 @@
 #pragma link "AdvObj"
 #pragma link "BaseGrid"
 #pragma link "AdvEdit"
+#pragma link "cxContainer"
+#pragma link "cxEdit"
+#pragma link "cxMemo"
+#pragma link "cxTextEdit"
 #pragma resource "*.dfm"
 TFormMain *FormMain;
 //---------------------------------------------------------------------------
@@ -398,8 +402,7 @@ void __fastcall TFormMain::PrintMsg(UnicodeString _str) {
 //---------------------------------------------------------------------------
 
 void __fastcall TFormMain::PrintLog(UnicodeString _str) {
-	int t_Idx = memo_log->Lines->Add(_str);
-	memo_log->SetCursor(0, t_Idx);
+	memo_log->Lines->Add(_str);
 }
 //---------------------------------------------------------------------------
 
@@ -553,7 +556,13 @@ void __fastcall TFormMain::RefreshClientInfoGrid() {
 		// Re Draw Grid
 		grid->RemoveImageIdx(1, t_FixedIdx);
 		grid->AddImageIdx(1, t_FixedIdx, 0, haCenter, Advgrid::vaCenter); // Set Green Icon
-		tempStr.sprintf(L"Client[%02X]", t_ClientIdx); // Temporary Creating Client ID
+
+		// If Client Log-in Success, He has ID.
+		if(m_Client[t_ClientIdx]->UserID == L"") {
+			tempStr.sprintf(L"Client[%02X]", t_ClientIdx); // Temporary Creating Client ID
+		} else {
+			tempStr = m_Client[t_ClientIdx]->UserID;
+		}
 		grid->Cells[2][t_FixedIdx] = tempStr; // Client ID
 		grid->Cells[3][t_FixedIdx] = t_IPStr; // Client IP
 		grid->Cells[4][t_FixedIdx] = t_Port; // Client Port
@@ -718,7 +727,6 @@ void __fastcall TFormMain::ClientMsg_LOBBY_CHATTING(CLIENTMSG _ClientMsg, SERVER
 
 	// Common
 	UnicodeString tempStr = L"";
-	UnicodeString str_Chat = L"";
 	unsigned short t_RecvSize = 0;
 	int t_ClientIdx = 0;
 	CLIENTMSG t_ClientMsg;
@@ -728,7 +736,6 @@ void __fastcall TFormMain::ClientMsg_LOBBY_CHATTING(CLIENTMSG _ClientMsg, SERVER
 	t_ClientMsg = _ClientMsg;
 	t_ClientIdx = t_ClientMsg.ClientInfo.ClientIndex;
 	memcpy(&t_RecvSize, &t_ClientMsg.Data[1], 2);
-	str_Chat.sprintf(L"Client[%02d] : ", t_ClientIdx);
 
 	// Copy Client Msg to Server Msg
 	_pServerMsg->ClientInfo = t_ClientMsg.ClientInfo;
@@ -738,9 +745,7 @@ void __fastcall TFormMain::ClientMsg_LOBBY_CHATTING(CLIENTMSG _ClientMsg, SERVER
 	wchar_t* temp = new wchar_t[t_RecvSize - 4];
 	memcpy(temp, &t_ClientMsg.Data[4], t_RecvSize - 4);
 	tempStr = temp;
-	tempStr += L"    ";
-	str_Chat += tempStr; // Merge Text Message
-	PrintLog(str_Chat);
+	PrintLog(tempStr);
 	delete[] temp;
 }
 //---------------------------------------------------------------------------
@@ -910,7 +915,7 @@ void __fastcall TFormMain::ClientMsg_SIGN_UP(CLIENTMSG _ClientMsg, SERVERMSG* _p
 	wchar_t* t_UserID = new wchar_t[t_Size];
 	memcpy(t_UserID, &t_ClientMsg.Data[46], t_Size);
 	t_UserIDStr = t_UserID;
-	PrintLog(t_UserIDStr);
+	//PrintLog(t_UserIDStr);
 	delete[] t_UserID;
 
 	// Extract User PW
@@ -918,7 +923,7 @@ void __fastcall TFormMain::ClientMsg_SIGN_UP(CLIENTMSG _ClientMsg, SERVERMSG* _p
 	wchar_t* t_UserPW = new wchar_t[t_Size];
 	memcpy(t_UserPW, &t_ClientMsg.Data[86], t_Size);
 	t_UserPWStr = t_UserPW;
-	PrintLog(t_UserPWStr);
+	//PrintLog(t_UserPWStr);
 	delete[] t_UserPW;
 
 	// Copy Client Msg to Server Msg
@@ -931,11 +936,13 @@ void __fastcall TFormMain::ClientMsg_SIGN_UP(CLIENTMSG _ClientMsg, SERVERMSG* _p
 	if(AddUserID(t_UserIDStr, t_UserPWStr, t_UserNameStr)) {
 		t_rst = 0;
 		memcpy(&_pServerMsg->Data[4], &t_rst, sizeof(t_rst));
-		PrintLog(L"Welcome into DB");
+		tempStr = L"Sign Up Success User ID : ";
+		tempStr += t_UserIDStr;
+		PrintLog(tempStr);
 	} else {
 		t_rst = 1;
 		memcpy(&_pServerMsg->Data[4], &t_rst, sizeof(t_rst));
-		PrintLog(L"Not Welcome into DB");
+		PrintLog(L"Client Sign-Up Failed...");
 	}
 }
 //---------------------------------------------------------------------------
@@ -963,7 +970,7 @@ void __fastcall TFormMain::ClientMsg_SIGN_IN(CLIENTMSG _ClientMsg, SERVERMSG* _p
 	wchar_t* t_UserID = new wchar_t[t_Size];
 	memcpy(t_UserID, &t_ClientMsg.Data[46], t_Size);
 	t_UserIDStr = t_UserID;
-	PrintLog(t_UserIDStr);
+	//PrintLog(t_UserIDStr);
 	delete[] t_UserID;
 
 	// Extract User PW
@@ -971,7 +978,7 @@ void __fastcall TFormMain::ClientMsg_SIGN_IN(CLIENTMSG _ClientMsg, SERVERMSG* _p
 	wchar_t* t_UserPW = new wchar_t[t_Size];
 	memcpy(t_UserPW, &t_ClientMsg.Data[86], t_Size);
 	t_UserPWStr = t_UserPW;
-	PrintLog(t_UserPWStr);
+	//PrintLog(t_UserPWStr);
 	delete[] t_UserPW;
 
 	// Copy Client Msg to Server Msg
@@ -982,11 +989,21 @@ void __fastcall TFormMain::ClientMsg_SIGN_IN(CLIENTMSG _ClientMsg, SERVERMSG* _p
 	memcpy(&_pServerMsg->Data[1], &t_SendSize, sizeof(t_SendSize));
 	memset(&_pServerMsg->Data[4], 0, MAX_RECV_PACKET_SIZE - 4);
 	t_rst = Login(t_UserIDStr, t_UserPWStr);
+
+	// Write Log-in Result into send buffer
 	memcpy(&_pServerMsg->Data[4], &t_rst, sizeof(t_rst));
+
+	// Log-in Routine
 	if(t_rst == ERR_LOGIN_OK) {
-		PrintLog(L"Welcome into DB");
+		tempStr = L"Welcome User ID : ";
+		tempStr += t_UserIDStr;
+		PrintLog(tempStr);
+		// Login Routine Here
+		m_Client[t_ClientIdx]->UserID = t_UserIDStr;
+		m_Client[t_ClientIdx]->ClientScreenStatus = CLIENT_SCREEN_IS_LOBBY;
+		RefreshClientInfoGrid();
 	} else {
-		PrintLog(L"Not Welcome into DB");
+		PrintLog(L"Client Log-in Failed...");
 	}
 }
 //---------------------------------------------------------------------------
@@ -1016,6 +1033,9 @@ BYTE __fastcall TFormMain::Login(UnicodeString _ID, UnicodeString _PW) {
 	if(tempStr == _PW) {
 		// Login Routine Here
 
+		// Main Thread 한테 (지 스스로한테) 포스트 메시지를 보내서, 로그인 루틴을 일단 다 끝내고
+		// 그 다음에 해당 메시지 핸들러에서 클라이언트들에게 현재 서버 정보를 전송하도록 하자
+		// 그 전에 룸 디자인을 먼저 끝내도록 할 것.
 		return ERR_LOGIN_OK;
 	} else {
 		PrintMsg(L"Password is incorrect");

@@ -81,6 +81,10 @@
 #include <Data.Win.ADODB.hpp>
 #include <Vcl.DBGrids.hpp>
 #include "AdvEdit.hpp"
+#include "cxContainer.hpp"
+#include "cxEdit.hpp"
+#include "cxMemo.hpp"
+#include "cxTextEdit.hpp"
 //---------------------------------------------------------------------------
 
 #include <queue>
@@ -130,7 +134,6 @@ __published:	// IDE-managed Components
 	TAdvSmoothButton *btn_Resume;
 	TAdvSmoothButton *btn_Terminate;
 	TAdvSmoothButton *btn_GetRunningTime;
-	TAdvMemo *memo_log;
 	TTimer *tm_FindClient;
 	TTimer *tm_DeleteClient;
 	TPanel *_pnBase_03_UserInfo;
@@ -149,6 +152,7 @@ __published:	// IDE-managed Components
 	TAdvEdit *ed_PW;
 	TAdvEdit *ed_UserName;
 	TAdvEdit *ed_ID;
+	TcxMemo *memo_log;
 	void __fastcall Exit1Click(TObject *Sender);
 	void __fastcall TrayIconDblClick(TObject *Sender);
 	void __fastcall MenuBtn_StatusClick(TObject *Sender);

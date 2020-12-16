@@ -14,6 +14,9 @@ __fastcall ClientThread::ClientThread(SOCKET *_p_socket, CLIENTINFO _info) {
 	data.ClientInfo = info;
 	mp_socket = _p_socket;
 	info.ClientSocket = *mp_socket;
+	UserID = L"";
+	ClientScreenStatus = CLIENT_SCREEN_IS_LOGIN;
+
 	m_eThreadWork = THREAD_RUNNING;
 }
 //---------------------------------------------------------------------------
