@@ -164,7 +164,7 @@ object FormMain: TFormMain
       Top = 0
       Width = 1009
       Height = 734
-      PageIndex = 3
+      PageIndex = 2
       TabOrder = 0
       object TPage
         Left = 0
@@ -1286,8 +1286,6 @@ object FormMain: TFormMain
         Top = 0
         HelpContext = 3
         Caption = 'Room List'
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object _pnBase_04_RoomList: TPanel
           Left = 0
           Top = 0
@@ -1298,10 +1296,6 @@ object FormMain: TFormMain
           Color = cl3DDkShadow
           ParentBackground = False
           TabOrder = 0
-          ExplicitLeft = 232
-          ExplicitTop = 64
-          ExplicitWidth = 185
-          ExplicitHeight = 41
           object lb_Lobby_1: TLabel
             Left = 40
             Top = 12

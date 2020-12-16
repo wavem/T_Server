@@ -40,15 +40,62 @@
 #define DATA_TYPE_HEART_BEAT		11
 #define DATA_TYPE_INGAME_DATA		12
 
+#define DATA_TYPE_LOBBY_ROOMSTATUS	0xF1
+#define DATA_TYPE_LOBBY_PLAYERLIST	0xF2
+
 // LOG-IN ERROR TYPE
 #define ERR_LOGIN_OK	0
 #define ERR_LOGIN_PW	1
 #define ERR_LOGIN_ID	2
 
+
+
+// MAX ROOM COUNT
+#define MAX_GAMEROOM_COUNT	24
+
 // CLIENT SCREEN STATUS
-#define CLIENT_SCREEN_IS_LOGIN	0
-#define CLIENT_SCREEN_IS_LOBBY  1
-#define CLIENT_SCREEN_IS_GAME	2
+#define CLIENT_SCREEN_IS_LOGIN		0
+#define CLIENT_SCREEN_IS_LOBBY  	1
+#define CLIENT_SCREEN_IS_GAME		2
+#define CLIENT_SCREEN_IS_ROOM_01	101
+#define CLIENT_SCREEN_IS_ROOM_02	102
+#define CLIENT_SCREEN_IS_ROOM_03	103
+#define CLIENT_SCREEN_IS_ROOM_04	104
+#define CLIENT_SCREEN_IS_ROOM_05	105
+#define CLIENT_SCREEN_IS_ROOM_06	106
+#define CLIENT_SCREEN_IS_ROOM_07	107
+#define CLIENT_SCREEN_IS_ROOM_08	108
+#define CLIENT_SCREEN_IS_ROOM_09	109
+#define CLIENT_SCREEN_IS_ROOM_10	110
+#define CLIENT_SCREEN_IS_ROOM_11	111
+#define CLIENT_SCREEN_IS_ROOM_12	112
+#define CLIENT_SCREEN_IS_ROOM_13	113
+#define CLIENT_SCREEN_IS_ROOM_14	114
+#define CLIENT_SCREEN_IS_ROOM_15	115
+#define CLIENT_SCREEN_IS_ROOM_16	116
+#define CLIENT_SCREEN_IS_ROOM_17	117
+#define CLIENT_SCREEN_IS_ROOM_18	118
+#define CLIENT_SCREEN_IS_ROOM_19	119
+#define CLIENT_SCREEN_IS_ROOM_20	120
+#define CLIENT_SCREEN_IS_ROOM_21	121
+#define CLIENT_SCREEN_IS_ROOM_22	122
+#define CLIENT_SCREEN_IS_ROOM_23	123
+#define CLIENT_SCREEN_IS_ROOM_24	124
+
+// USER LEVEL
+#define USER_LEVEL_1	1 // 뉴비
+#define USER_LEVEL_2	2 // 초보
+#define USER_LEVEL_3	3 // 하수
+#define USER_LEVEL_4	4 // 중수
+#define USER_LEVEL_5	5 // 고수
+#define USER_LEVEL_6	6 // 초고수
+#define USER_LEVEL_7	7 // 영웅
+#define USER_LEVEL_8	8 // 전설
+#define USER_LEVEL_9	9 // 신
+
+
+
+
 
 
 // THREAD STATUS
@@ -83,6 +130,19 @@ typedef struct ST_SERVERMESSAGE {
 } SERVERMSG;
 //---------------------------------------------------------------------------
 
+// ROOM INFORMATION
+typedef struct ST_ROOM {
+	BYTE No;
+	BYTE State;
+	BYTE TeamType;
+	BYTE ItemType;
+	UnicodeString Title;
+	UnicodeString MasterID;
+	BYTE PlayerCount;
+	bool IsPrivate;
+	BYTE ClientID[6];
+} ROOM;
+//---------------------------------------------------------------------------
 
 
 //---------------------------------------------------------------------------

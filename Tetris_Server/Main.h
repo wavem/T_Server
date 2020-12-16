@@ -228,6 +228,11 @@ public: // USER DB ROUTINE
 	bool __fastcall DeleteUserID(UnicodeString _ID);
 	BYTE __fastcall Login(UnicodeString _ID, UnicodeString _PW);
 
+public: // CALCULATION AND SEND FUNCTIONS
+	void __fastcall SendLobbyStatus();
+	void __fastcall SendRoomStatus();
+	void __fastcall SendLobbyPlayerList();
+
 public: // Client Message Handler
 	void __fastcall ClientMsg_SIGN_UP(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg);
 	void __fastcall ClientMsg_SIGN_IN(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg);

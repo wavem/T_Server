@@ -635,6 +635,7 @@ void __fastcall TFormMain::tm_DeleteClientTimer(TObject *Sender)
 			// Refresh Client Info Grid
 			RefreshClientInfoGrid();
 			RefreshLobbyListGrid();
+			SendLobbyStatus();
 		}
 	}
 }
@@ -701,10 +702,16 @@ void __fastcall TFormMain::ReceiveClientMessage(TMessage &_msg) {
 	case DATA_TYPE_INGAME_CMD:
 		break;
 
+	case DATA_TYPE_MAKE_GAME_ROOM:
+		SendLobbyStatus(); // temp
+		break;
+
 	case DATA_TYPE_ENTER_GAME_ROOM:
+		SendLobbyStatus(); // temp
 		break;
 
 	case DATA_TYPE_ESCAPE_GAME_ROOM:
+		SendLobbyStatus(); // temp
 		break;
 
 	case DATA_TYPE_HEART_BEAT:
@@ -717,11 +724,8 @@ void __fastcall TFormMain::ReceiveClientMessage(TMessage &_msg) {
 		break;
 	}
 
-
-
-	// Test Message
-	//tempStr.sprintf(L"Queue Size(Before) : [%d]", m_ClientMsgQ.size());
-	//PrintLog(tempStr);
+	// FINAL WRITE SECURE CODE
+	t_ServerMsg.Data[0] = SECURE_CODE_S_TO_C;
 
 	// Push into Client Message Queue
 	int ret = WaitForSingleObject(m_Mutex, 2000);
@@ -739,10 +743,6 @@ void __fastcall TFormMain::ReceiveClientMessage(TMessage &_msg) {
 	}
 	PrintMsg(tempStr);
 	ReleaseMutex(m_Mutex);
-
-	// Test Message
-	//tempStr.sprintf(L"Queue Size(After) : [%d]", m_ClientMsgQ.size());
-	//PrintLog(tempStr);
 }
 //---------------------------------------------------------------------------
 
@@ -1045,6 +1045,7 @@ void __fastcall TFormMain::ClientMsg_SIGN_IN(CLIENTMSG _ClientMsg, SERVERMSG* _p
 		m_Client[t_ClientIdx]->ClientScreenStatus = CLIENT_SCREEN_IS_LOBBY;
 		RefreshClientInfoGrid();
 		RefreshLobbyListGrid();
+		SendLobbyStatus();
 	} else {
 		PrintLog(L"Client Log-in Failed...");
 	}
@@ -1090,6 +1091,70 @@ BYTE __fastcall TFormMain::Login(UnicodeString _ID, UnicodeString _PW) {
 void __fastcall TFormMain::btn_RoomListClick(TObject *Sender)
 {
 	Notebook_Main->PageIndex = 3; // ROOM LIST
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFormMain::SendLobbyStatus() {
+	SendRoomStatus();
+	SendLobbyPlayerList();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFormMain::SendRoomStatus() {
+
+
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFormMain::SendLobbyPlayerList() {
+
+	// Common
+	UnicodeString tempStr = L"";
+	SERVERMSG t_ServerMsg;
+	memset(&t_ServerMsg, 0, sizeof(t_ServerMsg));
+	int t_IDLength;
+	BYTE t_LobbyPlayerCount = 0;
+	BYTE* t_pTextBuffer = NULL;
+	unsigned short t_TotalPacketSize = MAX_SEND_PACKET_SIZE;
+
+	// Check Lobby Player List Grid in Server Program
+	for(int i = 0 ; i < grid_LobbyList->RowCount ; i++) {
+		tempStr = grid_LobbyList->Cells[1][i];
+		if(tempStr == L"") continue;
+
+		t_IDLength = tempStr.Length();
+		t_pTextBuffer = (unsigned char*)tempStr.c_str();
+		memcpy(&t_ServerMsg.Data[5 + 21 * i], t_pTextBuffer, t_IDLength * 2 + 2); // 2 is NULL
+		t_LobbyPlayerCount++;
+
+		// User Grade is Later....
+		tempStr = grid_LobbyList->Cells[2][i]; // User Level
+	}
+
+	// Write Total Player Count in send buffer
+	t_ServerMsg.Data[4] = t_LobbyPlayerCount;
+
+	// Making Header
+	t_ServerMsg.Data[0] = SECURE_CODE_S_TO_C; // Secure Code
+	memcpy(&t_ServerMsg.Data[1], &t_TotalPacketSize, 2); // Total Packet Size
+	t_ServerMsg.Data[3] = DATA_TYPE_LOBBY_PLAYERLIST; // Data Type
+
+	// Push into Client Message Queue
+	int ret = WaitForSingleObject(m_Mutex, 2000);
+	if(ret == WAIT_FAILED) {
+		tempStr = L"Wait Failed";
+	} else if(ret == WAIT_ABANDONED) {
+		tempStr = L"Wait Abandoned";
+	} else if(ret == WAIT_TIMEOUT) {
+		tempStr = L"Wait Time Out";
+	} else if(ret == WAIT_OBJECT_0) {
+		tempStr = L"Success to Push Packet into Message Queue(Lobby)";
+		m_ServerMsgQ.push(t_ServerMsg);
+	} else {
+		tempStr = L"ETC";
+	}
+	PrintMsg(tempStr);
+	ReleaseMutex(m_Mutex);
 }
 //---------------------------------------------------------------------------
 
