@@ -153,6 +153,22 @@ __published:	// IDE-managed Components
 	TAdvEdit *ed_UserName;
 	TAdvEdit *ed_ID;
 	TcxMemo *memo_log;
+	TAdvStringGrid *grid_LobbyList;
+	TLabel *lb_Title_PlayerList_No;
+	TLabel *lb_Title_PlayerList_ID;
+	TLabel *lb_Title_PlayerList_Grade;
+	TAdvSmoothButton *btn_RoomList;
+	TPanel *_pnBase_04_RoomList;
+	TAdvStringGrid *grid_Room;
+	TLabel *lb_Lobby_1;
+	TLabel *lb_Lobby_2;
+	TLabel *lb_Lobby_3;
+	TLabel *lb_Lobby_4;
+	TLabel *lb_Lobby_5;
+	TLabel *lb_Lobby_6;
+	TLabel *lb_Lobby_7;
+	TLabel *lb_Lobby_8;
+	TLabel *lb_Lobby_9;
 	void __fastcall Exit1Click(TObject *Sender);
 	void __fastcall TrayIconDblClick(TObject *Sender);
 	void __fastcall MenuBtn_StatusClick(TObject *Sender);
@@ -172,6 +188,7 @@ __published:	// IDE-managed Components
 	void __fastcall btn_CountClick(TObject *Sender);
 	void __fastcall btn_AddDBClick(TObject *Sender);
 	void __fastcall btn_DelDBClick(TObject *Sender);
+	void __fastcall btn_RoomListClick(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TFormMain(TComponent* Owner);
@@ -199,6 +216,7 @@ public: // SOCKET FUNCTIONS
 
 public: // ETC UI FUNCTIONS
 	void __fastcall RefreshClientInfoGrid();
+	void __fastcall RefreshLobbyListGrid();
 
 public: // Received Message Queue
 	HANDLE m_Mutex;

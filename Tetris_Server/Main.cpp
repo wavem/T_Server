@@ -231,6 +231,16 @@ void __fastcall TFormMain::InitGrid() {
 		//grid->Cells[8][i] = L"2020-08-04 14:22:33"; // Connection Time
 		//grid->Cells[9][i] = L"2020-08-04 14:22:33"; // Disconnection Time
 	}
+
+	// Lobby List Grid
+	for(int i = 0 ; i < grid_LobbyList->RowCount ; i++) {
+		grid_LobbyList->Cells[0][i] = i + 1;
+	}
+
+	// Room List Grid
+	for(int i = 0 ; i < grid_Room->RowCount ; i++) {
+		grid_Room->Cells[0][i] = i + 1;
+    }
 }
 //---------------------------------------------------------------------------
 
@@ -514,6 +524,7 @@ void __fastcall TFormMain::AddClient(TMessage &_msg) {
 
 	// Refresh Client Info Grid
 	RefreshClientInfoGrid();
+	RefreshLobbyListGrid();
 }
 //---------------------------------------------------------------------------
 
@@ -572,6 +583,36 @@ void __fastcall TFormMain::RefreshClientInfoGrid() {
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TFormMain::RefreshLobbyListGrid() {
+
+	// Common
+	UnicodeString tempStr = L"";
+	int t_ClientIdx = 0;
+
+	// Refresh Routine
+	for(int i = 0 ; i < MAX_TCP_CLIENT_USER_COUNT ; i++) {
+		// Check if Thread is NULL, Reset Grid Row
+		if(m_Client[i] == NULL) {
+			grid_LobbyList->Cells[1][i] = L""; // Player ID
+			grid_LobbyList->Cells[2][i] = L""; // Player Grade
+			continue;
+		}
+
+		// Parsing from Client Thread (For Test)
+		t_ClientIdx = m_Client[i]->info.ClientIndex; // Re-Parsing(Re-Extracting)
+
+		// If Client Log-in Success, He has ID.
+		if(m_Client[t_ClientIdx]->UserID == L"") {
+			tempStr.sprintf(L"Client[%02X]", t_ClientIdx); // Temporary Creating Client ID
+		} else {
+			tempStr = m_Client[t_ClientIdx]->UserID;
+		}
+		grid_LobbyList->Cells[1][i] = tempStr; // Player ID
+	}
+
+}
+//---------------------------------------------------------------------------
+
 void __fastcall TFormMain::tm_DeleteClientTimer(TObject *Sender)
 {
 	for(int i = 0 ; i < MAX_TCP_CLIENT_USER_COUNT ; i++) {
@@ -593,6 +634,7 @@ void __fastcall TFormMain::tm_DeleteClientTimer(TObject *Sender)
 
 			// Refresh Client Info Grid
 			RefreshClientInfoGrid();
+			RefreshLobbyListGrid();
 		}
 	}
 }
@@ -1002,6 +1044,7 @@ void __fastcall TFormMain::ClientMsg_SIGN_IN(CLIENTMSG _ClientMsg, SERVERMSG* _p
 		m_Client[t_ClientIdx]->UserID = t_UserIDStr;
 		m_Client[t_ClientIdx]->ClientScreenStatus = CLIENT_SCREEN_IS_LOBBY;
 		RefreshClientInfoGrid();
+		RefreshLobbyListGrid();
 	} else {
 		PrintLog(L"Client Log-in Failed...");
 	}
@@ -1043,3 +1086,10 @@ BYTE __fastcall TFormMain::Login(UnicodeString _ID, UnicodeString _PW) {
 	}
 }
 //---------------------------------------------------------------------------
+
+void __fastcall TFormMain::btn_RoomListClick(TObject *Sender)
+{
+	Notebook_Main->PageIndex = 3; // ROOM LIST
+}
+//---------------------------------------------------------------------------
+

@@ -37,11 +37,11 @@ object FormVersion: TFormVersion
       ParentFont = False
     end
     object lb_DeveloperName: TLabel
-      Left = 268
+      Left = 244
       Top = 48
-      Width = 46
+      Width = 70
       Height = 16
-      Caption = 'by mjw'
+      Caption = 'by WAVEM'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
@@ -65,9 +65,9 @@ object FormVersion: TFormVersion
     object lb_UpdateDate: TLabel
       Left = 80
       Top = 92
-      Width = 234
+      Width = 236
       Height = 16
-      Caption = 'Update Date : 2020-12-16 PM 23:30'
+      Caption = 'Update Date : 2020-12-17 AM 01:00'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -13

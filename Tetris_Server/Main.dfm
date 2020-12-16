@@ -164,7 +164,7 @@ object FormMain: TFormMain
       Top = 0
       Width = 1009
       Height = 734
-      PageIndex = 2
+      PageIndex = 3
       TabOrder = 0
       object TPage
         Left = 0
@@ -644,8 +644,8 @@ object FormMain: TFormMain
             TMSStyle = 0
           end
           object btn_UserInfo: TAdvSmoothButton
-            Left = 168
-            Top = 73
+            Left = 440
+            Top = 32
             Width = 120
             Height = 35
             Cursor = crHandPoint
@@ -727,6 +727,48 @@ object FormMain: TFormMain
             OnClick = btn_CountClick
             TMSStyle = 0
           end
+          object btn_RoomList: TAdvSmoothButton
+            Left = 440
+            Top = 73
+            Width = 120
+            Height = 35
+            Cursor = crHandPoint
+            Hint = 'DB'
+            Appearance.GlowPercentage = 35
+            Appearance.Font.Charset = DEFAULT_CHARSET
+            Appearance.Font.Color = clAqua
+            Appearance.Font.Height = -15
+            Appearance.Font.Name = 'Tahoma'
+            Appearance.Font.Style = [fsBold]
+            Appearance.Rounding = 12
+            Status.Caption = '0'
+            Status.Appearance.Fill.Color = clRed
+            Status.Appearance.Fill.ColorMirror = clNone
+            Status.Appearance.Fill.ColorMirrorTo = clNone
+            Status.Appearance.Fill.GradientType = gtSolid
+            Status.Appearance.Fill.GradientMirrorType = gtSolid
+            Status.Appearance.Fill.BorderColor = clGray
+            Status.Appearance.Fill.Rounding = 8
+            Status.Appearance.Fill.ShadowOffset = 0
+            Status.Appearance.Fill.Glow = gmNone
+            Status.Appearance.Font.Charset = DEFAULT_CHARSET
+            Status.Appearance.Font.Color = clWhite
+            Status.Appearance.Font.Height = -11
+            Status.Appearance.Font.Name = 'Tahoma'
+            Status.Appearance.Font.Style = []
+            Bevel = False
+            BevelColor = clLime
+            Caption = 'ROOM LIST'
+            Color = clNavy
+            ParentFont = False
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 9
+            ShowFocus = False
+            Version = '2.1.0.0'
+            OnClick = btn_RoomListClick
+            TMSStyle = 0
+          end
         end
       end
       object TPage
@@ -776,6 +818,45 @@ object FormMain: TFormMain
             Width = 82
             Height = 18
             Caption = 'User Name'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clGradientActiveCaption
+            Font.Height = -15
+            Font.Name = 'Tahoma'
+            Font.Style = [fsBold]
+            ParentFont = False
+          end
+          object lb_Title_PlayerList_No: TLabel
+            Left = 721
+            Top = 266
+            Width = 26
+            Height = 18
+            Caption = 'No.'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clGradientActiveCaption
+            Font.Height = -15
+            Font.Name = 'Tahoma'
+            Font.Style = [fsBold]
+            ParentFont = False
+          end
+          object lb_Title_PlayerList_ID: TLabel
+            Left = 825
+            Top = 266
+            Width = 18
+            Height = 18
+            Caption = 'ID'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clGradientActiveCaption
+            Font.Height = -15
+            Font.Name = 'Tahoma'
+            Font.Style = [fsBold]
+            ParentFont = False
+          end
+          object lb_Title_PlayerList_Grade: TLabel
+            Left = 955
+            Top = 266
+            Width = 45
+            Height = 18
+            Caption = 'Grade'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clGradientActiveCaption
             Font.Height = -15
@@ -1040,6 +1121,466 @@ object FormMain: TFormMain
             Text = ''
             Visible = True
             Version = '3.3.5.3'
+          end
+          object grid_LobbyList: TAdvStringGrid
+            Left = 711
+            Top = 290
+            Width = 302
+            Height = 391
+            Cursor = crDefault
+            TabStop = False
+            BorderStyle = bsNone
+            Color = 12407073
+            ColCount = 3
+            Ctl3D = True
+            DefaultRowHeight = 28
+            DoubleBuffered = True
+            DrawingStyle = gdsClassic
+            FixedColor = clWhite
+            FixedCols = 0
+            RowCount = 60
+            FixedRows = 0
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = 14722896
+            Font.Height = -13
+            Font.Name = #47569#51008' '#44256#46357
+            Font.Style = [fsBold]
+            GradientEndColor = 12148001
+            GradientStartColor = 12148001
+            GridLineWidth = 2
+            Options = [goHorzLine, goRowSelect]
+            ParentCtl3D = False
+            ParentDoubleBuffered = False
+            ParentFont = False
+            ScrollBars = ssNone
+            TabOrder = 6
+            GridLineColor = 12148001
+            GridFixedLineColor = 12148001
+            HoverRowCells = [hcNormal, hcSelected]
+            ActiveCellFont.Charset = DEFAULT_CHARSET
+            ActiveCellFont.Color = clWindowText
+            ActiveCellFont.Height = -11
+            ActiveCellFont.Name = 'Tahoma'
+            ActiveCellFont.Style = [fsBold]
+            BackGround.Display = bdGradientVert
+            BackGround.Cells = bcFixed
+            BackGround.Color = 14849594
+            BackGround.ColorTo = clWhite
+            BorderColor = 12407073
+            ColumnHeaders.Strings = (
+              'Idx'
+              'State'
+              'Team'
+              'Item'
+              'Title'
+              'Master ID'
+              'Players'
+              'Private'
+              'Enter')
+            ControlLook.FixedGradientHoverFrom = clGray
+            ControlLook.FixedGradientHoverTo = clWhite
+            ControlLook.FixedGradientDownFrom = clGray
+            ControlLook.FixedGradientDownTo = clSilver
+            ControlLook.DropDownHeader.Font.Charset = DEFAULT_CHARSET
+            ControlLook.DropDownHeader.Font.Color = clWindowText
+            ControlLook.DropDownHeader.Font.Height = -11
+            ControlLook.DropDownHeader.Font.Name = 'Tahoma'
+            ControlLook.DropDownHeader.Font.Style = []
+            ControlLook.DropDownHeader.Visible = True
+            ControlLook.DropDownHeader.Buttons = <>
+            ControlLook.DropDownFooter.Font.Charset = DEFAULT_CHARSET
+            ControlLook.DropDownFooter.Font.Color = clWindowText
+            ControlLook.DropDownFooter.Font.Height = -11
+            ControlLook.DropDownFooter.Font.Name = 'Tahoma'
+            ControlLook.DropDownFooter.Font.Style = []
+            ControlLook.DropDownFooter.Visible = True
+            ControlLook.DropDownFooter.Buttons = <>
+            ControlLook.NoDisabledButtonLook = True
+            DefaultAlignment = taCenter
+            EnableHTML = False
+            Filter = <>
+            FilterDropDown.Font.Charset = DEFAULT_CHARSET
+            FilterDropDown.Font.Color = clWindowText
+            FilterDropDown.Font.Height = -11
+            FilterDropDown.Font.Name = 'Tahoma'
+            FilterDropDown.Font.Style = []
+            FilterDropDown.TextChecked = 'Checked'
+            FilterDropDown.TextUnChecked = 'Unchecked'
+            FilterDropDownClear = '(All)'
+            FilterEdit.TypeNames.Strings = (
+              'Starts with'
+              'Ends with'
+              'Contains'
+              'Not contains'
+              'Equal'
+              'Not equal'
+              'Larger than'
+              'Smaller than'
+              'Clear')
+            FixedColWidth = 40
+            FixedRowHeight = 28
+            FixedFont.Charset = DEFAULT_CHARSET
+            FixedFont.Color = clWhite
+            FixedFont.Height = -15
+            FixedFont.Name = 'Tahoma'
+            FixedFont.Style = [fsBold]
+            FloatFormat = '%.2f'
+            HoverButtons.Buttons = <>
+            HoverButtons.Position = hbLeftFromColumnLeft
+            HTMLSettings.ImageFolder = 'images'
+            HTMLSettings.ImageBaseName = 'img'
+            IntelliPan = ipNone
+            IntelliZoom = False
+            MouseActions.AutoSizeColOnDblClick = False
+            MouseActions.WheelIncrement = 1
+            MouseActions.WheelAction = waScroll
+            MouseActions.WheelActive = waMouseOver
+            PrintSettings.DateFormat = 'dd/mm/yyyy'
+            PrintSettings.Font.Charset = DEFAULT_CHARSET
+            PrintSettings.Font.Color = clWindowText
+            PrintSettings.Font.Height = -11
+            PrintSettings.Font.Name = 'Tahoma'
+            PrintSettings.Font.Style = []
+            PrintSettings.FixedFont.Charset = DEFAULT_CHARSET
+            PrintSettings.FixedFont.Color = clWindowText
+            PrintSettings.FixedFont.Height = -11
+            PrintSettings.FixedFont.Name = 'Tahoma'
+            PrintSettings.FixedFont.Style = []
+            PrintSettings.HeaderFont.Charset = DEFAULT_CHARSET
+            PrintSettings.HeaderFont.Color = clWindowText
+            PrintSettings.HeaderFont.Height = -11
+            PrintSettings.HeaderFont.Name = 'Tahoma'
+            PrintSettings.HeaderFont.Style = []
+            PrintSettings.FooterFont.Charset = DEFAULT_CHARSET
+            PrintSettings.FooterFont.Color = clWindowText
+            PrintSettings.FooterFont.Height = -11
+            PrintSettings.FooterFont.Name = 'Tahoma'
+            PrintSettings.FooterFont.Style = []
+            PrintSettings.PageNumSep = '/'
+            ScrollSynch = True
+            SearchFooter.FindNextCaption = 'Find &next'
+            SearchFooter.FindPrevCaption = 'Find &previous'
+            SearchFooter.Font.Charset = DEFAULT_CHARSET
+            SearchFooter.Font.Color = clWindowText
+            SearchFooter.Font.Height = -11
+            SearchFooter.Font.Name = 'Tahoma'
+            SearchFooter.Font.Style = []
+            SearchFooter.HighLightCaption = 'Highlight'
+            SearchFooter.HintClose = 'Close'
+            SearchFooter.HintFindNext = 'Find next occurrence'
+            SearchFooter.HintFindPrev = 'Find previous occurrence'
+            SearchFooter.HintHighlight = 'Highlight occurrences'
+            SearchFooter.MatchCaseCaption = 'Match case'
+            ShowSelection = False
+            SortSettings.DefaultFormat = ssAutomatic
+            Version = '7.8.0.1'
+            ColWidths = (
+              40
+              170
+              90)
+          end
+        end
+      end
+      object TPage
+        Left = 0
+        Top = 0
+        HelpContext = 3
+        Caption = 'Room List'
+        ExplicitWidth = 0
+        ExplicitHeight = 0
+        object _pnBase_04_RoomList: TPanel
+          Left = 0
+          Top = 0
+          Width = 1009
+          Height = 734
+          Align = alClient
+          BevelOuter = bvNone
+          Color = cl3DDkShadow
+          ParentBackground = False
+          TabOrder = 0
+          ExplicitLeft = 232
+          ExplicitTop = 64
+          ExplicitWidth = 185
+          ExplicitHeight = 41
+          object lb_Lobby_1: TLabel
+            Left = 40
+            Top = 12
+            Width = 26
+            Height = 18
+            Caption = 'No.'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clGradientActiveCaption
+            Font.Height = -15
+            Font.Name = 'Tahoma'
+            Font.Style = [fsBold]
+            ParentFont = False
+          end
+          object lb_Lobby_2: TLabel
+            Left = 80
+            Top = 12
+            Width = 40
+            Height = 18
+            Caption = 'State'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clGradientActiveCaption
+            Font.Height = -15
+            Font.Name = 'Tahoma'
+            Font.Style = [fsBold]
+            ParentFont = False
+          end
+          object lb_Lobby_3: TLabel
+            Left = 145
+            Top = 12
+            Width = 40
+            Height = 18
+            Caption = 'Team'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clGradientActiveCaption
+            Font.Height = -15
+            Font.Name = 'Tahoma'
+            Font.Style = [fsBold]
+            ParentFont = False
+          end
+          object lb_Lobby_4: TLabel
+            Left = 209
+            Top = 12
+            Width = 35
+            Height = 18
+            Caption = 'Item'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clGradientActiveCaption
+            Font.Height = -15
+            Font.Name = 'Tahoma'
+            Font.Style = [fsBold]
+            ParentFont = False
+          end
+          object lb_Lobby_5: TLabel
+            Left = 365
+            Top = 12
+            Width = 34
+            Height = 18
+            Caption = 'Title'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clGradientActiveCaption
+            Font.Height = -15
+            Font.Name = 'Tahoma'
+            Font.Style = [fsBold]
+            ParentFont = False
+          end
+          object lb_Lobby_6: TLabel
+            Left = 535
+            Top = 12
+            Width = 52
+            Height = 18
+            Caption = 'Master'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clGradientActiveCaption
+            Font.Height = -15
+            Font.Name = 'Tahoma'
+            Font.Style = [fsBold]
+            ParentFont = False
+          end
+          object lb_Lobby_7: TLabel
+            Left = 631
+            Top = 12
+            Width = 49
+            Height = 18
+            Caption = 'Player'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clGradientActiveCaption
+            Font.Height = -15
+            Font.Name = 'Tahoma'
+            Font.Style = [fsBold]
+            ParentFont = False
+          end
+          object lb_Lobby_8: TLabel
+            Left = 696
+            Top = 12
+            Width = 55
+            Height = 18
+            Caption = 'Private'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clGradientActiveCaption
+            Font.Height = -15
+            Font.Name = 'Tahoma'
+            Font.Style = [fsBold]
+            ParentFont = False
+          end
+          object lb_Lobby_9: TLabel
+            Left = 765
+            Top = 12
+            Width = 40
+            Height = 18
+            Caption = 'Enter'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clGradientActiveCaption
+            Font.Height = -15
+            Font.Name = 'Tahoma'
+            Font.Style = [fsBold]
+            ParentFont = False
+          end
+          object grid_Room: TAdvStringGrid
+            Left = 22
+            Top = 36
+            Width = 783
+            Height = 673
+            Cursor = crDefault
+            TabStop = False
+            BorderStyle = bsNone
+            Color = 12407073
+            ColCount = 9
+            Ctl3D = True
+            DefaultRowHeight = 28
+            DoubleBuffered = True
+            DrawingStyle = gdsClassic
+            FixedColor = clWhite
+            FixedCols = 0
+            RowCount = 24
+            FixedRows = 0
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = 14722896
+            Font.Height = -13
+            Font.Name = #47569#51008' '#44256#46357
+            Font.Style = [fsBold]
+            GradientEndColor = 12148001
+            GradientStartColor = 12148001
+            GridLineWidth = 2
+            Options = [goHorzLine, goRowSelect]
+            ParentCtl3D = False
+            ParentDoubleBuffered = False
+            ParentFont = False
+            ScrollBars = ssNone
+            TabOrder = 0
+            GridLineColor = 12148001
+            GridFixedLineColor = 12148001
+            HoverRowCells = [hcNormal, hcSelected]
+            ActiveCellFont.Charset = DEFAULT_CHARSET
+            ActiveCellFont.Color = clWindowText
+            ActiveCellFont.Height = -11
+            ActiveCellFont.Name = 'Tahoma'
+            ActiveCellFont.Style = [fsBold]
+            BackGround.Display = bdGradientVert
+            BackGround.Cells = bcFixed
+            BackGround.Color = 14849594
+            BackGround.ColorTo = clWhite
+            BorderColor = 12407073
+            ColumnHeaders.Strings = (
+              'Idx'
+              'State'
+              'Team'
+              'Item'
+              'Title'
+              'Master ID'
+              'Players'
+              'Private'
+              'Enter')
+            ControlLook.FixedGradientHoverFrom = clGray
+            ControlLook.FixedGradientHoverTo = clWhite
+            ControlLook.FixedGradientDownFrom = clGray
+            ControlLook.FixedGradientDownTo = clSilver
+            ControlLook.DropDownHeader.Font.Charset = DEFAULT_CHARSET
+            ControlLook.DropDownHeader.Font.Color = clWindowText
+            ControlLook.DropDownHeader.Font.Height = -11
+            ControlLook.DropDownHeader.Font.Name = 'Tahoma'
+            ControlLook.DropDownHeader.Font.Style = []
+            ControlLook.DropDownHeader.Visible = True
+            ControlLook.DropDownHeader.Buttons = <>
+            ControlLook.DropDownFooter.Font.Charset = DEFAULT_CHARSET
+            ControlLook.DropDownFooter.Font.Color = clWindowText
+            ControlLook.DropDownFooter.Font.Height = -11
+            ControlLook.DropDownFooter.Font.Name = 'Tahoma'
+            ControlLook.DropDownFooter.Font.Style = []
+            ControlLook.DropDownFooter.Visible = True
+            ControlLook.DropDownFooter.Buttons = <>
+            ControlLook.NoDisabledButtonLook = True
+            DefaultAlignment = taCenter
+            EnableHTML = False
+            Filter = <>
+            FilterDropDown.Font.Charset = DEFAULT_CHARSET
+            FilterDropDown.Font.Color = clWindowText
+            FilterDropDown.Font.Height = -11
+            FilterDropDown.Font.Name = 'Tahoma'
+            FilterDropDown.Font.Style = []
+            FilterDropDown.TextChecked = 'Checked'
+            FilterDropDown.TextUnChecked = 'Unchecked'
+            FilterDropDownClear = '(All)'
+            FilterEdit.TypeNames.Strings = (
+              'Starts with'
+              'Ends with'
+              'Contains'
+              'Not contains'
+              'Equal'
+              'Not equal'
+              'Larger than'
+              'Smaller than'
+              'Clear')
+            FixedColWidth = 35
+            FixedRowHeight = 28
+            FixedFont.Charset = DEFAULT_CHARSET
+            FixedFont.Color = clWhite
+            FixedFont.Height = -15
+            FixedFont.Name = 'Tahoma'
+            FixedFont.Style = [fsBold]
+            FloatFormat = '%.2f'
+            HoverButtons.Buttons = <>
+            HoverButtons.Position = hbLeftFromColumnLeft
+            HTMLSettings.ImageFolder = 'images'
+            HTMLSettings.ImageBaseName = 'img'
+            IntelliPan = ipNone
+            IntelliZoom = False
+            MouseActions.AutoSizeColOnDblClick = False
+            MouseActions.WheelIncrement = 1
+            MouseActions.WheelAction = waScroll
+            MouseActions.WheelActive = waMouseOver
+            PrintSettings.DateFormat = 'dd/mm/yyyy'
+            PrintSettings.Font.Charset = DEFAULT_CHARSET
+            PrintSettings.Font.Color = clWindowText
+            PrintSettings.Font.Height = -11
+            PrintSettings.Font.Name = 'Tahoma'
+            PrintSettings.Font.Style = []
+            PrintSettings.FixedFont.Charset = DEFAULT_CHARSET
+            PrintSettings.FixedFont.Color = clWindowText
+            PrintSettings.FixedFont.Height = -11
+            PrintSettings.FixedFont.Name = 'Tahoma'
+            PrintSettings.FixedFont.Style = []
+            PrintSettings.HeaderFont.Charset = DEFAULT_CHARSET
+            PrintSettings.HeaderFont.Color = clWindowText
+            PrintSettings.HeaderFont.Height = -11
+            PrintSettings.HeaderFont.Name = 'Tahoma'
+            PrintSettings.HeaderFont.Style = []
+            PrintSettings.FooterFont.Charset = DEFAULT_CHARSET
+            PrintSettings.FooterFont.Color = clWindowText
+            PrintSettings.FooterFont.Height = -11
+            PrintSettings.FooterFont.Name = 'Tahoma'
+            PrintSettings.FooterFont.Style = []
+            PrintSettings.PageNumSep = '/'
+            ScrollSynch = True
+            SearchFooter.FindNextCaption = 'Find &next'
+            SearchFooter.FindPrevCaption = 'Find &previous'
+            SearchFooter.Font.Charset = DEFAULT_CHARSET
+            SearchFooter.Font.Color = clWindowText
+            SearchFooter.Font.Height = -11
+            SearchFooter.Font.Name = 'Tahoma'
+            SearchFooter.Font.Style = []
+            SearchFooter.HighLightCaption = 'Highlight'
+            SearchFooter.HintClose = 'Close'
+            SearchFooter.HintFindNext = 'Find next occurrence'
+            SearchFooter.HintFindPrev = 'Find previous occurrence'
+            SearchFooter.HintHighlight = 'Highlight occurrences'
+            SearchFooter.MatchCaseCaption = 'Match case'
+            ShowSelection = False
+            SortSettings.DefaultFormat = ssAutomatic
+            Version = '7.8.0.1'
+            ColWidths = (
+              35
+              64
+              64
+              64
+              240
+              120
+              70
+              64
+              60)
           end
         end
       end
