@@ -583,7 +583,7 @@ void __fastcall TFormMain::AddClient(TMessage &_msg) {
 
 	// Refresh Client Info Grid
 	RefreshClientInfoGrid();
-	RefreshLobbyListGrid();
+	//RefreshLobbyListGrid();
 }
 //---------------------------------------------------------------------------
 
@@ -647,29 +647,17 @@ void __fastcall TFormMain::RefreshLobbyListGrid() {
 	// Common
 	UnicodeString tempStr = L"";
 	int t_ClientIdx = 0;
+	int t_GridRowIdx = 0;
 
 	// Refresh Routine
-	for(int i = 0 ; i < MAX_TCP_CLIENT_USER_COUNT ; i++) {
-		// Check if Thread is NULL, Reset Grid Row
-		if(m_Client[i] == NULL) {
-			grid_LobbyList->Cells[1][i] = L""; // Player ID
-			grid_LobbyList->Cells[2][i] = L""; // Player Grade
-			continue;
-		}
-
-		// Parsing from Client Thread (For Test)
-		t_ClientIdx = m_Client[i]->info.ClientIndex; // Re-Parsing(Re-Extracting)
-
-		// If Client Log-in Success, He has ID.
-		if(m_Client[t_ClientIdx]->UserID == L"") {
-			tempStr.sprintf(L"Client[%02X]", t_ClientIdx); // Temporary Creating Client ID
-		} else {
-			tempStr = m_Client[t_ClientIdx]->UserID;
-		}
-		grid_LobbyList->Cells[1][i] = tempStr; // Player ID
-		grid_LobbyList->Cells[2][i] = m_Client[t_ClientIdx]->Grade;
+	grid_LobbyList->Clear();
+	for(std::vector<int>::iterator iter = m_LobbyPlayerVector.begin() ; iter != m_LobbyPlayerVector.end() ; iter++) {
+		t_ClientIdx = *iter;
+		grid_LobbyList->Cells[0][t_GridRowIdx] = t_GridRowIdx + 1;
+		grid_LobbyList->Cells[1][t_GridRowIdx] = m_Client[t_ClientIdx]->UserID;
+		grid_LobbyList->Cells[2][t_GridRowIdx] = m_Client[t_ClientIdx]->Grade;
+		t_GridRowIdx++;
 	}
-
 }
 //---------------------------------------------------------------------------
 
@@ -691,6 +679,9 @@ void __fastcall TFormMain::tm_DeleteClientTimer(TObject *Sender)
 				delete m_Client[i];
 				m_Client[i] = NULL;
 			}
+
+			// Dequeue Lobby Player List
+			EraseLobbyPlayer(i);
 
 			// Refresh Client Info Grid
 			RefreshClientInfoGrid();
@@ -1102,6 +1093,7 @@ void __fastcall TFormMain::ClientMsg_SIGN_IN(CLIENTMSG _ClientMsg, SERVERMSG* _p
 		PrintLog(tempStr);
 
 		// Login Routine Here
+		PushLobbyPlayer(t_ClientIdx);
 		m_Client[t_ClientIdx]->UserID = t_UserIDStr;
 		m_Client[t_ClientIdx]->ClientScreenStatus = CLIENT_SCREEN_IS_LOBBY;
 		GetClientInfoFromDB(); // This Line Should be after that Input t_UserIDStr into Client's UserID !!
@@ -1110,6 +1102,22 @@ void __fastcall TFormMain::ClientMsg_SIGN_IN(CLIENTMSG _ClientMsg, SERVERMSG* _p
 		SendLobbyStatus();
 	} else {
 		PrintLog(L"Client Log-in Failed...");
+	}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFormMain::PushLobbyPlayer(int _Idx) {
+	m_LobbyPlayerVector.push_back(_Idx);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFormMain::EraseLobbyPlayer(int _Idx) {
+	for(std::vector<int>::iterator iter = m_LobbyPlayerVector.begin() ; iter != m_LobbyPlayerVector.end() ; ) {
+		if(*iter == _Idx) {
+			iter = m_LobbyPlayerVector.erase(iter);
+		} else {
+			iter++;
+		}
 	}
 }
 //---------------------------------------------------------------------------

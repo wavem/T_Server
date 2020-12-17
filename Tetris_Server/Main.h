@@ -88,6 +88,7 @@
 //---------------------------------------------------------------------------
 
 #include <queue>
+#include <algorithm>
 
 #include "Define.h"
 #include "DataSenderThread.h"
@@ -202,6 +203,7 @@ public: // Member
 	int m_ClientCnt;
 	DataSenderThread* m_SenderThread[MAX_SENDER_THREAD_COUNT];
 	int m_SenderThreadWorkCount[MAX_SENDER_THREAD_COUNT];
+	std::vector<int> m_LobbyPlayerVector;
 
 
 public: // BASIC FUNCTIONS
@@ -213,6 +215,8 @@ public: // BASIC FUNCTIONS
 	void __fastcall InitDB();
 	void __fastcall GetClientInfoFromDB();
 	BYTE __fastcall GetGradeLevelValue(UnicodeString _gradeStr);
+	void __fastcall PushLobbyPlayer(int _Idx);
+	void __fastcall EraseLobbyPlayer(int _Idx);
 
 public: // SOCKET FUNCTIONS
 	bool __fastcall CreateTCPListenSocket();
