@@ -83,7 +83,8 @@
 #define CLIENT_SCREEN_IS_ROOM_24	124
 
 // USER LEVEL
-#define USER_LEVEL_1	1 // 뉴비
+#define USER_LEVEL_0	0 // 신입
+#define USER_LEVEL_1	1 // 루키
 #define USER_LEVEL_2	2 // 초보
 #define USER_LEVEL_3	3 // 하수
 #define USER_LEVEL_4	4 // 중수

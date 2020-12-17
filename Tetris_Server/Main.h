@@ -211,6 +211,8 @@ public: // BASIC FUNCTIONS
 	void __fastcall PrintLog(UnicodeString _str);
 	void __fastcall InitGrid();
 	void __fastcall InitDB();
+	void __fastcall GetClientInfoFromDB();
+	BYTE __fastcall GetGradeLevelValue(UnicodeString _gradeStr);
 
 public: // SOCKET FUNCTIONS
 	bool __fastcall CreateTCPListenSocket();

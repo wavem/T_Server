@@ -178,6 +178,37 @@ void __fastcall TFormMain::InitDB() {
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TFormMain::GetClientInfoFromDB() {
+
+	// Common
+	UnicodeString tempStr = L"";
+	UnicodeString t_UserID = L"";
+	UnicodeString t_sql = L"";
+
+	for(int i = 0 ; i < MAX_TCP_CLIENT_USER_COUNT ; i++) {
+		if(m_Client[i] == NULL) continue;
+		t_UserID = m_Client[i]->UserID;
+		if(t_UserID == L"") continue;
+		if(FindUserID(t_UserID) == false) continue;
+
+		// Making Query
+		t_sql = L"Select * from DB\\DB.USER where UserID = '";
+		t_sql += t_UserID;
+		t_sql += L"'";
+
+		// Get Information from DB Routine
+		Query_USER->SQL->Clear();
+		Query_USER->SQL->Add(t_sql);
+		Query_USER->Open();
+
+		m_Client[i]->Grade = Query_USER->FieldByName(L"Grade")->AsString;
+		m_Client[i]->WinCount = Query_USER->FieldByName(L"WinCount")->AsInteger;
+		m_Client[i]->DefCount = Query_USER->FieldByName(L"DefeatCount")->AsInteger;
+		m_Client[i]->WinRate = Query_USER->FieldByName(L"WinRate")->AsInteger;
+	}
+}
+//---------------------------------------------------------------------------
+
 void __fastcall TFormMain::ExitProgram() {
 
 	// Delete TCP Listen Socket
@@ -636,6 +667,7 @@ void __fastcall TFormMain::RefreshLobbyListGrid() {
 			tempStr = m_Client[t_ClientIdx]->UserID;
 		}
 		grid_LobbyList->Cells[1][i] = tempStr; // Player ID
+		grid_LobbyList->Cells[2][i] = m_Client[t_ClientIdx]->Grade;
 	}
 
 }
@@ -858,7 +890,7 @@ bool __fastcall TFormMain::AddUserID(UnicodeString _ID, UnicodeString _PW, Unico
 	Table_User->FieldByName(L"UserName")->AsString = _USERNAME;
 	Table_User->FieldByName(L"UserID")->AsString = _ID;
 	Table_User->FieldByName(L"Password")->AsString = _PW;
-	Table_User->FieldByName(L"Grade")->AsString = L"하수";
+	Table_User->FieldByName(L"Grade")->AsString = L"신입";
 	Table_User->FieldByName(L"WinCount")->AsInteger = 0;
 	Table_User->FieldByName(L"DefeatCount")->AsInteger = 0;
 	Table_User->FieldByName(L"WinRate")->AsInteger = 0;
@@ -1068,9 +1100,11 @@ void __fastcall TFormMain::ClientMsg_SIGN_IN(CLIENTMSG _ClientMsg, SERVERMSG* _p
 		tempStr = L"Welcome User ID : ";
 		tempStr += t_UserIDStr;
 		PrintLog(tempStr);
+
 		// Login Routine Here
 		m_Client[t_ClientIdx]->UserID = t_UserIDStr;
 		m_Client[t_ClientIdx]->ClientScreenStatus = CLIENT_SCREEN_IS_LOBBY;
+		GetClientInfoFromDB(); // This Line Should be after that Input t_UserIDStr into Client's UserID !!
 		RefreshClientInfoGrid();
 		RefreshLobbyListGrid();
 		SendLobbyStatus();
@@ -1103,11 +1137,6 @@ BYTE __fastcall TFormMain::Login(UnicodeString _ID, UnicodeString _PW) {
 	Query_USER->Open();
 	tempStr = Query_USER->FieldByName(L"Password")->AsString;
 	if(tempStr == _PW) {
-		// Login Routine Here
-
-		// Main Thread 한테 (지 스스로한테) 포스트 메시지를 보내서, 로그인 루틴을 일단 다 끝내고
-		// 그 다음에 해당 메시지 핸들러에서 클라이언트들에게 현재 서버 정보를 전송하도록 하자
-		// 그 전에 룸 디자인을 먼저 끝내도록 할 것.
 		return ERR_LOGIN_OK;
 	} else {
 		PrintMsg(L"Password is incorrect");
@@ -1144,6 +1173,7 @@ void __fastcall TFormMain::SendLobbyPlayerList() {
 	BYTE t_LobbyPlayerCount = 0;
 	BYTE* t_pTextBuffer = NULL;
 	unsigned short t_TotalPacketSize = MAX_SEND_PACKET_SIZE;
+	BYTE t_GradeValue = 0;
 
 	// Check Lobby Player List Grid in Server Program
 	for(int i = 0 ; i < grid_LobbyList->RowCount ; i++) {
@@ -1152,11 +1182,17 @@ void __fastcall TFormMain::SendLobbyPlayerList() {
 
 		t_IDLength = tempStr.Length();
 		t_pTextBuffer = (unsigned char*)tempStr.c_str();
-		memcpy(&t_ServerMsg.Data[5 + 21 * i], t_pTextBuffer, t_IDLength * 2 + 2); // 2 is NULL
+		memcpy(&t_ServerMsg.Data[6 + 21 * i], t_pTextBuffer, t_IDLength * 2 + 2); // 2 is NULL
 		t_LobbyPlayerCount++;
 
 		// User Grade is Later....
 		tempStr = grid_LobbyList->Cells[2][i]; // User Level
+		if(tempStr == L"") {
+			t_ServerMsg.Data[5 + 21 * i] = 0;
+		} else {
+			t_GradeValue = GetGradeLevelValue(tempStr);
+			t_ServerMsg.Data[5 + 21 * i] = t_GradeValue;
+		}
 	}
 
 	// Write Total Player Count in send buffer
@@ -1186,3 +1222,36 @@ void __fastcall TFormMain::SendLobbyPlayerList() {
 }
 //---------------------------------------------------------------------------
 
+BYTE __fastcall TFormMain::GetGradeLevelValue(UnicodeString _gradeStr) {
+
+	// Common
+	UnicodeString tempStr = _gradeStr;
+	BYTE t_rst = 0;
+
+	if(tempStr == L"신입") {
+		t_rst = USER_LEVEL_0;
+	} else if(tempStr == L"루키") {
+		t_rst = USER_LEVEL_1;
+	} else if(tempStr == L"초보") {
+		t_rst = USER_LEVEL_2;
+	} else if(tempStr == L"하수") {
+		t_rst = USER_LEVEL_3;
+	} else if(tempStr == L"중수") {
+		t_rst = USER_LEVEL_4;
+	} else if(tempStr == L"고수") {
+		t_rst = USER_LEVEL_5;
+	} else if(tempStr == L"초고수") {
+		t_rst = USER_LEVEL_6;
+	} else if(tempStr == L"영웅") {
+		t_rst = USER_LEVEL_7;
+	} else if(tempStr == L"전설") {
+		t_rst = USER_LEVEL_8;
+	} else if(tempStr == L"신") {
+		t_rst = USER_LEVEL_9;
+	} else {
+		t_rst = 0; // UnKnown
+	}
+
+	return t_rst;
+}
+//---------------------------------------------------------------------------

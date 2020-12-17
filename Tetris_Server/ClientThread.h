@@ -17,8 +17,15 @@ private:
 public:
 	CLIENTINFO info;
 	CLIENTMSG data;
-	UnicodeString UserID;
 	int ClientScreenStatus;
+
+public: // DB INFO
+	UnicodeString UserID;
+	UnicodeString Grade;
+	int WinCount;
+	int DefCount;
+	int WinRate;
+
 
 public:
 	__fastcall ClientThread(SOCKET *_p_socket, CLIENTINFO _info);
