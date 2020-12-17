@@ -210,6 +210,7 @@ public: // BASIC FUNCTIONS
 	void __fastcall PrintMsg(UnicodeString _str);
 	void __fastcall PrintLog(UnicodeString _str);
 	void __fastcall InitGrid();
+	void __fastcall InitDB();
 
 public: // SOCKET FUNCTIONS
 	bool __fastcall CreateTCPListenSocket();

@@ -107,6 +107,9 @@ void __fastcall TFormMain::InitProgram() {
 	// Set TrayIcon
 	TrayIcon->ShowBalloonHint();
 
+	// Init DB
+	InitDB();
+
 	// Init
 	m_ClientCnt = 0;
 	m_TCPListenThread = NULL;
@@ -147,6 +150,31 @@ void __fastcall TFormMain::InitProgram() {
 	} else {
 		PrintMsg(L"Socket init success");
 	}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFormMain::InitDB() {
+
+	// Common
+	UnicodeString tempStr = L"";
+	UnicodeString t_ConnectionStr_1 = L"Provider=Microsoft.Jet.OLEDB.4.0;User ID=Admin;Data Source=";
+	UnicodeString t_ConnectionStr_2 = L";Mode=Share Deny None;Jet OLEDB:System database="";Jet OLEDB:Registry Path="";Jet OLEDB:Database Password="";Jet OLEDB:Engine Type=5;Jet OLEDB:Database Locking Mode=1;Jet OLEDB:Global Partial Bulk Ops=2;Jet OLEDB:Global Bulk Transactions=1;Jet OLEDB:New Database Password="";Jet OLEDB:Create System Database=False;Jet OLEDB:Encrypt Database=False;Jet OLEDB:Don't Copy Locale on Compact=False;Jet OLEDB:Compact Without Replica Repair=False;Jet OLEDB:SFP=False";
+	UnicodeString t_FinalStr = L"";
+
+	// Get Current Directory
+	wchar_t temp[256];
+	GetCurrentDirectory(sizeof(temp), temp);
+	tempStr = temp;
+	PrintMsg(tempStr);
+
+	tempStr += L"\\DB\\DB.mdb";
+	t_FinalStr += t_ConnectionStr_1;
+	t_FinalStr += tempStr;
+	t_FinalStr += t_ConnectionStr_2;
+
+	ADOConnection->ConnectionString = t_FinalStr;
+	ADOConnection->Connected = true;
+	Table_User->Active = true;
 }
 //---------------------------------------------------------------------------
 

@@ -2506,26 +2506,23 @@ object FormMain: TFormMain
     Left = 604
   end
   object ADOConnection: TADOConnection
-    Connected = True
     ConnectionString = 
-      'Provider=Microsoft.Jet.OLEDB.4.0;User ID=Admin;Data Source=C:\wa' +
-      've\010_Project\010_Game\Tetris\Tetris_Server\020_SourceCode\Tetr' +
-      'is_Server\Win32\Debug\DB\DB.mdb;Mode=Share Deny None;Persist Sec' +
-      'urity Info=False;Jet OLEDB:System database="";Jet OLEDB:Registry' +
-      ' Path="";Jet OLEDB:Database Password="";Jet OLEDB:Engine Type=5;' +
-      'Jet OLEDB:Database Locking Mode=1;Jet OLEDB:Global Partial Bulk ' +
-      'Ops=2;Jet OLEDB:Global Bulk Transactions=1;Jet OLEDB:New Databas' +
-      'e Password="";Jet OLEDB:Create System Database=False;Jet OLEDB:E' +
-      'ncrypt Database=False;Jet OLEDB:Don'#39't Copy Locale on Compact=Fal' +
-      'se;Jet OLEDB:Compact Without Replica Repair=False;Jet OLEDB:SFP=' +
-      'False'
+      'Provider=Microsoft.Jet.OLEDB.4.0;User ID=Admin;Data Source=Z:\wa' +
+      've\010_Project\010_Game\Tetris\Server\010_Source\Tetris_Server\W' +
+      'in32\Debug\DB\DB.mdb;Mode=Share Deny None;Persist Security Info=' +
+      'False;Jet OLEDB:System database="";Jet OLEDB:Registry Path="";Je' +
+      't OLEDB:Database Password="";Jet OLEDB:Engine Type=5;Jet OLEDB:D' +
+      'atabase Locking Mode=1;Jet OLEDB:Global Partial Bulk Ops=2;Jet O' +
+      'LEDB:Global Bulk Transactions=1;Jet OLEDB:New Database Password=' +
+      '"";Jet OLEDB:Create System Database=False;Jet OLEDB:Encrypt Data' +
+      'base=False;Jet OLEDB:Don'#39't Copy Locale on Compact=False;Jet OLED' +
+      'B:Compact Without Replica Repair=False;Jet OLEDB:SFP=False;'
     LoginPrompt = False
     Mode = cmShareDenyNone
     Provider = 'Microsoft.Jet.OLEDB.4.0'
     Left = 696
   end
   object Table_User: TADOTable
-    Active = True
     Connection = ADOConnection
     CursorType = ctStatic
     TableDirect = True
