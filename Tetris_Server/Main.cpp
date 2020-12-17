@@ -1167,6 +1167,7 @@ void __fastcall TFormMain::SendLobbyPlayerList() {
 
 	// Common
 	UnicodeString tempStr = L"";
+	AnsiString t_AnsiStr = "";
 	SERVERMSG t_ServerMsg;
 	memset(&t_ServerMsg, 0, sizeof(t_ServerMsg));
 	int t_IDLength;
@@ -1179,13 +1180,13 @@ void __fastcall TFormMain::SendLobbyPlayerList() {
 	for(int i = 0 ; i < grid_LobbyList->RowCount ; i++) {
 		tempStr = grid_LobbyList->Cells[1][i];
 		if(tempStr == L"") continue;
-
-		t_IDLength = tempStr.Length();
-		t_pTextBuffer = (unsigned char*)tempStr.c_str();
-		memcpy(&t_ServerMsg.Data[6 + 21 * i], t_pTextBuffer, t_IDLength * 2 + 2); // 2 is NULL
+		t_AnsiStr = tempStr;
+		t_IDLength = t_AnsiStr.Length();
+		t_pTextBuffer = (unsigned char*)t_AnsiStr.c_str();
+		memcpy(&t_ServerMsg.Data[6 + 21 * i], t_pTextBuffer, t_IDLength + 1); // 1 is NULL
 		t_LobbyPlayerCount++;
 
-		// User Grade is Later....
+		// Write User Grade Value into Send Buffer
 		tempStr = grid_LobbyList->Cells[2][i]; // User Level
 		if(tempStr == L"") {
 			t_ServerMsg.Data[5 + 21 * i] = 0;
