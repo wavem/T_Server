@@ -99,6 +99,11 @@ bool __fastcall DataSenderThread::Send() {
 		}
 		break;
 
+	case DATA_TYPE_MAKE_GAME_ROOM:
+		t_rst = 0;
+		t_rst = send(FormMain->m_ClientSocket[ServerMsg.ClientInfo.ClientIndex], (char*)ServerMsg.Data, t_PacketSize, 0);
+		break;
+
 	default:
 		break;
 	}

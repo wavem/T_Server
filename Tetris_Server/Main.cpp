@@ -764,6 +764,7 @@ void __fastcall TFormMain::ReceiveClientMessage(TMessage &_msg) {
 		break;
 
 	case DATA_TYPE_MAKE_GAME_ROOM:
+		ClientMsg_MAKING_ROOM(t_ClientMsg, &t_ServerMsg);
 		SendLobbyStatus(); // temp
 		break;
 
@@ -1050,6 +1051,110 @@ void __fastcall TFormMain::ClientMsg_SIGN_UP(CLIENTMSG _ClientMsg, SERVERMSG* _p
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TFormMain::ClientMsg_MAKING_ROOM(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg) {
+
+	// Common
+	UnicodeString tempStr = L"";
+	UnicodeString t_RoomTitle = L"";
+	BYTE t_TeamType = 0;
+	BYTE t_ItemType = 0;
+	unsigned short t_RecvSize = 0;
+	int t_ClientIdx = 0;
+	CLIENTMSG t_ClientMsg;
+	memset(&t_ClientMsg, 0, sizeof(t_ClientMsg));
+	int t_Size = 0;
+	BYTE t_rst = 0;
+	unsigned short t_SendSize = 5; // Fixed.. in Protocol
+	wchar_t temp[28];
+
+	// Extract Information
+	t_ClientMsg = _ClientMsg;
+	t_ClientIdx = t_ClientMsg.ClientInfo.ClientIndex;
+
+	// Extract Information
+	memcpy(temp, &t_ClientMsg.Data[6], 28);
+	t_RoomTitle = temp;
+	PrintLog(t_RoomTitle);
+	t_TeamType = t_ClientMsg.Data[4];
+	t_ItemType = t_ClientMsg.Data[5];
+
+	// Copy Client Msg to Server Msg
+	_pServerMsg->ClientInfo = t_ClientMsg.ClientInfo;
+	memcpy(_pServerMsg->Data, t_ClientMsg.Data, MAX_RECV_PACKET_SIZE);
+
+	// Making SendBuffer Header
+	_pServerMsg->Data[0] = SECURE_CODE_S_TO_C; // Secure Code
+	memcpy(&_pServerMsg->Data[1], &t_SendSize, sizeof(t_SendSize));
+
+	// Reset Send Buffer (Data Area)
+	memset(&_pServerMsg->Data[4], 0, MAX_RECV_PACKET_SIZE - 4);
+
+	// Try to Making Room
+	if(MakingGameRoom(t_ClientIdx, t_RoomTitle, t_TeamType, t_ItemType)) {
+		_pServerMsg->Data[4] = 0; // Success to Making Room
+	} else {
+		_pServerMsg->Data[4] = 1; // Fail to Making Room
+	}
+}
+//---------------------------------------------------------------------------
+
+bool __fastcall TFormMain::MakingGameRoom(int _ClientIdx, UnicodeString _Title, BYTE _Team, BYTE _Item) {
+
+	// Making Room Routine
+	// Common
+	UnicodeString tempStr = L"";
+	bool t_bIsNoEmptyRoom = true;
+	BYTE t_ClientGrade = 0;
+	UnicodeString t_ClientUserID = L"";
+
+	// Input Client Information
+	t_ClientGrade = GetGradeLevelValue(m_Client[_ClientIdx]->Grade);
+	t_ClientUserID = m_Client[_ClientIdx]->UserID;
+
+	// Check There is no empty Room
+	for(int i = 0 ; i < MAX_GAMEROOM_COUNT ; i++) {
+		if(m_Room[i].IsCreated) continue;
+		t_bIsNoEmptyRoom = false;
+	}
+	if(t_bIsNoEmptyRoom) return false;
+
+
+	// Making Room
+	for(int i = 0 ; i < MAX_GAMEROOM_COUNT ; i++) {
+		if(m_Room[i].IsCreated) continue;
+
+		// Making Complete Flag
+		m_Room[i].IsCreated = true;
+
+		// ROOM(OUTSIDE) Routine
+		m_Room[i].RoomStatus_Out.RoomNumber = i + 1;
+		m_Room[i].RoomStatus_Out.Title = _Title;
+		m_Room[i].RoomStatus_Out.State = 1; // '1' is Waiting State
+		m_Room[i].RoomStatus_Out.TeamType = _Team;
+		m_Room[i].RoomStatus_Out.ItemType = _Item;
+		m_Room[i].RoomStatus_Out.PlayerCount = 1;
+
+		// ROOM(INSIDE) Routine
+		m_Room[i].RoomStatus_In.IsStart = false;
+		m_Room[i].RoomStatus_In.ClientIdx[0] = _ClientIdx;
+		m_Room[i].RoomStatus_In.ClientGrade[0] = t_ClientGrade;
+		m_Room[i].RoomStatus_In.ClientUserID[0] = t_ClientUserID;
+		m_Room[i].RoomStatus_In.SpeedLevel = 0;
+		m_Room[i].RoomStatus_In.ClientStatus[0].Connected = true;
+		m_Room[i].RoomStatus_In.ClientStatus[0].Life = true;
+		if(_Team == 0) {
+			m_Room[i].RoomStatus_In.ClientStatus[0].TeamIdx = 0;
+		} else {
+			m_Room[i].RoomStatus_In.ClientStatus[0].TeamIdx = 1; // 1 is Default
+		}
+		m_Room[i].RoomStatus_In.ClientStatus[0].Win = false; // Default Setting
+
+		i = MAX_GAMEROOM_COUNT; // For Breaking For Loop
+	}
+	return true;
+}
+//---------------------------------------------------------------------------
+
 void __fastcall TFormMain::ClientMsg_SIGN_IN(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg) {
 
 	// Common
@@ -1253,7 +1358,7 @@ void __fastcall TFormMain::SendRoomStatus() {
 
 	t_BuffIdx = 4;
 	for(int i = 0 ; i < MAX_GAMEROOM_COUNT ; i++) {
-		t_ServerMsg.Data[t_BuffIdx] = i;
+		t_ServerMsg.Data[t_BuffIdx] = i + 1;
 		t_ServerMsg.Data[t_BuffIdx + 1] = m_Room[i].RoomStatus_Out.State;
 		t_ServerMsg.Data[t_BuffIdx + 2] = m_Room[i].RoomStatus_Out.TeamType;
 		t_ServerMsg.Data[t_BuffIdx + 3] = m_Room[i].RoomStatus_Out.ItemType;

@@ -236,6 +236,9 @@ public: // USER DB ROUTINE
 	bool __fastcall DeleteUserID(UnicodeString _ID);
 	BYTE __fastcall Login(UnicodeString _ID, UnicodeString _PW);
 
+public: // ROOM Routine
+	bool __fastcall MakingGameRoom(int _ClientIdx, UnicodeString _Title, BYTE _Team, BYTE _Item);
+
 public: // CALCULATION AND SEND FUNCTIONS
 	void __fastcall SendLobbyStatus();
 	void __fastcall SendRoomStatus();
@@ -245,6 +248,7 @@ public: // Client Message Handler
 	void __fastcall ClientMsg_SIGN_UP(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg);
 	void __fastcall ClientMsg_SIGN_IN(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg);
 	void __fastcall ClientMsg_LOBBY_CHATTING(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg);
+	void __fastcall ClientMsg_MAKING_ROOM(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg);
 
 public: // Thread Message Handler
 	void __fastcall PrintThreadMessage(TMessage &_msg);
