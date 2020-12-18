@@ -204,6 +204,7 @@ public: // Member
 	DataSenderThread* m_SenderThread[MAX_SENDER_THREAD_COUNT];
 	int m_SenderThreadWorkCount[MAX_SENDER_THREAD_COUNT];
 	std::vector<int> m_LobbyPlayerVector;
+	ROOM m_Room[MAX_GAMEROOM_COUNT];
 
 
 public: // BASIC FUNCTIONS

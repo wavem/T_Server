@@ -87,8 +87,10 @@ bool __fastcall DataSenderThread::Send() {
 		t_rst = 0;
 		t_rst = send(FormMain->m_ClientSocket[ServerMsg.ClientInfo.ClientIndex], (char*)ServerMsg.Data, t_PacketSize, 0);
 		break;
+
 	case DATA_TYPE_LOBBY_CHATTING:
 	case DATA_TYPE_LOBBY_PLAYERLIST: // 굳이 게임중인 사람들한테는 안보내도 되긴 하지만, 귀찮으니 걍 보낸다.
+	case DATA_TYPE_LOBBY_ROOMSTATUS: // 굳이 게임중인 사람들한테는 안보내도 되긴 하지만, 귀찮으니 걍 보낸다.
 		for(int i = 0 ; i < MAX_TCP_CLIENT_USER_COUNT ; i++) {
 			if(FormMain->m_ClientSocket[i] != INVALID_SOCKET) {
 				t_rst = 0;

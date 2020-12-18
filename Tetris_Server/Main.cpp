@@ -110,6 +110,11 @@ void __fastcall TFormMain::InitProgram() {
 	// Init DB
 	InitDB();
 
+	// Init Room Structure
+	for(int i = 0 ; i < MAX_GAMEROOM_COUNT ; i++) {
+		memset(&m_Room[i], 0, sizeof(ROOM));
+	}
+
 	// Init
 	m_ClientCnt = 0;
 	m_TCPListenThread = NULL;
@@ -308,6 +313,11 @@ void __fastcall TFormMain::btn_TestClick(TObject *Sender)
 	// Common
 	UnicodeString tempStr = L"";
 	PrintMsg(L"TEST BUTTON CLICKED");
+
+// Below is Send Room Status Test Code
+#if 1
+	SendRoomStatus();
+#endif
 
 
 // Below is Message Queue Test Code
@@ -1165,12 +1175,6 @@ void __fastcall TFormMain::SendLobbyStatus() {
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TFormMain::SendRoomStatus() {
-
-
-}
-//---------------------------------------------------------------------------
-
 void __fastcall TFormMain::SendLobbyPlayerList() {
 
 	// Common
@@ -1211,6 +1215,55 @@ void __fastcall TFormMain::SendLobbyPlayerList() {
 	t_ServerMsg.Data[0] = SECURE_CODE_S_TO_C; // Secure Code
 	memcpy(&t_ServerMsg.Data[1], &t_TotalPacketSize, 2); // Total Packet Size
 	t_ServerMsg.Data[3] = DATA_TYPE_LOBBY_PLAYERLIST; // Data Type
+
+	// Push into Client Message Queue
+	int ret = WaitForSingleObject(m_Mutex, 2000);
+	if(ret == WAIT_FAILED) {
+		tempStr = L"Wait Failed";
+	} else if(ret == WAIT_ABANDONED) {
+		tempStr = L"Wait Abandoned";
+	} else if(ret == WAIT_TIMEOUT) {
+		tempStr = L"Wait Time Out";
+	} else if(ret == WAIT_OBJECT_0) {
+		tempStr = L"Success to Push Packet into Message Queue(Lobby)";
+		m_ServerMsgQ.push(t_ServerMsg);
+	} else {
+		tempStr = L"ETC";
+	}
+	PrintMsg(tempStr);
+	ReleaseMutex(m_Mutex);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFormMain::SendRoomStatus() {
+
+	// Common
+	UnicodeString tempStr = L"";
+	SERVERMSG t_ServerMsg;
+	memset(&t_ServerMsg, 0, sizeof(t_ServerMsg));
+	BYTE* t_pTextBuffer = NULL;
+	unsigned short t_TotalPacketSize = 334; // Fixed
+	int t_BuffIdx = 0;
+	int t_RoomTitleStrLen = 0;
+
+	// Making Header
+	t_ServerMsg.Data[0] = SECURE_CODE_S_TO_C; // Secure Code
+	memcpy(&t_ServerMsg.Data[1], &t_TotalPacketSize, 2); // Total Packet Size
+	t_ServerMsg.Data[3] = DATA_TYPE_LOBBY_ROOMSTATUS; // Data Type
+
+	t_BuffIdx = 4;
+	for(int i = 0 ; i < MAX_GAMEROOM_COUNT ; i++) {
+		t_ServerMsg.Data[t_BuffIdx] = i;
+		t_ServerMsg.Data[t_BuffIdx + 1] = m_Room[i].RoomStatus_Out.State;
+		t_ServerMsg.Data[t_BuffIdx + 2] = m_Room[i].RoomStatus_Out.TeamType;
+		t_ServerMsg.Data[t_BuffIdx + 3] = m_Room[i].RoomStatus_Out.ItemType;
+		t_ServerMsg.Data[t_BuffIdx + 4] = m_Room[i].RoomStatus_Out.PlayerCount;
+		tempStr = m_Room[i].RoomStatus_Out.Title;
+		t_RoomTitleStrLen = tempStr.Length();
+		t_pTextBuffer = (unsigned char*)tempStr.c_str();
+		memcpy(&t_ServerMsg.Data[t_BuffIdx + 5], t_pTextBuffer, t_RoomTitleStrLen);
+		t_BuffIdx += 33;
+	}
 
 	// Push into Client Message Queue
 	int ret = WaitForSingleObject(m_Mutex, 2000);
