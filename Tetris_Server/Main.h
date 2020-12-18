@@ -243,6 +243,7 @@ public: // CALCULATION AND SEND FUNCTIONS
 	void __fastcall SendLobbyStatus();
 	void __fastcall SendRoomStatus();
 	void __fastcall SendLobbyPlayerList();
+	void __fastcall SendInnerRoomStatus();
 
 public: // Client Message Handler
 	void __fastcall ClientMsg_SIGN_UP(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg);
