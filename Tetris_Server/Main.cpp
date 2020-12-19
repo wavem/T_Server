@@ -774,6 +774,7 @@ void __fastcall TFormMain::ReceiveClientMessage(TMessage &_msg) {
 		break;
 
 	case DATA_TYPE_ENTER_GAME_ROOM:
+		ClientMsg_ENTER_ROOM(t_ClientMsg, &t_ServerMsg);
 		SendLobbyStatus(); // temp
 		break;
 
@@ -1173,7 +1174,8 @@ void __fastcall TFormMain::ClientMsg_SIGN_IN(CLIENTMSG _ClientMsg, SERVERMSG* _p
 	memset(&t_ClientMsg, 0, sizeof(t_ClientMsg));
 	int t_Size = 0;
 	BYTE t_rst = 0;
-	unsigned short t_SendSize = 5; // Fixed.. in Protocol
+	unsigned short t_SendSize = 13; // Fixed.. in Protocol
+	unsigned short t_us = 0;
 
 	// Extract Information
 	t_ClientMsg = _ClientMsg;
@@ -1218,6 +1220,17 @@ void __fastcall TFormMain::ClientMsg_SIGN_IN(CLIENTMSG _ClientMsg, SERVERMSG* _p
 		m_Client[t_ClientIdx]->UserID = t_UserIDStr;
 		m_Client[t_ClientIdx]->ClientScreenStatus = CLIENT_SCREEN_IS_LOBBY;
 		GetClientInfoFromDB(); // This Line Should be after that Input t_UserIDStr into Client's UserID !!
+		// Write Client DB Info Into Send Buffer\
+		// This Area should be back of GetClientInfoFromDB().
+		_pServerMsg->Data[5] = (BYTE)t_ClientIdx;
+		_pServerMsg->Data[6] = GetGradeLevelValue(m_Client[t_ClientIdx]->Grade);
+		t_us = (unsigned short)m_Client[t_ClientIdx]->WinCount;
+		memcpy(&_pServerMsg->Data[7], &t_us, sizeof(t_us));
+		t_us = (unsigned short)m_Client[t_ClientIdx]->DefCount;
+		memcpy(&_pServerMsg->Data[9], &t_us, sizeof(t_us));
+		t_us = (unsigned short)m_Client[t_ClientIdx]->WinRate;
+		memcpy(&_pServerMsg->Data[11], &t_us, sizeof(t_us));
+
 		RefreshClientInfoGrid();
 		RefreshLobbyListGrid();
 		SendLobbyStatus();
@@ -1449,12 +1462,12 @@ void __fastcall TFormMain::SendInnerRoomStatus() {
 
 
 	// Room Status
-	t_RoomIdx = 1; // TEMPTEMPTEMPTEMPTEMPTEMPTEMPTEMPTEMP
+	t_RoomIdx = 0; // TEMPTEMPTEMPTEMPTEMPTEMPTEMPTEMPTEMP
 	t_ServerMsg.Data[4] = m_Room[t_RoomIdx].RoomStatus_Out.State;
 	t_ServerMsg.Data[5] = m_Room[t_RoomIdx].RoomStatus_Out.TeamType;
 	t_ServerMsg.Data[6] = m_Room[t_RoomIdx].RoomStatus_Out.ItemType;
 	t_ServerMsg.Data[7] = m_Room[t_RoomIdx].RoomStatus_In.SpeedLevel;
-	t_ServerMsg.Data[8] = t_RoomIdx;
+	t_ServerMsg.Data[8] = t_RoomIdx + 1;
 	tempStr = m_Room[t_RoomIdx].RoomStatus_Out.Title;
 	t_pTextBuffer = (unsigned char*)tempStr.c_str();
 	t_TextLen = tempStr.Length() * 2 + 2;
@@ -1496,5 +1509,96 @@ void __fastcall TFormMain::SendInnerRoomStatus() {
 	}
 	PrintMsg(tempStr);
 	ReleaseMutex(m_Mutex);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFormMain::ClientMsg_ENTER_ROOM(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg) {
+
+	// Common
+	UnicodeString tempStr = L"";
+	unsigned short t_RecvSize = 0;
+	int t_ClientIdx = 0;
+	CLIENTMSG t_ClientMsg;
+	memset(&t_ClientMsg, 0, sizeof(t_ClientMsg));
+	unsigned short t_SendSize = 5; // Fixed.. in Protocol
+	BYTE t_ReceivedRoomIdx = 0;
+	BYTE t_rst = 0;
+
+	// Extract Information
+	t_ClientMsg = _ClientMsg;
+	t_ClientIdx = t_ClientMsg.ClientInfo.ClientIndex;
+
+	// Extract Information
+	t_ReceivedRoomIdx = t_ClientMsg.Data[4];
+
+	// Copy Client Msg to Server Msg
+	_pServerMsg->ClientInfo = t_ClientMsg.ClientInfo;
+	memcpy(_pServerMsg->Data, t_ClientMsg.Data, MAX_RECV_PACKET_SIZE);
+
+	// Making SendBuffer Header
+	_pServerMsg->Data[0] = SECURE_CODE_S_TO_C; // Secure Code
+	memcpy(&_pServerMsg->Data[1], &t_SendSize, sizeof(t_SendSize));
+
+	// Reset Send Buffer (Data Area)
+	memset(&_pServerMsg->Data[4], 0, MAX_RECV_PACKET_SIZE - 4);
+
+	// Try to Entering Room
+	t_rst = EnteringGameRoom(t_ClientIdx, t_ReceivedRoomIdx);
+	if(t_rst != 0) {
+		_pServerMsg->Data[4] = t_rst; // Success to Making Room
+	} else {
+		_pServerMsg->Data[4] = 0; // Fail to Making Room
+	}
+}
+//---------------------------------------------------------------------------
+
+BYTE __fastcall TFormMain::EnteringGameRoom(int _ClientIdx, BYTE _RoomIdx) {
+
+	// Entering Game Room Routine
+	// Common
+	UnicodeString tempStr = L"";
+	BYTE t_ClientGrade = 0;
+	UnicodeString t_ClientUserID = L"";
+	bool t_bIsFull = true;
+	BYTE t_PlayerIdx = 0;
+	int t_FixedIdx = _RoomIdx - 1;
+
+	// Input Client Information
+	t_ClientGrade = GetGradeLevelValue(m_Client[_ClientIdx]->Grade);
+	t_ClientUserID = m_Client[_ClientIdx]->UserID;
+
+	// Check Room Exist.
+	if(m_Room[t_FixedIdx].IsCreated == false) return 0;
+
+	// Check Room Is Full
+	for(int i = 0 ; i < 6 ; i++) {
+		if(m_Room[t_FixedIdx].RoomStatus_In.ClientUserID[i] == L"") {
+			t_bIsFull = false;
+			t_PlayerIdx = i;
+			i = 6; // For Breaking For Loop
+		}
+	}
+	if(t_bIsFull) return 0;
+
+	// ROOM(INSIDE) Routine
+	m_Room[t_FixedIdx].RoomStatus_In.ClientIdx[t_PlayerIdx] = _ClientIdx;
+	m_Room[t_FixedIdx].RoomStatus_In.ClientGrade[t_PlayerIdx] = t_ClientGrade;
+	m_Room[t_FixedIdx].RoomStatus_In.ClientUserID[t_PlayerIdx] = t_ClientUserID;
+	m_Room[t_FixedIdx].RoomStatus_In.ClientStatus[t_PlayerIdx].Connected = true;
+	m_Room[t_FixedIdx].RoomStatus_In.ClientStatus[t_PlayerIdx].Life = true;
+
+	// ROOM(OUTSIDE) Routine
+	m_Room[t_FixedIdx].RoomStatus_Out.PlayerCount++;
+
+
+	if(m_Room[t_FixedIdx].RoomStatus_Out.TeamType == 0) {
+		m_Room[t_FixedIdx].RoomStatus_In.ClientStatus[t_PlayerIdx].TeamIdx = 0;
+	} else {
+		m_Room[t_FixedIdx].RoomStatus_In.ClientStatus[t_PlayerIdx].TeamIdx = 2; // 2 is Default
+	}
+	m_Room[t_FixedIdx].RoomStatus_In.ClientStatus[t_PlayerIdx].Win = 0; // Default Setting
+	m_Client[_ClientIdx]->ClientScreenStatus = _RoomIdx;
+
+	return t_PlayerIdx + 1;
 }
 //---------------------------------------------------------------------------

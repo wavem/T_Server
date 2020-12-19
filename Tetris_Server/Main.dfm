@@ -164,14 +164,12 @@ object FormMain: TFormMain
       Top = 0
       Width = 1009
       Height = 734
-      PageIndex = 2
+      PageIndex = 1
       TabOrder = 0
       object TPage
         Left = 0
         Top = 0
         Caption = 'Status'
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object _pnBase_01_Status: TPanel
           Left = 0
           Top = 0
@@ -341,8 +339,6 @@ object FormMain: TFormMain
         Top = 0
         HelpContext = 1
         Caption = 'Setting'
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object _pnBase_02_Setting: TPanel
           Left = 0
           Top = 0
@@ -1290,8 +1286,6 @@ object FormMain: TFormMain
         Top = 0
         HelpContext = 3
         Caption = 'Room List'
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object _pnBase_04_RoomList: TPanel
           Left = 0
           Top = 0

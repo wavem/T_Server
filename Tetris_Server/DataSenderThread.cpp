@@ -88,6 +88,12 @@ bool __fastcall DataSenderThread::Send() {
 		t_rst = send(FormMain->m_ClientSocket[ServerMsg.ClientInfo.ClientIndex], (char*)ServerMsg.Data, t_PacketSize, 0);
 		break;
 
+	case DATA_TYPE_ENTER_GAME_ROOM:
+		t_rst = 0;
+		t_rst = send(FormMain->m_ClientSocket[ServerMsg.ClientInfo.ClientIndex], (char*)ServerMsg.Data, t_PacketSize, 0);
+		FormMain->SendInnerRoomStatus();
+		break;
+
 	case DATA_TYPE_LOBBY_CHATTING:
 	case DATA_TYPE_LOBBY_PLAYERLIST: // 굳이 게임중인 사람들한테는 안보내도 되긴 하지만, 귀찮으니 걍 보낸다.
 	case DATA_TYPE_LOBBY_ROOMSTATUS: // 굳이 게임중인 사람들한테는 안보내도 되긴 하지만, 귀찮으니 걍 보낸다.
@@ -100,7 +106,7 @@ bool __fastcall DataSenderThread::Send() {
 		break;
 	case DATA_TYPE_INNER_ROOM_STATUS:
 		for(int i = 0 ; i < MAX_TCP_CLIENT_USER_COUNT ; i++) {
-			if(ServerMsg.Data[8] == FormMain->m_Client[i]->ClientScreenStatus) {
+			if(ServerMsg.Data[8] == (BYTE)FormMain->m_Client[i]->ClientScreenStatus) {
 				if(FormMain->m_ClientSocket[i] != INVALID_SOCKET) {
 					t_rst = 0;
 					t_rst = send(FormMain->m_ClientSocket[i], (char*)ServerMsg.Data, t_PacketSize, 0);
@@ -112,6 +118,7 @@ bool __fastcall DataSenderThread::Send() {
 	case DATA_TYPE_MAKE_GAME_ROOM:
 		t_rst = 0;
 		t_rst = send(FormMain->m_ClientSocket[ServerMsg.ClientInfo.ClientIndex], (char*)ServerMsg.Data, t_PacketSize, 0);
+		FormMain->SendInnerRoomStatus();
 		break;
 
 	default:
