@@ -237,7 +237,7 @@ public: // USER DB ROUTINE
 	BYTE __fastcall Login(UnicodeString _ID, UnicodeString _PW);
 
 public: // ROOM Routine
-	bool __fastcall MakingGameRoom(int _ClientIdx, UnicodeString _Title, BYTE _Team, BYTE _Item);
+	BYTE __fastcall MakingGameRoom(int _ClientIdx, UnicodeString _Title, BYTE _Team, BYTE _Item);
 	BYTE __fastcall EnteringGameRoom(int _ClientIdx, BYTE _RoomIdx);
 
 public: // CALCULATION AND SEND FUNCTIONS
@@ -250,6 +250,7 @@ public: // Client Message Handler
 	void __fastcall ClientMsg_SIGN_UP(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg);
 	void __fastcall ClientMsg_SIGN_IN(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg);
 	void __fastcall ClientMsg_LOBBY_CHATTING(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg);
+	void __fastcall ClientMsg_INGAME_CHATTING(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg);
 	void __fastcall ClientMsg_MAKING_ROOM(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg);
 	void __fastcall ClientMsg_ENTER_ROOM(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg);
 

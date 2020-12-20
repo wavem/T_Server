@@ -760,6 +760,7 @@ void __fastcall TFormMain::ReceiveClientMessage(TMessage &_msg) {
 		break;
 
 	case DATA_TYPE_INGAME_CHATTING:
+		ClientMsg_INGAME_CHATTING(t_ClientMsg, &t_ServerMsg);
 		break;
 
 	case DATA_TYPE_CHANGE_USER_INFO:
@@ -1096,15 +1097,11 @@ void __fastcall TFormMain::ClientMsg_MAKING_ROOM(CLIENTMSG _ClientMsg, SERVERMSG
 	memset(&_pServerMsg->Data[4], 0, MAX_RECV_PACKET_SIZE - 4);
 
 	// Try to Making Room
-	if(MakingGameRoom(t_ClientIdx, t_RoomTitle, t_TeamType, t_ItemType)) {
-		_pServerMsg->Data[4] = 0; // Success to Making Room
-	} else {
-		_pServerMsg->Data[4] = 1; // Fail to Making Room
-	}
+	_pServerMsg->Data[4] = MakingGameRoom(t_ClientIdx, t_RoomTitle, t_TeamType, t_ItemType);
 }
 //---------------------------------------------------------------------------
 
-bool __fastcall TFormMain::MakingGameRoom(int _ClientIdx, UnicodeString _Title, BYTE _Team, BYTE _Item) {
+BYTE __fastcall TFormMain::MakingGameRoom(int _ClientIdx, UnicodeString _Title, BYTE _Team, BYTE _Item) {
 
 	// Making Room Routine
 	// Common
@@ -1112,6 +1109,7 @@ bool __fastcall TFormMain::MakingGameRoom(int _ClientIdx, UnicodeString _Title, 
 	bool t_bIsNoEmptyRoom = true;
 	BYTE t_ClientGrade = 0;
 	UnicodeString t_ClientUserID = L"";
+	BYTE t_CreatedRoomIdx = 0;
 
 	// Input Client Information
 	t_ClientGrade = GetGradeLevelValue(m_Client[_ClientIdx]->Grade);
@@ -1122,7 +1120,7 @@ bool __fastcall TFormMain::MakingGameRoom(int _ClientIdx, UnicodeString _Title, 
 		if(m_Room[i].IsCreated) continue;
 		t_bIsNoEmptyRoom = false;
 	}
-	if(t_bIsNoEmptyRoom) return false;
+	if(t_bIsNoEmptyRoom) return 0;
 
 
 	// Making Room
@@ -1156,9 +1154,10 @@ bool __fastcall TFormMain::MakingGameRoom(int _ClientIdx, UnicodeString _Title, 
 		m_Room[i].RoomStatus_In.ClientStatus[0].Win = 0; // Default Setting
 		m_Client[_ClientIdx]->ClientScreenStatus = i + 1; // +1 !!!
 
+		t_CreatedRoomIdx = i + 1;
 		i = MAX_GAMEROOM_COUNT; // For Breaking For Loop
 	}
-	return true;
+	return t_CreatedRoomIdx;
 }
 //---------------------------------------------------------------------------
 
@@ -1600,5 +1599,35 @@ BYTE __fastcall TFormMain::EnteringGameRoom(int _ClientIdx, BYTE _RoomIdx) {
 	m_Client[_ClientIdx]->ClientScreenStatus = _RoomIdx;
 
 	return t_PlayerIdx + 1;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFormMain::ClientMsg_INGAME_CHATTING(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg) {
+
+	// Common
+	UnicodeString tempStr = L"";
+	unsigned short t_RecvSize = 0;
+	int t_ClientIdx = 0;
+	CLIENTMSG t_ClientMsg;
+	memset(&t_ClientMsg, 0, sizeof(t_ClientMsg));
+
+	// Extract Information
+	t_ClientMsg = _ClientMsg;
+	t_ClientIdx = t_ClientMsg.ClientInfo.ClientIndex;
+	memcpy(&t_RecvSize, &t_ClientMsg.Data[1], 2);
+
+	// Copy Client Msg to Server Msg
+	_pServerMsg->ClientInfo = t_ClientMsg.ClientInfo;
+	memcpy(_pServerMsg->Data, t_ClientMsg.Data, MAX_RECV_PACKET_SIZE);
+
+	// Change Data Type
+	_pServerMsg->Data[3] = DATA_TYPE_INGAME_CHATTING;
+
+	// Receive Chatting Text and Print Out
+	wchar_t* temp = new wchar_t[t_RecvSize - 5];
+	memcpy(temp, &t_ClientMsg.Data[5], t_RecvSize - 5);
+	tempStr = temp;
+	PrintLog(tempStr);
+	delete[] temp;
 }
 //---------------------------------------------------------------------------

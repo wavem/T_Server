@@ -106,8 +106,19 @@ bool __fastcall DataSenderThread::Send() {
 		break;
 	case DATA_TYPE_INNER_ROOM_STATUS:
 		for(int i = 0 ; i < MAX_TCP_CLIENT_USER_COUNT ; i++) {
-			if(ServerMsg.Data[8] == (BYTE)FormMain->m_Client[i]->ClientScreenStatus) {
-				if(FormMain->m_ClientSocket[i] != INVALID_SOCKET) {
+			if(FormMain->m_ClientSocket[i] != INVALID_SOCKET) {
+				if(ServerMsg.Data[8] == (BYTE)FormMain->m_Client[i]->ClientScreenStatus) {
+					t_rst = 0;
+					t_rst = send(FormMain->m_ClientSocket[i], (char*)ServerMsg.Data, t_PacketSize, 0);
+				}
+			}
+		}
+		break;
+
+	case DATA_TYPE_INGAME_CHATTING:
+		for(int i = 0 ; i < MAX_TCP_CLIENT_USER_COUNT ; i++) {
+			if(FormMain->m_ClientSocket[i] != INVALID_SOCKET) {
+				if(ServerMsg.Data[5] == (BYTE)FormMain->m_Client[i]->ClientScreenStatus) {
 					t_rst = 0;
 					t_rst = send(FormMain->m_ClientSocket[i], (char*)ServerMsg.Data, t_PacketSize, 0);
 				}
