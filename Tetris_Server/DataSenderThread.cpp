@@ -113,6 +113,7 @@ bool __fastcall DataSenderThread::Send() {
 			}
 		}
 		break;
+
 	case DATA_TYPE_INNER_ROOM_STATUS:
 		for(int i = 0 ; i < MAX_TCP_CLIENT_USER_COUNT ; i++) {
 			if(FormMain->m_ClientSocket[i] != INVALID_SOCKET) {
@@ -124,6 +125,7 @@ bool __fastcall DataSenderThread::Send() {
 		}
 		break;
 
+	case DATA_TYPE_INGAME_CMD:
 	case DATA_TYPE_INGAME_CHATTING:
 		for(int i = 0 ; i < MAX_TCP_CLIENT_USER_COUNT ; i++) {
 			if(FormMain->m_ClientSocket[i] != INVALID_SOCKET) {

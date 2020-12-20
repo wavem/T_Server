@@ -767,6 +767,7 @@ void __fastcall TFormMain::ReceiveClientMessage(TMessage &_msg) {
 		break;
 
 	case DATA_TYPE_INGAME_CMD:
+		ClientMsg_ROOMCMD(t_ClientMsg, &t_ServerMsg);
 		break;
 
 	case DATA_TYPE_MAKE_GAME_ROOM:
@@ -1728,5 +1729,43 @@ BYTE __fastcall TFormMain::EscapeGameRoom(int _ClientIdx, BYTE _RoomIdx) {
 	}
 
 	return _RoomIdx;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFormMain::ClientMsg_ROOMCMD(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg) {
+
+	// Common
+	UnicodeString tempStr = L"";
+	unsigned short t_RecvSize = 0;
+	int t_ClientIdx = 0;
+	CLIENTMSG t_ClientMsg;
+	memset(&t_ClientMsg, 0, sizeof(t_ClientMsg));
+	unsigned short t_SendSize = 30; // Fixed.. in Protocol
+	BYTE t_ReceivedRoomIdx = 0;
+	BYTE t_rst = 0;
+
+	// Extract Information
+	t_ClientMsg = _ClientMsg;
+	t_ClientIdx = t_ClientMsg.ClientInfo.ClientIndex;
+
+	// Extract Information
+	t_ReceivedRoomIdx = t_ClientMsg.Data[4];
+
+	// Copy Client Msg to Server Msg
+	_pServerMsg->ClientInfo = t_ClientMsg.ClientInfo;
+	memcpy(_pServerMsg->Data, t_ClientMsg.Data, MAX_RECV_PACKET_SIZE);
+
+	// Making SendBuffer Header
+	_pServerMsg->Data[0] = SECURE_CODE_S_TO_C; // Secure Code
+	memcpy(&_pServerMsg->Data[1], &t_SendSize, sizeof(t_SendSize));
+
+	// Do Nothing : Bypass Player Data
+	// Reset Send Buffer (Data Area)
+	//memset(&_pServerMsg->Data[4], 0, MAX_RECV_PACKET_SIZE - 4);
+
+
+	// Input Received Data Into ROOM Structure
+    // Later... 2020-12-20 PM 20:14
+
 }
 //---------------------------------------------------------------------------
