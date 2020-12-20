@@ -1523,7 +1523,7 @@ void __fastcall TFormMain::ClientMsg_ENTER_ROOM(CLIENTMSG _ClientMsg, SERVERMSG*
 	int t_ClientIdx = 0;
 	CLIENTMSG t_ClientMsg;
 	memset(&t_ClientMsg, 0, sizeof(t_ClientMsg));
-	unsigned short t_SendSize = 5; // Fixed.. in Protocol
+	unsigned short t_SendSize = 6; // Fixed.. in Protocol
 	BYTE t_ReceivedRoomIdx = 0;
 	BYTE t_rst = 0;
 
@@ -1549,6 +1549,7 @@ void __fastcall TFormMain::ClientMsg_ENTER_ROOM(CLIENTMSG _ClientMsg, SERVERMSG*
 	t_rst = EnteringGameRoom(t_ClientIdx, t_ReceivedRoomIdx);
 	if(t_rst != 0) {
 		_pServerMsg->Data[4] = t_rst; // Success to Making Room
+		_pServerMsg->Data[5] = t_ReceivedRoomIdx; // Success to Making Room
 	} else {
 		_pServerMsg->Data[4] = 0; // Fail to Making Room
 	}

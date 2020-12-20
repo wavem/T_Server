@@ -90,8 +90,14 @@ bool __fastcall DataSenderThread::Send() {
 		break;
 
 	case DATA_TYPE_ESCAPE_GAME_ROOM:
-	case DATA_TYPE_ENTER_GAME_ROOM:
 		t_Param = ServerMsg.Data[4];
+		t_rst = 0;
+		t_rst = send(FormMain->m_ClientSocket[ServerMsg.ClientInfo.ClientIndex], (char*)ServerMsg.Data, t_PacketSize, 0);
+		FormMain->SendInnerRoomStatus(t_Param);
+		break;
+
+	case DATA_TYPE_ENTER_GAME_ROOM:
+		t_Param = ServerMsg.Data[5];
 		t_rst = 0;
 		t_rst = send(FormMain->m_ClientSocket[ServerMsg.ClientInfo.ClientIndex], (char*)ServerMsg.Data, t_PacketSize, 0);
 		FormMain->SendInnerRoomStatus(t_Param);
