@@ -239,12 +239,13 @@ public: // USER DB ROUTINE
 public: // ROOM Routine
 	BYTE __fastcall MakingGameRoom(int _ClientIdx, UnicodeString _Title, BYTE _Team, BYTE _Item);
 	BYTE __fastcall EnteringGameRoom(int _ClientIdx, BYTE _RoomIdx);
+	BYTE __fastcall EscapeGameRoom(int _ClientIdx, BYTE _RoomIdx);
 
 public: // CALCULATION AND SEND FUNCTIONS
 	void __fastcall SendLobbyStatus();
 	void __fastcall SendRoomStatus();
 	void __fastcall SendLobbyPlayerList();
-	void __fastcall SendInnerRoomStatus();
+	void __fastcall SendInnerRoomStatus(BYTE _RoomIdx);
 
 public: // Client Message Handler
 	void __fastcall ClientMsg_SIGN_UP(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg);
@@ -253,6 +254,7 @@ public: // Client Message Handler
 	void __fastcall ClientMsg_INGAME_CHATTING(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg);
 	void __fastcall ClientMsg_MAKING_ROOM(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg);
 	void __fastcall ClientMsg_ENTER_ROOM(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg);
+	void __fastcall ClientMsg_ESCAPE_ROOM(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg);
 
 public: // Thread Message Handler
 	void __fastcall PrintThreadMessage(TMessage &_msg);

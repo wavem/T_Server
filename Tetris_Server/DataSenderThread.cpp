@@ -70,6 +70,7 @@ bool __fastcall DataSenderThread::Send() {
 	int t_rst = 0;
 	int t_MessageType = 0;
 	unsigned short t_PacketSize = 0;
+	BYTE t_Param = 0;
 
 	// Extract Message Type
 	t_MessageType = ServerMsg.Data[3];
@@ -88,10 +89,12 @@ bool __fastcall DataSenderThread::Send() {
 		t_rst = send(FormMain->m_ClientSocket[ServerMsg.ClientInfo.ClientIndex], (char*)ServerMsg.Data, t_PacketSize, 0);
 		break;
 
+	case DATA_TYPE_ESCAPE_GAME_ROOM:
 	case DATA_TYPE_ENTER_GAME_ROOM:
+		t_Param = ServerMsg.Data[4];
 		t_rst = 0;
 		t_rst = send(FormMain->m_ClientSocket[ServerMsg.ClientInfo.ClientIndex], (char*)ServerMsg.Data, t_PacketSize, 0);
-		FormMain->SendInnerRoomStatus();
+		FormMain->SendInnerRoomStatus(t_Param);
 		break;
 
 	case DATA_TYPE_LOBBY_CHATTING:
@@ -118,7 +121,7 @@ bool __fastcall DataSenderThread::Send() {
 	case DATA_TYPE_INGAME_CHATTING:
 		for(int i = 0 ; i < MAX_TCP_CLIENT_USER_COUNT ; i++) {
 			if(FormMain->m_ClientSocket[i] != INVALID_SOCKET) {
-				if(ServerMsg.Data[5] == (BYTE)FormMain->m_Client[i]->ClientScreenStatus) {
+				if(ServerMsg.Data[4] == (BYTE)FormMain->m_Client[i]->ClientScreenStatus) {
 					t_rst = 0;
 					t_rst = send(FormMain->m_ClientSocket[i], (char*)ServerMsg.Data, t_PacketSize, 0);
 				}
@@ -127,9 +130,10 @@ bool __fastcall DataSenderThread::Send() {
 		break;
 
 	case DATA_TYPE_MAKE_GAME_ROOM:
+		t_Param = ServerMsg.Data[4];
 		t_rst = 0;
 		t_rst = send(FormMain->m_ClientSocket[ServerMsg.ClientInfo.ClientIndex], (char*)ServerMsg.Data, t_PacketSize, 0);
-		FormMain->SendInnerRoomStatus();
+		FormMain->SendInnerRoomStatus(t_Param);
 		break;
 
 	default:

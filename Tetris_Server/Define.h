@@ -139,6 +139,7 @@ typedef struct ST_ROOMSTATUS_INSIDE {
 	UnicodeString ClientUserID[6];
 	ROOMCLIENTSTATUS ClientStatus[6];
 	BYTE SpeedLevel; // 0 ~ 9
+	BYTE RoomMasterIndex;
 } ROOMSTATUS_IN;
 //---------------------------------------------------------------------------
 

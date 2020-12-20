@@ -317,7 +317,7 @@ void __fastcall TFormMain::btn_TestClick(TObject *Sender)
 
 // Below is Send INNER Room Status Test Code
 #if 1
-	SendInnerRoomStatus();
+	SendInnerRoomStatus(0);
 #endif
 
 // Below is Send Room Status Test Code
@@ -780,6 +780,7 @@ void __fastcall TFormMain::ReceiveClientMessage(TMessage &_msg) {
 		break;
 
 	case DATA_TYPE_ESCAPE_GAME_ROOM:
+		ClientMsg_ESCAPE_ROOM(t_ClientMsg, &t_ServerMsg);
 		SendLobbyStatus(); // temp
 		break;
 
@@ -1155,6 +1156,7 @@ BYTE __fastcall TFormMain::MakingGameRoom(int _ClientIdx, UnicodeString _Title, 
 		m_Client[_ClientIdx]->ClientScreenStatus = i + 1; // +1 !!!
 
 		t_CreatedRoomIdx = i + 1;
+		m_Room[i].RoomStatus_In.RoomMasterIndex = 1; // Because Room Master is equal to Room Maker !
 		i = MAX_GAMEROOM_COUNT; // For Breaking For Loop
 	}
 	return t_CreatedRoomIdx;
@@ -1441,14 +1443,14 @@ BYTE __fastcall TFormMain::GetGradeLevelValue(UnicodeString _gradeStr) {
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TFormMain::SendInnerRoomStatus() {
+void __fastcall TFormMain::SendInnerRoomStatus(BYTE _RoomIdx) {
 
 	// Common
 	UnicodeString tempStr = L"";
 	SERVERMSG t_ServerMsg;
 	memset(&t_ServerMsg, 0, sizeof(t_ServerMsg));
 	BYTE* t_pTextBuffer = NULL;
-	unsigned short t_TotalPacketSize = 253;
+	unsigned short t_TotalPacketSize = 254;
 	int t_RoomIdx = 0;
 	int t_TextLen = 0;
 	int t_BuffIdx = 0;
@@ -1461,7 +1463,7 @@ void __fastcall TFormMain::SendInnerRoomStatus() {
 
 
 	// Room Status
-	t_RoomIdx = 0; // TEMPTEMPTEMPTEMPTEMPTEMPTEMPTEMPTEMP
+	t_RoomIdx = _RoomIdx - 1; // -1 is essential
 	t_ServerMsg.Data[4] = m_Room[t_RoomIdx].RoomStatus_Out.State;
 	t_ServerMsg.Data[5] = m_Room[t_RoomIdx].RoomStatus_Out.TeamType;
 	t_ServerMsg.Data[6] = m_Room[t_RoomIdx].RoomStatus_Out.ItemType;
@@ -1471,6 +1473,8 @@ void __fastcall TFormMain::SendInnerRoomStatus() {
 	t_pTextBuffer = (unsigned char*)tempStr.c_str();
 	t_TextLen = tempStr.Length() * 2 + 2;
 	memcpy(&t_ServerMsg.Data[9], t_pTextBuffer, t_TextLen);
+	t_ServerMsg.Data[253] = m_Room[t_RoomIdx].RoomStatus_In.RoomMasterIndex;
+
 
 	// Player Info
 	t_BuffIdx = 37;
@@ -1629,5 +1633,99 @@ void __fastcall TFormMain::ClientMsg_INGAME_CHATTING(CLIENTMSG _ClientMsg, SERVE
 	tempStr = temp;
 	PrintLog(tempStr);
 	delete[] temp;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFormMain::ClientMsg_ESCAPE_ROOM(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg) {
+
+	// Common
+	UnicodeString tempStr = L"";
+	unsigned short t_RecvSize = 0;
+	int t_ClientIdx = 0;
+	CLIENTMSG t_ClientMsg;
+	memset(&t_ClientMsg, 0, sizeof(t_ClientMsg));
+	unsigned short t_SendSize = 5; // Fixed.. in Protocol
+	BYTE t_ReceivedRoomIdx = 0;
+	BYTE t_rst = 0;
+
+	// Extract Information
+	t_ClientMsg = _ClientMsg;
+	t_ClientIdx = t_ClientMsg.ClientInfo.ClientIndex;
+
+	// Extract Information
+	t_ReceivedRoomIdx = t_ClientMsg.Data[4];
+
+	// Copy Client Msg to Server Msg
+	_pServerMsg->ClientInfo = t_ClientMsg.ClientInfo;
+	memcpy(_pServerMsg->Data, t_ClientMsg.Data, MAX_RECV_PACKET_SIZE);
+
+	// Making SendBuffer Header
+	_pServerMsg->Data[0] = SECURE_CODE_S_TO_C; // Secure Code
+	memcpy(&_pServerMsg->Data[1], &t_SendSize, sizeof(t_SendSize));
+
+	// Reset Send Buffer (Data Area)
+	memset(&_pServerMsg->Data[4], 0, MAX_RECV_PACKET_SIZE - 4);
+
+	// Try to Escape Game Room
+	_pServerMsg->Data[4] = EscapeGameRoom(t_ClientIdx, t_ReceivedRoomIdx);
+}
+//---------------------------------------------------------------------------
+
+BYTE __fastcall TFormMain::EscapeGameRoom(int _ClientIdx, BYTE _RoomIdx) {
+
+	// Escape Game Room Routine
+	// Common
+	UnicodeString tempStr = L"";
+	BYTE t_ClientGrade = 0;
+	UnicodeString t_ClientUserID = L"";
+	BYTE t_PlayerIdx = 0;
+	bool t_bIsEmpty = true;
+	int t_FixedIdx = _RoomIdx - 1;
+
+	// Input Client Information
+	t_ClientGrade = GetGradeLevelValue(m_Client[_ClientIdx]->Grade);
+	t_ClientUserID = m_Client[_ClientIdx]->UserID;
+
+	// Check Room Exist.
+	if(m_Room[t_FixedIdx].IsCreated == false) return 0;
+
+
+	// Find Player Index in the Room
+	for(int i = 0 ; i < 6 ; i++) {
+		if(m_Room[t_FixedIdx].RoomStatus_In.ClientUserID[i] == m_Client[_ClientIdx]->UserID) {
+			t_PlayerIdx = i;
+			i = 6; // For Breaking For Loop
+		}
+	}
+
+	// ROOM(INSIDE) Routine
+	m_Room[t_FixedIdx].RoomStatus_In.ClientIdx[t_PlayerIdx] = 0; // 마땅한 초기화 값을 모르겠따..
+	m_Room[t_FixedIdx].RoomStatus_In.ClientGrade[t_PlayerIdx] = 0;
+	m_Room[t_FixedIdx].RoomStatus_In.ClientUserID[t_PlayerIdx] = L"";
+	m_Room[t_FixedIdx].RoomStatus_In.ClientStatus[t_PlayerIdx].Connected = false;
+	m_Room[t_FixedIdx].RoomStatus_In.ClientStatus[t_PlayerIdx].Life = false;
+
+	// ROOM(OUTSIDE) Routine
+	m_Room[t_FixedIdx].RoomStatus_Out.PlayerCount--;
+	m_Room[t_FixedIdx].RoomStatus_In.ClientStatus[t_PlayerIdx].TeamIdx = 0;
+	m_Room[t_FixedIdx].RoomStatus_In.ClientStatus[t_PlayerIdx].Win = 0; // Default Setting
+	m_Client[_ClientIdx]->ClientScreenStatus = CLIENT_SCREEN_IS_LOBBY;
+
+	// Check Room Empty
+	for(int i = 0 ; i < 6 ; i++) {
+		if(m_Room[t_FixedIdx].RoomStatus_In.ClientUserID[i] != L"") {
+			m_Room[t_FixedIdx].RoomStatus_In.RoomMasterIndex = i + 1;
+			t_bIsEmpty = false;
+			i = 6; // For Breaking For Loop
+		}
+	}
+
+	// If Room is Empty
+	if(t_bIsEmpty) {
+		memset(&m_Room[t_FixedIdx], 0, sizeof(ROOM));
+		return _RoomIdx;
+	}
+
+	return _RoomIdx;
 }
 //---------------------------------------------------------------------------
