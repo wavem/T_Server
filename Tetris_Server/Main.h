@@ -256,6 +256,7 @@ public: // Client Message Handler
 	void __fastcall ClientMsg_ENTER_ROOM(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg);
 	void __fastcall ClientMsg_ESCAPE_ROOM(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg);
 	void __fastcall ClientMsg_ROOMCMD(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg);
+	void __fastcall ClientMsg_INGAME_DATA(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg);
 
 public: // Thread Message Handler
 	void __fastcall PrintThreadMessage(TMessage &_msg);

@@ -125,6 +125,7 @@ bool __fastcall DataSenderThread::Send() {
 		}
 		break;
 
+	case DATA_TYPE_INGAME_DATA:
 	case DATA_TYPE_INGAME_CMD:
 	case DATA_TYPE_INGAME_CHATTING:
 		for(int i = 0 ; i < MAX_TCP_CLIENT_USER_COUNT ; i++) {

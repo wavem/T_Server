@@ -789,6 +789,7 @@ void __fastcall TFormMain::ReceiveClientMessage(TMessage &_msg) {
 		break;
 
 	case DATA_TYPE_INGAME_DATA:
+		ClientMsg_INGAME_DATA(t_ClientMsg, &t_ServerMsg);
 		break;
 
 	default:
@@ -1767,5 +1768,64 @@ void __fastcall TFormMain::ClientMsg_ROOMCMD(CLIENTMSG _ClientMsg, SERVERMSG* _p
 	// Input Received Data Into ROOM Structure
     // Later... 2020-12-20 PM 20:14
 
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFormMain::ClientMsg_INGAME_DATA(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg) {
+
+	// Common
+	UnicodeString tempStr = L"";
+	unsigned short t_RecvSize = 0;
+	int t_ClientIdx = 0;
+	CLIENTMSG t_ClientMsg;
+	memset(&t_ClientMsg, 0, sizeof(t_ClientMsg));
+	unsigned short t_SendSize = MAX_SEND_PACKET_SIZE; // Fixed.. in Protocol
+	BYTE t_ReceivedRoomIdx = 0;
+	BYTE t_ReceivedPlayerIdx = 0;
+	int t_FixedRoomIdx = 0;
+	BYTE t_rst = 0;
+	int t_BuffIdx = 0;
+
+	// Extract Information
+	t_ClientMsg = _ClientMsg;
+	t_ClientIdx = t_ClientMsg.ClientInfo.ClientIndex;
+
+	// Extract Information
+	t_ReceivedRoomIdx = t_ClientMsg.Data[4];
+	t_ReceivedPlayerIdx = t_ClientMsg.Data[5];
+
+	// Copy Client Msg to Server Msg
+	_pServerMsg->ClientInfo = t_ClientMsg.ClientInfo;
+	memcpy(_pServerMsg->Data, t_ClientMsg.Data, MAX_RECV_PACKET_SIZE);
+
+	// Making SendBuffer Header
+	_pServerMsg->Data[0] = SECURE_CODE_S_TO_C; // Secure Code
+	memcpy(&_pServerMsg->Data[1], &t_SendSize, sizeof(t_SendSize));
+
+	// Reset Send Buffer (Data Area)
+	memset(&_pServerMsg->Data[4], 0, MAX_SEND_PACKET_SIZE - 4);
+
+	// Write Room Number into send buffer
+	_pServerMsg->Data[4] = t_ReceivedRoomIdx;
+
+	// Insert Client Data into structure
+	t_FixedRoomIdx = t_ReceivedRoomIdx - 1;
+	// BYTE BlockStatus[20][10];
+	t_BuffIdx = 10;
+	for(int x = 0 ; x < 10 ; x++) {
+		for(int y = 0 ; y < 20 ; y++) {
+			m_Room[t_FixedRoomIdx].RoomBlock[t_ReceivedPlayerIdx - 1].BlockStatus[x][y] = t_ClientMsg.Data[t_BuffIdx++];
+		}
+	}
+
+	// Write Current Room Block Info into Send Buffer
+	t_BuffIdx = 10;
+	for(int i = 0 ; i < 6 ; i++) {
+		for(int x = 0 ; x < 10 ; x++) {
+			for(int y = 0 ; y < 20 ; y++) {
+				_pServerMsg->Data[t_BuffIdx++] = m_Room[t_FixedRoomIdx].RoomBlock[i].BlockStatus[x][y];
+			}
+		}
+	}
 }
 //---------------------------------------------------------------------------
