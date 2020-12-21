@@ -4,7 +4,7 @@
         <ProjectVersion>16.1</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <AppType>Application</AppType>
-        <MainSource>Tetris_Server.cpp</MainSource>
+        <MainSource>T_Server.cpp</MainSource>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
@@ -45,18 +45,12 @@
         <CfgParent>Base</CfgParent>
         <Base>true</Base>
     </PropertyGroup>
-    <PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win64)'!=''">
-        <Cfg_2_Win64>true</Cfg_2_Win64>
-        <CfgParent>Cfg_2</CfgParent>
-        <Cfg_2>true</Cfg_2>
-        <Base>true</Base>
-    </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
         <Icon_MainIcon>$(BDS)\bin\cbuilder_PROJECTICON.ico</Icon_MainIcon>
         <ILINK_LibraryPath>Z:\wave\010_Project\010_Game\Tetris\Server\010_Source\Tetris_Server\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
         <ProjectType>CppVCLApplication</ProjectType>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
-        <SanitizedProjectName>Tetris_Server</SanitizedProjectName>
+        <SanitizedProjectName>T_Server</SanitizedProjectName>
         <AllPackageLibs>rtl.lib;vcl.lib;cxLibraryRS21.lib;dxGDIPlusRS21.lib;dxCoreRS21.lib;dxThemeRS21.lib;vclx.lib;dxBarRS21.lib;dxComnRS21.lib;dxRibbonRS21.lib;cxEditorsRS21.lib;cxDataRS21.lib;dbrtl.lib;vclimg.lib;vcldb.lib;dxSkinsCoreRS21.lib;dxSkinBlackRS21.lib;dxSkinBlueprintRS21.lib;dxSkinBlueRS21.lib;dxSkinCaramelRS21.lib;dxSkinCoffeeRS21.lib;dxSkinDarkRoomRS21.lib;dxSkinDarkSideRS21.lib;dxSkinDevExpressDarkStyleRS21.lib;dxSkinDevExpressStyleRS21.lib;dxSkinFoggyRS21.lib;dxSkinGlassOceansRS21.lib;dxSkinHighContrastRS21.lib;dxSkiniMaginaryRS21.lib;dxSkinLilianRS21.lib;dxSkinLiquidSkyRS21.lib;dxSkinLondonLiquidSkyRS21.lib;dxSkinMcSkinRS21.lib;dxSkinMetropolisDarkRS21.lib;dxSkinMetropolisRS21.lib;dxSkinMoneyTwinsRS21.lib;dxSkinOffice2007BlackRS21.lib;dxSkinOffice2007BlueRS21.lib;dxSkinOffice2007GreenRS21.lib;dxSkinOffice2007PinkRS21.lib;dxSkinOffice2007SilverRS21.lib;dxSkinOffice2010BlackRS21.lib;dxSkinOffice2010BlueRS21.lib;dxSkinOffice2010SilverRS21.lib;dxSkinOffice2013DarkGrayRS21.lib;dxSkinOffice2013LightGrayRS21.lib;dxSkinOffice2013WhiteRS21.lib;dxSkinPumpkinRS21.lib;dxSkinSevenClassicRS21.lib;dxSkinSevenRS21.lib;dxSkinSharpPlusRS21.lib;dxSkinSharpRS21.lib;dxSkinSilverRS21.lib;dxSkinSpringTimeRS21.lib;dxSkinStardustRS21.lib;dxSkinSummer2008RS21.lib;dxSkinTheAsphaltWorldRS21.lib;dxSkinValentineRS21.lib;dxSkinVisualStudio2013BlueRS21.lib;dxSkinVisualStudio2013DarkRS21.lib;dxSkinVisualStudio2013LightRS21.lib;dxSkinVS2010RS21.lib;dxSkinWhiteprintRS21.lib;dxSkinXmas2008BlueRS21.lib;dxRibbonCustomizationFormRS21.lib;cxTreeListRS21.lib;cxPageControlRS21.lib;cxExportRS21.lib;dxSpreadSheetRS21.lib;dxLayoutControlRS21.lib;xmlrtl.lib;cxBarEditItemRS21.lib;dxSkinsdxBarPainterRS21.lib;dxSkinsdxRibbonPainterRS21.lib;tmsexdXE7.lib;DbxCommonDriver.lib;dsnap.lib;soaprtl.lib;inet.lib;tmsdXE7.lib;adortl.lib;vclactnband.lib;VclSmp.lib</AllPackageLibs>
         <_TCHARMapping>wchar_t</_TCHARMapping>
         <Multithreaded>true</Multithreaded>
@@ -132,9 +126,6 @@
         <Defines>NDEBUG;$(Defines)</Defines>
         <TASM_Debugging>None</TASM_Debugging>
     </PropertyGroup>
-    <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
-        <BCC_PCHName_Clang>Tetris_Server_PCH1.h</BCC_PCHName_Clang>
-    </PropertyGroup>
     <ItemGroup>
         <CppCompile Include="ClientThread.cpp">
             <DependentOn>ClientThread.h</DependentOn>
@@ -164,12 +155,12 @@
             <DependentOn>TCPListenThread.h</DependentOn>
             <BuildOrder>5</BuildOrder>
         </CppCompile>
-        <CppCompile Include="Tetris_Server.cpp">
-            <BuildOrder>0</BuildOrder>
-        </CppCompile>
         <PCHCompile Include="Tetris_Server_PCH1.h">
             <BuildOrder>1</BuildOrder>
         </PCHCompile>
+        <CppCompile Include="T_Server.cpp">
+            <BuildOrder>0</BuildOrder>
+        </CppCompile>
         <CppCompile Include="Version.cpp">
             <Form>FormVersion</Form>
             <FormType>dfm</FormType>
@@ -203,7 +194,7 @@
                     <ProjectProperties Name="IndexFiles">False</ProjectProperties>
                 </ProjectProperties>
                 <Source>
-                    <Source Name="MainSource">Tetris_Server.cpp</Source>
+                    <Source Name="MainSource">T_Server.cpp</Source>
                 </Source>
                 <Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\bcboffice2k210.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
@@ -221,6 +212,12 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
+                <DeployFile LocalName=".\Win32\Debug\T_Server.tds" Configuration="Debug" Class="DebugSymbols">
+                    <Platform Name="Win32">
+                        <RemoteName>T_Server.tds</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile Condition="'$(DynamicRTL)'=='true' And '$(Multithreaded)'=='true'" LocalName="$(BDS)\bin\cc32160mt.dll" Class="DependencyModule">
                     <Platform Name="Win32">
                         <Overwrite>true</Overwrite>
@@ -231,9 +228,9 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName=".\Win64\Debug\Tetris_Server.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName=".\Win64\Debug\T_Server.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win64">
-                        <RemoteName>Tetris_Server.exe</RemoteName>
+                        <RemoteName>T_Server.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -252,9 +249,9 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName=".\Win32\Debug\Tetris_Server.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName=".\Win32\Debug\T_Server.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
-                        <RemoteName>Tetris_Server.exe</RemoteName>
+                        <RemoteName>T_Server.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
