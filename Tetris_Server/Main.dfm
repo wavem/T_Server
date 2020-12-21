@@ -2502,7 +2502,7 @@ object FormMain: TFormMain
     Left = 576
   end
   object tm_DeleteClient: TTimer
-    Interval = 500
+    Interval = 200
     OnTimer = tm_DeleteClientTimer
     Left = 604
   end

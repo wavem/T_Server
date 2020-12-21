@@ -682,7 +682,7 @@ void __fastcall TFormMain::tm_DeleteClientTimer(TObject *Sender)
 		if(m_Client[i] == NULL) continue;
 		if(m_Client[i]->GetThreadStatus() == THREAD_TERMINATED) {
 			// Client Exit Program Routine Here
-			ClientOutRoutine(i);
+			if(m_Client[i]) ClientOutRoutine(i);
 
         	// Close Socket
 			if(m_ClientSocket[i]) {
@@ -1713,6 +1713,11 @@ BYTE __fastcall TFormMain::EscapeGameRoom(int _ClientIdx, BYTE _RoomIdx) {
 	// Input Client Information
 	t_ClientGrade = GetGradeLevelValue(m_Client[_ClientIdx]->Grade);
 	t_ClientUserID = m_Client[_ClientIdx]->UserID;
+
+	// Check Duplicated Response
+	if(t_FixedIdx < 0) {
+		return 0;
+	}
 
 	// Check Room Exist.
 	if(m_Room[t_FixedIdx].IsCreated == false) return 0;
