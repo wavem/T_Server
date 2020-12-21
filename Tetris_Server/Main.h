@@ -218,6 +218,7 @@ public: // BASIC FUNCTIONS
 	BYTE __fastcall GetGradeLevelValue(UnicodeString _gradeStr);
 	void __fastcall PushLobbyPlayer(int _Idx);
 	void __fastcall EraseLobbyPlayer(int _Idx);
+	void __fastcall ClientOutRoutine(int _ClientIdx);
 
 public: // SOCKET FUNCTIONS
 	bool __fastcall CreateTCPListenSocket();

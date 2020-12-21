@@ -681,6 +681,9 @@ void __fastcall TFormMain::tm_DeleteClientTimer(TObject *Sender)
 	for(int i = 0 ; i < MAX_TCP_CLIENT_USER_COUNT ; i++) {
 		if(m_Client[i] == NULL) continue;
 		if(m_Client[i]->GetThreadStatus() == THREAD_TERMINATED) {
+			// Client Exit Program Routine Here
+			ClientOutRoutine(i);
+
         	// Close Socket
 			if(m_ClientSocket[i]) {
 				closesocket(m_ClientSocket[i]);
@@ -693,6 +696,7 @@ void __fastcall TFormMain::tm_DeleteClientTimer(TObject *Sender)
 				m_Client[i]->Terminate();
 				delete m_Client[i];
 				m_Client[i] = NULL;
+				m_ClientCnt--;
 			}
 
 			// Dequeue Lobby Player List
@@ -704,6 +708,24 @@ void __fastcall TFormMain::tm_DeleteClientTimer(TObject *Sender)
 			SendLobbyStatus();
 		}
 	}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFormMain::ClientOutRoutine(int _ClientIdx) {
+
+	// Common
+	int t_RoomIdx = 0;
+
+	// Check Client (Scrre)Location
+	if(m_Client[_ClientIdx]->ClientScreenStatus == CLIENT_SCREEN_IS_LOGIN || m_Client[_ClientIdx]->ClientScreenStatus == CLIENT_SCREEN_IS_LOBBY) {
+		// Do Nothing
+		return;
+	}
+
+	// Else.. If Client is in Room...
+	t_RoomIdx = m_Client[_ClientIdx]->ClientScreenStatus;
+	EscapeGameRoom(_ClientIdx, t_RoomIdx);
+	SendInnerRoomStatus(t_RoomIdx);
 }
 //---------------------------------------------------------------------------
 
@@ -1129,6 +1151,9 @@ BYTE __fastcall TFormMain::MakingGameRoom(int _ClientIdx, UnicodeString _Title, 
 	// Making Room
 	for(int i = 0 ; i < MAX_GAMEROOM_COUNT ; i++) {
 		if(m_Room[i].IsCreated) continue;
+
+		// Reset Room Data Structure
+        memset(&m_Room[i], 0, sizeof(ROOM));
 
 		// Making Complete Flag
 		m_Room[i].IsCreated = true;
@@ -1714,6 +1739,9 @@ BYTE __fastcall TFormMain::EscapeGameRoom(int _ClientIdx, BYTE _RoomIdx) {
 	m_Room[t_FixedIdx].RoomStatus_In.ClientStatus[t_PlayerIdx].Win = 0; // Default Setting
 	m_Client[_ClientIdx]->ClientScreenStatus = CLIENT_SCREEN_IS_LOBBY;
 
+	// ROOM(BLOCK) Routine
+	memset(&(m_Room[t_FixedIdx].RoomBlock[t_PlayerIdx]), 0, sizeof(ROOMBLOCK));
+
 	// Check Room Empty
 	for(int i = 0 ; i < 6 ; i++) {
 		if(m_Room[t_FixedIdx].RoomStatus_In.ClientUserID[i] != L"") {
@@ -1726,7 +1754,6 @@ BYTE __fastcall TFormMain::EscapeGameRoom(int _ClientIdx, BYTE _RoomIdx) {
 	// If Room is Empty
 	if(t_bIsEmpty) {
 		memset(&m_Room[t_FixedIdx], 0, sizeof(ROOM));
-		return _RoomIdx;
 	}
 
 	return _RoomIdx;

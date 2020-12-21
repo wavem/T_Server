@@ -13,7 +13,7 @@ private:
 	ThreadWorkingType	m_eThreadWork;
 	SOCKET* mp_socket_TCP;
 	SOCKET* mp_ClientSocket;
-	int* m_ClientCnt;
+	int* m_pClientCnt;
 	struct sockaddr_in	m_sockaddr_in;
 	TDateTime m_ConnectionDateTime;
 

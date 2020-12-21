@@ -170,8 +170,6 @@ object FormMain: TFormMain
         Left = 0
         Top = 0
         Caption = 'Status'
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object _pnBase_01_Status: TPanel
           Left = 0
           Top = 0
@@ -778,8 +776,6 @@ object FormMain: TFormMain
         Top = 0
         HelpContext = 2
         Caption = 'User Info'
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object _pnBase_03_UserInfo: TPanel
           Left = 0
           Top = 0
@@ -1290,8 +1286,6 @@ object FormMain: TFormMain
         Top = 0
         HelpContext = 3
         Caption = 'Room List'
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object _pnBase_04_RoomList: TPanel
           Left = 0
           Top = 0
@@ -2508,6 +2502,7 @@ object FormMain: TFormMain
     Left = 576
   end
   object tm_DeleteClient: TTimer
+    Interval = 500
     OnTimer = tm_DeleteClientTimer
     Left = 604
   end

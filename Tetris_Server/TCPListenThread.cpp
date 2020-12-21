@@ -12,7 +12,7 @@ __fastcall CTCPListenThread::CTCPListenThread(SOCKET *_p_socket, SOCKET* _p_clie
 	Priority = tpTimeCritical;
 	mp_socket_TCP = _p_socket;
 	mp_ClientSocket = _p_clientsocket;
-	m_ClientCnt = _p_clientcount;
+	m_pClientCnt = _p_clientcount;
 
 	m_eThreadWork = THREAD_RUNNING;
 }
@@ -59,7 +59,7 @@ void __fastcall CTCPListenThread::Execute() {
 		}
 
 		// Check Connected Client Count
-		if(*m_ClientCnt >= 60) {
+		if(*m_pClientCnt >= MAX_TCP_CLIENT_USER_COUNT) {
 			WaitForSingleObject((void*)this->Handle, 500);
 			continue;
 		}
@@ -99,6 +99,9 @@ void __fastcall CTCPListenThread::Execute() {
 
 			// Reset Client Information Structure
 			memset(&t_ClientInfo, 0, sizeof(t_ClientInfo));
+
+			// Count ClientCount
+			(*m_pClientCnt)++;
 		}
 
 		WaitForSingleObject((void*)this->Handle, 100);
