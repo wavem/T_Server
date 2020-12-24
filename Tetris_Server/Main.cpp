@@ -1776,6 +1776,8 @@ void __fastcall TFormMain::ClientMsg_ROOMCMD(CLIENTMSG _ClientMsg, SERVERMSG* _p
 	unsigned short t_SendSize = 30; // Fixed.. in Protocol
 	BYTE t_ReceivedRoomIdx = 0;
 	BYTE t_rst = 0;
+	BYTE t_ReceivedPlayerIdx = 0;
+	bool t_bIsAllDead = false;
 
 	// Extract Information
 	t_ClientMsg = _ClientMsg;
@@ -1802,10 +1804,43 @@ void __fastcall TFormMain::ClientMsg_ROOMCMD(CLIENTMSG _ClientMsg, SERVERMSG* _p
 	// Check Game Start
 	if(_pServerMsg->Data[5] == 1) {
 		m_Room[t_ReceivedRoomIdx - 1].RoomStatus_Out.State = 2;
+
+		// Game Info Reset
+		for(int i = 0 ; i < 6 ; i++) {
+			if(m_Room[t_ReceivedRoomIdx - 1].RoomStatus_In.ClientStatus[i].Connected) {
+				m_Room[t_ReceivedRoomIdx - 1].RoomStatus_In.ClientStatus[i].Life = true;
+			}
+
+			memset(&m_Room[t_ReceivedRoomIdx - 1].RoomBlock[i], 0, 200);
+		}
 		SendRoomStatus();
+		return;
 	}
 
+	// Receive Player Index
+	t_ReceivedPlayerIdx = _pServerMsg->Data[7];
+
 	// Check Game End
+	if(_pServerMsg->Data[9] == 1) {
+		m_Room[t_ReceivedRoomIdx - 1].RoomStatus_In.ClientStatus[t_ReceivedPlayerIdx - 1].Life = false;
+
+		// Check If All Players are died
+		t_bIsAllDead = true;
+		for(int i = 0 ; i < 6 ; i++) {
+			if(m_Room[t_ReceivedRoomIdx - 1].RoomStatus_In.ClientStatus[i].Connected) {
+				if(m_Room[t_ReceivedRoomIdx - 1].RoomStatus_In.ClientStatus[i].Life) {
+					// Do Nothing
+					t_bIsAllDead = false;
+				}
+			}
+		}
+
+		if(t_bIsAllDead) {
+			m_Room[t_ReceivedRoomIdx - 1].RoomStatus_Out.State = 1;
+			SendRoomStatus();
+			return;
+        }
+	}
 
 }
 //---------------------------------------------------------------------------
