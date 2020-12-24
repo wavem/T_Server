@@ -1798,7 +1798,14 @@ void __fastcall TFormMain::ClientMsg_ROOMCMD(CLIENTMSG _ClientMsg, SERVERMSG* _p
 
 
 	// Input Received Data Into ROOM Structure
-    // Later... 2020-12-20 PM 20:14
+	// Later... 2020-12-20 PM 20:14
+	// Check Game Start
+	if(_pServerMsg->Data[5] == 1) {
+		m_Room[t_ReceivedRoomIdx - 1].RoomStatus_Out.State = 2;
+		SendRoomStatus();
+	}
+
+	// Check Game End
 
 }
 //---------------------------------------------------------------------------
@@ -1842,7 +1849,6 @@ void __fastcall TFormMain::ClientMsg_INGAME_DATA(CLIENTMSG _ClientMsg, SERVERMSG
 
 	// Insert Client Data into structure
 	t_FixedRoomIdx = t_ReceivedRoomIdx - 1;
-	// BYTE BlockStatus[20][10];
 	t_BuffIdx = 10;
 	for(int x = 0 ; x < 10 ; x++) {
 		for(int y = 0 ; y < 20 ; y++) {
