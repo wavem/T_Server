@@ -80,11 +80,10 @@ bool __fastcall DataSenderThread::Send() {
 
 	// Send Routine
 	switch(t_MessageType) {
+
 	case DATA_TYPE_SIGN_UP:
-		t_rst = 0;
-		t_rst = send(FormMain->m_ClientSocket[ServerMsg.ClientInfo.ClientIndex], (char*)ServerMsg.Data, t_PacketSize, 0);
-		break;
 	case DATA_TYPE_SIGN_IN:
+	case DATA_TYPE_VERSION_INFO_REQ:
 		t_rst = 0;
 		t_rst = send(FormMain->m_ClientSocket[ServerMsg.ClientInfo.ClientIndex], (char*)ServerMsg.Data, t_PacketSize, 0);
 		break;

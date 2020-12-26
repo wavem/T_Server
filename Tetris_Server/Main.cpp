@@ -814,6 +814,10 @@ void __fastcall TFormMain::ReceiveClientMessage(TMessage &_msg) {
 		ClientMsg_INGAME_DATA(t_ClientMsg, &t_ServerMsg);
 		break;
 
+	case DATA_TYPE_VERSION_INFO_REQ:
+		ClientMsg_VERSION_INFO_DATA(t_ClientMsg, &t_ServerMsg);
+		break;
+
 	default:
 		break;
 	}
@@ -1900,5 +1904,40 @@ void __fastcall TFormMain::ClientMsg_INGAME_DATA(CLIENTMSG _ClientMsg, SERVERMSG
 			}
 		}
 	}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TFormMain::ClientMsg_VERSION_INFO_DATA(CLIENTMSG _ClientMsg, SERVERMSG* _pServerMsg) {
+	// Common
+	UnicodeString tempStr = L"";
+	unsigned short t_RecvSize = 0;
+	int t_ClientIdx = 0;
+	CLIENTMSG t_ClientMsg;
+	memset(&t_ClientMsg, 0, sizeof(t_ClientMsg));
+	unsigned short t_SendSize = 6; // Fixed.. in Protocol
+	BYTE t_ReceivedRoomIdx = 0;
+	BYTE t_ReceivedPlayerIdx = 0;
+	int t_FixedRoomIdx = 0;
+	BYTE t_rst = 0;
+	int t_BuffIdx = 0;
+
+	// Extract Information
+	t_ClientMsg = _ClientMsg;
+	t_ClientIdx = t_ClientMsg.ClientInfo.ClientIndex;
+
+	// Copy Client Msg to Server Msg
+	_pServerMsg->ClientInfo = t_ClientMsg.ClientInfo;
+	memcpy(_pServerMsg->Data, t_ClientMsg.Data, MAX_RECV_PACKET_SIZE);
+
+	// Making SendBuffer Header
+	_pServerMsg->Data[0] = SECURE_CODE_S_TO_C; // Secure Code
+	memcpy(&_pServerMsg->Data[1], &t_SendSize, sizeof(t_SendSize));
+
+	// Reset Send Buffer (Data Area)
+	memset(&_pServerMsg->Data[4], 0, MAX_SEND_PACKET_SIZE - 4);
+
+	// Write Room Number into send buffer
+	_pServerMsg->Data[4] = VERSION_MAJOR;
+	_pServerMsg->Data[5] = VERSION_MINOR;
 }
 //---------------------------------------------------------------------------
