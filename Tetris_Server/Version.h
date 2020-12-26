@@ -17,6 +17,7 @@ __published:	// IDE-managed Components
 	TLabel *lb_DeveloperName;
 	TLabel *lb_Version;
 	TLabel *lb_UpdateDate;
+	TLabel *lb_Version_Title;
 private:	// User declarations
 public:		// User declarations
 	__fastcall TFormVersion(TComponent* Owner);

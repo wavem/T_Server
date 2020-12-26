@@ -7,7 +7,10 @@
 #include <System.Classes.hpp>
 //#include <winsock2.h>
 
-#define TCP_SERVER_IP	"192.168.0.51"
+#define VERSION_MAJOR	1
+#define VERSION_MINOR	1
+
+//#define TCP_SERVER_IP	"192.168.0.51"
 #define TCP_SERVER_PORT		14759
 
 #define MAX_TCP_CLIENT_LISTENING_COUNT	10

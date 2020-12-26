@@ -50,11 +50,11 @@ object FormVersion: TFormVersion
       ParentFont = False
     end
     object lb_Version: TLabel
-      Left = 232
+      Left = 294
       Top = 70
-      Width = 82
+      Width = 20
       Height = 16
-      Caption = 'Version : 0.1'
+      Caption = '1.0'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
@@ -68,6 +68,19 @@ object FormVersion: TFormVersion
       Width = 236
       Height = 16
       Caption = 'Update Date : 2020-12-25 AM 00:43'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object lb_Version_Title: TLabel
+      Left = 230
+      Top = 70
+      Width = 58
+      Height = 16
+      Caption = 'Version :'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
