@@ -1828,6 +1828,7 @@ void __fastcall TFormMain::ClientMsg_ROOMCMD(CLIENTMSG _ClientMsg, SERVERMSG* _p
 	if(_pServerMsg->Data[9] == 1) {
 		m_Room[t_ReceivedRoomIdx - 1].RoomStatus_In.ClientStatus[t_ReceivedPlayerIdx - 1].Life = false;
 
+		/*
 		// Check If All Players are died
 		t_bIsAllDead = true;
 		for(int i = 0 ; i < 6 ; i++) {
@@ -1838,12 +1839,21 @@ void __fastcall TFormMain::ClientMsg_ROOMCMD(CLIENTMSG _ClientMsg, SERVERMSG* _p
 				}
 			}
 		}
+		*/
 
+		// Check Game is End
+		if(CheckGameIsOver(t_ReceivedRoomIdx - 1)) {
+			_pServerMsg->Data[10] = 1; // 1 : Game End Signal
+			m_Room[t_ReceivedRoomIdx - 1].RoomStatus_Out.State = 1;
+			SendRoomStatus();
+		}
+		/*
 		if(t_bIsAllDead) {
 			m_Room[t_ReceivedRoomIdx - 1].RoomStatus_Out.State = 1;
 			SendRoomStatus();
 			return;
-        }
+		}
+		*/
 	}
 
 }
@@ -1939,5 +1949,48 @@ void __fastcall TFormMain::ClientMsg_VERSION_INFO_DATA(CLIENTMSG _ClientMsg, SER
 	// Write Room Number into send buffer
 	_pServerMsg->Data[4] = VERSION_MAJOR;
 	_pServerMsg->Data[5] = VERSION_MINOR;
+}
+//---------------------------------------------------------------------------
+
+bool __fastcall TFormMain::CheckGameIsOver(int _RoomIdx) {
+
+	// Common
+	bool t_bIsGameOver = true;
+	BYTE t_TeamMode = 0;
+	int t_PlayerCount = 0;
+	int t_DeadPlayerCount = 0;
+
+	// Check Battle Mode
+	t_TeamMode = m_Room[_RoomIdx].RoomStatus_Out.TeamType;
+
+	// Check Game Over Routine
+	if(t_TeamMode == 0) {
+		// Private Mode
+		// Count Connected Player and Dead Player
+		for(int i = 0 ; i < 6 ; i++) {
+			if(m_Room[_RoomIdx].RoomStatus_In.ClientStatus[i].Connected) {
+				t_PlayerCount++;
+				if(m_Room[_RoomIdx].RoomStatus_In.ClientStatus[i].Life == false) {
+					t_DeadPlayerCount++;
+				}
+			}
+		}
+
+		// Compare Connected Player to Dead Player
+		if(t_DeadPlayerCount != (t_PlayerCount - 1)) {
+			t_bIsGameOver = false; // Game is not over
+		}
+
+	} else {
+		// Team Battle Mode
+
+	}
+
+
+
+	// If Game Over, Send Game Over Message Like Below
+	//SendRoomStatus();
+
+	return t_bIsGameOver;
 }
 //---------------------------------------------------------------------------

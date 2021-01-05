@@ -128,7 +128,7 @@ typedef struct ST_ROOMSTATUS_OUTSIDE{
 	// For Client (witn no entered in game room)
 	BYTE RoomNumber;
 	UnicodeString Title; // MAX UNICODE STRING LENGTH == 13 (Total 26 + 2 = 28 BYTE)
-	BYTE State; // Wait or Gaming // 0 == Wait, 1 == Game
+	BYTE State; // 0 == Empty, 1 == Wait, 2 == On Game
 	BYTE TeamType; // Team or Private // 0 == Private, 1 == Team
 	BYTE ItemType; // Item or NoTem // 0 == Notem, 1 == Item
 	BYTE PlayerCount; // 0 ~ 6

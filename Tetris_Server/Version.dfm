@@ -22,6 +22,8 @@ object FormVersion: TFormVersion
     Height = 124
     Align = alClient
     BevelOuter = bvNone
+    Color = clMedGray
+    ParentBackground = False
     TabOrder = 0
     object lb_ProgramName: TLabel
       Left = 24
@@ -67,7 +69,7 @@ object FormVersion: TFormVersion
       Top = 92
       Width = 236
       Height = 16
-      Caption = 'Update Date : 2020-12-25 AM 00:43'
+      Caption = 'Update Date : 2021-01-05 AM 11:30'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -13

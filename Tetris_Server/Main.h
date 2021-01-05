@@ -219,6 +219,7 @@ public: // BASIC FUNCTIONS
 	void __fastcall PushLobbyPlayer(int _Idx);
 	void __fastcall EraseLobbyPlayer(int _Idx);
 	void __fastcall ClientOutRoutine(int _ClientIdx);
+	bool __fastcall CheckGameIsOver(int _RoomIdx);
 
 public: // SOCKET FUNCTIONS
 	bool __fastcall CreateTCPListenSocket();
