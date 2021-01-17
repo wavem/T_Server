@@ -8,7 +8,7 @@
 //#include <winsock2.h>
 
 #define VERSION_MAJOR	1
-#define VERSION_MINOR	11
+#define VERSION_MINOR	12
 
 //#define TCP_SERVER_IP	"192.168.0.51"
 #define TCP_SERVER_PORT		14759

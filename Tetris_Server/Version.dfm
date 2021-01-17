@@ -67,9 +67,9 @@ object FormVersion: TFormVersion
     object lb_UpdateDate: TLabel
       Left = 80
       Top = 92
-      Width = 236
+      Width = 234
       Height = 16
-      Caption = 'Update Date : 2021-01-09 AM 01:20'
+      Caption = 'Update Date : 2021-01-17 PM 23:09'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
